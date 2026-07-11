@@ -1,116 +1,97 @@
-# FlexArena - Sistema de Gestión Deportiva Modular
+# SportTime
 
-Plataforma web educativa para administrar torneos deportivos, mentales y electrónicos.
+**Sistema de Gestión Deportiva Modular**
 
-## Tecnologías
+Plataforma web para organizar, administrar y consultar torneos deportivos, mentales y electrónicos.
 
-- Frontend: HTML, CSS, JavaScript y JSON.
-- Backend: PHP orientado a objetos.
-- Base de datos: MySQL.
-- Arquitectura: Modelo-Vista-Controlador.
-- Despliegue: XAMPP o Docker.
+---
 
-## Módulos implementados
+## Inicio rápido
 
-- Usuarios y autenticación.
-- Roles: administrador, organizador, participante y público.
-- Participantes y equipos.
-- Torneos.
-- Liga todos contra todos.
-- Eliminación directa, con llave inicial.
-- Sistema suizo por rondas.
-- Resultados y tabla de posiciones.
-- Consulta pública.
-- Auditoría y administración básica del sistema.
+### Requisitos
 
-## Credenciales iniciales
+- Docker Desktop (Windows/Mac/Linux)
 
-- Email: `admin@sgdm.local`
-- Password: `Admin1234!`
-
-## Instalación con XAMPP en Linux
-
-1. Copiar la carpeta `sgdm` a:
+### Levantar el proyecto
 
 ```bash
-/opt/lampp/htdocs/sgdm
+# 1. Copiar variables de entorno
+cp .env.example .env
+
+# 2. Levantar todos los contenedores
+docker compose up -d
+
+# 3. Acceder a la aplicación
+#    App:       http://localhost:8082
+#    phpMyAdmin: http://localhost:8083
 ```
 
-2. Iniciar XAMPP:
+La base de datos (`sporttime`) se inicializa automáticamente con el schema y el seed
+(`seed_sporttime.sql`) al primer inicio.
 
-```bash
-sudo /opt/lampp/lampp start
+### Credenciales de prueba
+
+| Rol           | Email                  |
+|---------------|------------------------|
+| Administrador | admin@sporttime.com    |
+| Organizador   | bruno@sporttime.com    |
+| Organizador   | carla@sporttime.com    |
+| Participante  | ivan@sporttime.com     |
+
+> Las contraseñas son fuertes y únicas por usuario y **no se versionan** en el repositorio;
+> se entregan por separado al responsable del proyecto. Se pueden (re)generar desde
+> Panel Admin → Usuarios → Editar.
+
+---
+
+## Estructura del proyecto
+
+```
+sgdm/
+├── app/
+│   ├── controllers/   — Reciben requests, validan, llaman servicios
+│   ├── models/        — Acceso a datos con PDO
+│   ├── services/      — Lógica de negocio (formatos de torneo)
+│   └── views/         — Plantillas PHP con layouts
+├── config/            — Configuración de la app y rutas
+├── core/              — Router, Database, Session, Auth, View, CSRF
+├── database/          — schema.sql, seed_sporttime.sql, scripts SQL
+├── docs/              — Documentación completa
+├── public/            — Front controller y assets (CSS, JS, img)
+├── scripts/           — Scripts de administración y backup
+├── Dockerfile
+├── docker-compose.yml
+└── .env.example
 ```
 
-3. Importar la base:
+---
 
-```bash
-sudo /opt/lampp/bin/mysql -u root < /opt/lampp/htdocs/sgdm/database/schema.sql
-```
+## Formatos de torneo
 
-4. Abrir:
+| Formato | Descripción |
+|---------|-------------|
+| **Liga** | Round-robin todos contra todos. Tabla de posiciones con criterios de desempate. |
+| **Eliminación Directa** | Bracket con avance de ganadores. Soporta byes para N no potencia de 2. |
+| **Sistema Suizo** | Rondas por rendimiento acumulado. Emparejamiento sin repetición de rivales. |
 
-```txt
-http://127.0.0.1/sgdm/public/login
-```
+---
 
-## Instalación con Docker
+## Roles del sistema
 
-```bash
-docker compose up -d --build
-```
+- **Administrador**: acceso total
+- **Organizador**: gestiona torneos asignados
+- **Participante**: consulta sus torneos y resultados
+- **Público**: vista pública sin autenticación
 
-Abrir:
+---
 
-```txt
-http://127.0.0.1:8080/login
-```
+## Documentación
 
-## Flujo de prueba recomendado
-
-1. Entrar como admin.
-2. Crear participantes o equipos.
-3. Crear un torneo y elegir formato: liga, eliminación directa o suizo.
-4. Entrar a Gestionar torneo.
-5. Inscribir participantes.
-6. Generar rondas.
-7. Cargar resultados.
-8. Revisar tabla de posiciones y vista pública.
-
-## Seguridad aplicada
-
-- `password_hash()` y `password_verify()` para contraseñas.
-- Consultas preparadas con PDO.
-- Validaciones básicas frontend/backend.
-- Control de roles por controlador.
-- Auditoría de acciones relevantes.
-- Sesión regenerada al iniciar sesión.
-
-## Nota académica
-
-El código cubre el sistema funcional base. Los documentos externos pedidos por la letra —ESRE, Gantt, FODA, actas, manuales completos, estudio de hardware, OWASP formal, modelo 3D, etc.— deben completarse con información real del equipo de proyecto.
-
-## Datos de prueba
-
-Para cargar datos demo:
-
-```bash
-sudo /opt/lampp/bin/mysql -u root < /opt/lampp/htdocs/sgdm/database/seed.sql
-```
-
-Usuarios demo:
-
-- `organizador@sgdm.local` / `Admin1234!`
-- `participante1@sgdm.local` / `Admin1234!`
-
-## Actualizar una instalación anterior
-
-Para desarrollo local es más simple reiniciar la base:
-
-```bash
-sudo /opt/lampp/bin/mysql -u root -e "DROP DATABASE IF EXISTS sgdm;"
-sudo /opt/lampp/bin/mysql -u root < /opt/lampp/htdocs/sgdm/database/schema.sql
-```
-
-Luego, opcionalmente, importar `seed.sql`.
-# proyecto-tercero
+Ver carpeta `/docs/`:
+- `documentacion_funcional.md`
+- `documentacion_tecnica.md`
+- `documentacion_seguridad.md`
+- `manual_usuario.md`
+- `manual_administrador.md`
+- `plan_testing.md`
+- `owasp.md`
