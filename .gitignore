@@ -1,0 +1,14 @@
+# Secretos reales — nunca versionar
+.env
+ssl/*.crt
+ssl/*.key
+docs/CREDENCIALES.md
+
+# Datos generados en runtime, no código fuente
+backups/*.sql.gz
+backups/*.sql
+
+# Editor / SO
+.vscode/
+.DS_Store
+Thumbs.db

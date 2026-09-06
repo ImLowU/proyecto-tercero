@@ -1,0 +1,87 @@
+name: sporttime
+
+services:
+  app:
+    build: .
+    container_name: sporttime_app
+    restart: unless-stopped
+    ports:
+      - "${HTTP_PORT:-8082}:80"
+      - "${HTTPS_PORT:-8443}:443"
+    volumes:
+      - .:/var/www/sporttime:z
+      - sporttime_apache_logs:/var/log/apache2
+    environment:
+      - APP_ENV=${APP_ENV:-development}
+      - DB_HOST=${DB_HOST:-db}
+      - DB_PORT=${DB_PORT:-3306}
+      - DB_NAME=${DB_NAME:-sporttime}
+      - DB_USER=${DB_USER:-sporttime_user}
+      - DB_PASS=${DB_PASS:-SportTime-2026_Db}
+      - APP_SECRET=${APP_SECRET:-change_me}
+      - APP_URL=${APP_URL:-http://localhost:8082}
+      - HTTPS_PORT=${HTTPS_PORT:-8443}
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - sporttime_net
+
+  db:
+    image: mysql:8.0
+    container_name: sporttime_db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASS:-SportTime-Root-2026}
+      MYSQL_DATABASE:      ${DB_NAME:-sporttime}
+      MYSQL_USER:          ${DB_USER:-sporttime_user}
+      MYSQL_PASSWORD:      ${DB_PASS:-SportTime-2026_Db}
+      TZ:                  America/Argentina/Buenos_Aires
+    # Sin "ports": no se publica al host, solo accesible dentro de sporttime_net (por app y pma).
+    volumes:
+      - sporttime_mysql_data:/var/lib/mysql
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/01_schema.sql:ro,z
+      - ./database/seed_sporttime.sql:/docker-entrypoint-initdb.d/02_seed.sql:ro,z
+    command: >
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_ci
+      --default-time-zone=America/Argentina/Buenos_Aires
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "${DB_USER:-sporttime_user}", "-p${DB_PASS:-SportTime-2026_Db}"]
+      interval: 10s
+      timeout: 5s
+      retries: 8
+      start_period: 60s
+    networks:
+      - sporttime_net
+
+  pma:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: sporttime_pma
+    restart: unless-stopped
+    ports:
+      - "${PMA_HTTP_PORT:-8083}:80"
+    environment:
+      # Sin PMA_USER/PMA_PASSWORD a propósito: con esas variables, phpMyAdmin
+      # usa auth_type "config" y AUTO-loguea a cualquiera que llegue al puerto,
+      # sin pedir usuario/contraseña — quien acceda a este puerto tendría
+      # control total de la base sin ningún desafío. Sin ellas, usa el modo
+      # por defecto ("cookie"): pide login real en cada acceso.
+      PMA_HOST: db
+      PMA_PORT: 3306
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - sporttime_net
+
+volumes:
+  sporttime_mysql_data:
+    name: sporttime_mysql_data
+  sporttime_apache_logs:
+    name: sporttime_apache_logs
+
+networks:
+  sporttime_net:
+    name: sporttime_net
+    driver: bridge
