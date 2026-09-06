@@ -54,6 +54,11 @@ ON DUPLICATE KEY UPDATE nombre = VALUES(nombre);
 --   id 8 (sofia.duarte@sporttime.com)  -> autorregistro pendiente de aprobación
 --                                          (estado='pendiente').
 --   (contraseñas de estas dos cuentas entregadas por separado, igual que el resto)
+--
+-- ids 9-29: cuentas nuevas para vincular al resto de los participantes de prueba
+-- (para poder probar "Bloquear cuenta" sobre cualquiera desde el panel admin).
+-- A diferencia de las ids 1-8, estas SÍ tienen contraseña de demo conocida y
+-- documentada: admin123 (mismo criterio que FlexArena). Ver docs/CREDENCIALES.md.
 INSERT INTO usuarios (id, rol_id, nombre, email, password_hash, failed_attempts, estado) VALUES
 (1, 1, 'Dirección SportTime', 'admin@sporttime.com',        '$2y$12$JCxL3QUImjg3m4T2Bp2jAukj077TaFVHLtKe5nsWp4ZtU4pPi2phO', 0, 'activo'),
 (2, 2, 'Bruno Vega',          'bruno@sporttime.com',        '$2y$12$FB6F8W70k.tdQFiWKyFzA.2F/AqOVVhV9.AIc2SJX5rdgx/x/gZD.', 0, 'activo'),
@@ -62,36 +67,59 @@ INSERT INTO usuarios (id, rol_id, nombre, email, password_hash, failed_attempts,
 (5, 3, 'Lucía Ferrari',       'lucia@sporttime.com',        '$2y$12$w/cs43WdXKkfquIAyuSIT.5H/TJVqZHdz0eIe46CcQDs.J95IODWa', 0, 'activo'),
 (6, 3, 'Diego Salas',         'diego@sporttime.com',        '$2y$12$BC0KleUn/Ni1/Dp522QgP.Ml4yCfDgo9nCTGZHfoRx19SS6XmVNt2', 0, 'activo'),
 (7, 2, 'Martín Ibarra',       'martin.ibarra@sporttime.com','$2y$12$g/Q813JKT8ztAjwq7//xU.o58Z62PLblcld.Yhskh31YICj7fxL9a', 5, 'bloqueada'),
-(8, 3, 'Sofía Duarte',        'sofia.duarte@sporttime.com', '$2y$12$QfM1KmC3BwaEF1efEal6Ou/6EiElzguBiGczLW5RxgDQGMJ95M7si', 0, 'pendiente')
+(8, 3, 'Sofía Duarte',        'sofia.duarte@sporttime.com', '$2y$12$QfM1KmC3BwaEF1efEal6Ou/6EiElzguBiGczLW5RxgDQGMJ95M7si', 0, 'pendiente'),
+(9,  3, 'Camilo Ávila',       'camilo@sporttime.com',       '$2y$12$UrwIRSDEIRFFmMl8VNXJiOwrFZ9pUoO4yiMKwN9RUQ2ITDohArHFW', 0, 'activo'),
+(10, 3, 'Renata Ponce',       'renata@sporttime.com',       '$2y$12$UrwIRSDEIRFFmMl8VNXJiOwrFZ9pUoO4yiMKwN9RUQ2ITDohArHFW', 0, 'activo'),
+(11, 3, 'Bruno Ledesma',      'brunol@sporttime.com',       '$2y$12$UrwIRSDEIRFFmMl8VNXJiOwrFZ9pUoO4yiMKwN9RUQ2ITDohArHFW', 0, 'activo'),
+(12, 3, 'Aldana Vidal',       'aldana@sporttime.com',       '$2y$12$UrwIRSDEIRFFmMl8VNXJiOwrFZ9pUoO4yiMKwN9RUQ2ITDohArHFW', 0, 'activo'),
+(13, 3, 'Joaquín Ramos',      'joaquin@sporttime.com',      '$2y$12$UrwIRSDEIRFFmMl8VNXJiOwrFZ9pUoO4yiMKwN9RUQ2ITDohArHFW', 0, 'activo'),
+(14, 3, 'Milena Costa',       'milena@sporttime.com',       '$2y$12$UrwIRSDEIRFFmMl8VNXJiOwrFZ9pUoO4yiMKwN9RUQ2ITDohArHFW', 0, 'activo'),
+(15, 3, 'Thiago Núñez',       'thiago@sporttime.com',       '$2y$12$UrwIRSDEIRFFmMl8VNXJiOwrFZ9pUoO4yiMKwN9RUQ2ITDohArHFW', 0, 'activo'),
+(16, 3, 'Paula Bravo',        'paula@sporttime.com',        '$2y$12$UrwIRSDEIRFFmMl8VNXJiOwrFZ9pUoO4yiMKwN9RUQ2ITDohArHFW', 0, 'activo'),
+(17, 3, 'Ezequiel Ríos',      'ezequiel@sporttime.com',     '$2y$12$UrwIRSDEIRFFmMl8VNXJiOwrFZ9pUoO4yiMKwN9RUQ2ITDohArHFW', 0, 'activo'),
+(18, 3, 'Brenda Acosta',      'brenda@sporttime.com',       '$2y$12$UrwIRSDEIRFFmMl8VNXJiOwrFZ9pUoO4yiMKwN9RUQ2ITDohArHFW', 0, 'activo'),
+(19, 3, 'Facundo Gil',        'facundo@sporttime.com',      '$2y$12$UrwIRSDEIRFFmMl8VNXJiOwrFZ9pUoO4yiMKwN9RUQ2ITDohArHFW', 0, 'activo'),
+(20, 3, 'Carolina Paz',       'carolina@sporttime.com',     '$2y$12$UrwIRSDEIRFFmMl8VNXJiOwrFZ9pUoO4yiMKwN9RUQ2ITDohArHFW', 0, 'activo'),
+(21, 3, 'Ramiro Luna',        'ramiro@sporttime.com',       '$2y$12$UrwIRSDEIRFFmMl8VNXJiOwrFZ9pUoO4yiMKwN9RUQ2ITDohArHFW', 0, 'activo'),
+(22, 3, 'Daniela Cruz',       'daniela@sporttime.com',      '$2y$12$UrwIRSDEIRFFmMl8VNXJiOwrFZ9pUoO4yiMKwN9RUQ2ITDohArHFW', 0, 'activo'),
+(23, 3, 'Maximiliano Ortiz',  'maxi@sporttime.com',         '$2y$12$UrwIRSDEIRFFmMl8VNXJiOwrFZ9pUoO4yiMKwN9RUQ2ITDohArHFW', 0, 'activo'),
+(24, 3, 'Victoria Rey',       'victoria@sporttime.com',     '$2y$12$UrwIRSDEIRFFmMl8VNXJiOwrFZ9pUoO4yiMKwN9RUQ2ITDohArHFW', 0, 'activo'),
+(25, 3, 'Gonzalo Medina',     'gonzalo@sporttime.com',      '$2y$12$UrwIRSDEIRFFmMl8VNXJiOwrFZ9pUoO4yiMKwN9RUQ2ITDohArHFW', 0, 'activo'),
+(26, 3, 'Abril Sandoval',     'abril@sporttime.com',        '$2y$12$UrwIRSDEIRFFmMl8VNXJiOwrFZ9pUoO4yiMKwN9RUQ2ITDohArHFW', 0, 'activo'),
+(27, 3, 'Lautaro Vega',       'lautaro@sporttime.com',      '$2y$12$UrwIRSDEIRFFmMl8VNXJiOwrFZ9pUoO4yiMKwN9RUQ2ITDohArHFW', 0, 'activo'),
+(28, 3, 'Melina Soto',        'melina@sporttime.com',       '$2y$12$UrwIRSDEIRFFmMl8VNXJiOwrFZ9pUoO4yiMKwN9RUQ2ITDohArHFW', 0, 'activo'),
+(29, 3, 'Iñaki Romero',       'inaki@sporttime.com',        '$2y$12$UrwIRSDEIRFFmMl8VNXJiOwrFZ9pUoO4yiMKwN9RUQ2ITDohArHFW', 0, 'activo')
 ON DUPLICATE KEY UPDATE nombre = VALUES(nombre), password_hash = VALUES(password_hash), failed_attempts = VALUES(failed_attempts), estado = VALUES(estado);
 
 -- ─── PARTICIPANTES (24 + 1 pendiente) ─────────────────────────
 -- id 25: perfil vinculado al autorregistro pendiente (usuario 8).
+-- Todos los participantes están vinculados a una cuenta de usuario, para poder
+-- probar "Bloquear cuenta" sobre cualquiera de ellos desde el panel admin.
 INSERT INTO participantes (id, usuario_id, nombre, documento, nick, email, estado) VALUES
 (1,  4,   'Iván Morales',        '40002001', 'IvanM',     'ivan@sporttime.com',     'activo'),
 (2,  5,   'Lucía Ferrari',       '40002002', 'LuFerrari', 'lucia@sporttime.com',    'activo'),
 (3,  6,   'Diego Salas',         '40002003', 'DiegoS',    'diego@sporttime.com',    'activo'),
-(4,  NULL,'Camilo Ávila',        '40002004', 'CamiA',     'camilo@sporttime.com',   'activo'),
-(5,  NULL,'Renata Ponce',        '40002005', 'RenaP',     'renata@sporttime.com',   'activo'),
-(6,  NULL,'Bruno Ledesma',       '40002006', 'BrunoL',    'brunol@sporttime.com',   'activo'),
-(7,  NULL,'Aldana Vidal',        '40002007', 'AldaV',     'aldana@sporttime.com',   'activo'),
-(8,  NULL,'Joaquín Ramos',       '40002008', 'JoaR',      'joaquin@sporttime.com',  'activo'),
-(9,  NULL,'Milena Costa',        '40002009', 'MileC',     'milena@sporttime.com',   'activo'),
-(10, NULL,'Thiago Núñez',        '40002010', 'ThiN',      'thiago@sporttime.com',   'activo'),
-(11, NULL,'Paula Bravo',         '40002011', 'PauB',      'paula@sporttime.com',    'activo'),
-(12, NULL,'Ezequiel Ríos',       '40002012', 'EzeR',      'ezequiel@sporttime.com', 'activo'),
-(13, NULL,'Brenda Acosta',       '40002013', 'BreA',      'brenda@sporttime.com',   'activo'),
-(14, NULL,'Facundo Gil',         '40002014', 'FacuG',     'facundo@sporttime.com',  'activo'),
-(15, NULL,'Carolina Paz',        '40002015', 'CaroP',     'carolina@sporttime.com', 'activo'),
-(16, NULL,'Ramiro Luna',         '40002016', 'RamiL',     'ramiro@sporttime.com',   'activo'),
-(17, NULL,'Daniela Cruz',        '40002017', 'DaniC',     'daniela@sporttime.com',  'activo'),
-(18, NULL,'Maximiliano Ortiz',   '40002018', 'MaxiO',     'maxi@sporttime.com',     'activo'),
-(19, NULL,'Victoria Rey',        '40002019', 'VicR',      'victoria@sporttime.com', 'activo'),
-(20, NULL,'Gonzalo Medina',      '40002020', 'GonM',      'gonzalo@sporttime.com',  'activo'),
-(21, NULL,'Abril Sandoval',      '40002021', 'AbriS',     'abril@sporttime.com',    'activo'),
-(22, NULL,'Lautaro Vega',        '40002022', 'LautV',     'lautaro@sporttime.com',  'activo'),
-(23, NULL,'Melina Soto',         '40002023', 'MeliS',     'melina@sporttime.com',   'activo'),
-(24, NULL,'Iñaki Romero',        '40002024', 'InaR',      'inaki@sporttime.com',    'activo'),
+(4,  9,   'Camilo Ávila',        '40002004', 'CamiA',     'camilo@sporttime.com',   'activo'),
+(5,  10,  'Renata Ponce',        '40002005', 'RenaP',     'renata@sporttime.com',   'activo'),
+(6,  11,  'Bruno Ledesma',       '40002006', 'BrunoL',    'brunol@sporttime.com',   'activo'),
+(7,  12,  'Aldana Vidal',        '40002007', 'AldaV',     'aldana@sporttime.com',   'activo'),
+(8,  13,  'Joaquín Ramos',       '40002008', 'JoaR',      'joaquin@sporttime.com',  'activo'),
+(9,  14,  'Milena Costa',        '40002009', 'MileC',     'milena@sporttime.com',   'activo'),
+(10, 15,  'Thiago Núñez',        '40002010', 'ThiN',      'thiago@sporttime.com',   'activo'),
+(11, 16,  'Paula Bravo',         '40002011', 'PauB',      'paula@sporttime.com',    'activo'),
+(12, 17,  'Ezequiel Ríos',       '40002012', 'EzeR',      'ezequiel@sporttime.com', 'activo'),
+(13, 18,  'Brenda Acosta',       '40002013', 'BreA',      'brenda@sporttime.com',   'activo'),
+(14, 19,  'Facundo Gil',         '40002014', 'FacuG',     'facundo@sporttime.com',  'activo'),
+(15, 20,  'Carolina Paz',        '40002015', 'CaroP',     'carolina@sporttime.com', 'activo'),
+(16, 21,  'Ramiro Luna',         '40002016', 'RamiL',     'ramiro@sporttime.com',   'activo'),
+(17, 22,  'Daniela Cruz',        '40002017', 'DaniC',     'daniela@sporttime.com',  'activo'),
+(18, 23,  'Maximiliano Ortiz',   '40002018', 'MaxiO',     'maxi@sporttime.com',     'activo'),
+(19, 24,  'Victoria Rey',        '40002019', 'VicR',      'victoria@sporttime.com', 'activo'),
+(20, 25,  'Gonzalo Medina',      '40002020', 'GonM',      'gonzalo@sporttime.com',  'activo'),
+(21, 26,  'Abril Sandoval',      '40002021', 'AbriS',     'abril@sporttime.com',    'activo'),
+(22, 27,  'Lautaro Vega',        '40002022', 'LautV',     'lautaro@sporttime.com',  'activo'),
+(23, 28,  'Melina Soto',         '40002023', 'MeliS',     'melina@sporttime.com',   'activo'),
+(24, 29,  'Iñaki Romero',        '40002024', 'InaR',      'inaki@sporttime.com',    'activo'),
 (25, 8,   'Sofía Duarte',        '40002025', 'SofiD',     'sofia.duarte@sporttime.com', 'pendiente')
 ON DUPLICATE KEY UPDATE nombre = VALUES(nombre);
 
