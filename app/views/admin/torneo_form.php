@@ -156,6 +156,30 @@
         <input type="number" name="puntos_bye_suizo" min="0" step="0.5" value="<?= (float)($torneo['puntos_bye_suizo'] ?? 0) ?>" <?= $bloqueadoEstructural ? 'disabled' : '' ?>>
       </div>
     </div>
+
+    <!-- Datos del evento: van a configuraciones_torneo, no a columnas de torneos.
+         El catálogo de claves lo define ConfiguracionTorneoService::CLAVES, así
+         que agregar un dato nuevo es una entrada ahí y nada más. -->
+    <div class="form-grid" style="grid-column:1/-1">
+      <?php foreach ($clavesConfig as $clave => $def): ?>
+        <?php $valor = $configuracion[$clave] ?? ''; ?>
+        <div class="field"<?= $def['tipo'] === 'texto_largo' ? ' style="grid-column:1/-1"' : '' ?>>
+          <label for="config_<?= View::e($clave) ?>"><?= View::e($def['etiqueta']) ?></label>
+          <?php if ($def['tipo'] === 'texto_largo'): ?>
+            <textarea id="config_<?= View::e($clave) ?>"
+                      name="config[<?= View::e($clave) ?>]"
+                      maxlength="<?= (int)$def['max'] ?>"><?= View::e($valor) ?></textarea>
+          <?php else: ?>
+            <input id="config_<?= View::e($clave) ?>"
+                   name="config[<?= View::e($clave) ?>]"
+                   type="<?= $def['tipo'] === 'fecha' ? 'date' : ($def['tipo'] === 'email' ? 'email' : 'text') ?>"
+                   maxlength="<?= (int)$def['max'] ?>"
+                   value="<?= View::e($valor) ?>">
+          <?php endif; ?>
+          <small class="muted"><?= View::e($def['ayuda']) ?></small>
+        </div>
+      <?php endforeach; ?>
+    </div>
   </div>
 
   <div class="form-actions">
