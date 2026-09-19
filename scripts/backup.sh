@@ -22,13 +22,30 @@ fi
 
 DB_NAME="${DB_NAME:-sporttime}"
 DB_USER="${DB_USER:-sporttime_user}"
-DB_PASS="${DB_PASS:-SportTime-2026_Db}"
+
+# Sin valor por defecto, a propósito: un default con pinta de contraseña real
+# termina commiteado en el repositorio y, encima, hace que el script "ande" con
+# la credencial equivocada en vez de avisar.
+if [ -z "${DB_PASS:-}" ]; then
+    echo "ERROR: DB_PASS no está definida." >&2
+    echo "       Definila en $PROJECT_ROOT/.env (DB_PASS=...) o exportala antes de correr este script." >&2
+    exit 1
+fi
+
+# Criterio de verificación compartido con restore.sh.
+source "$SCRIPT_DIR/lib_dump.sh"
 
 BACKUP_DIR="$PROJECT_ROOT/backups"
 mkdir -p "$BACKUP_DIR"
 
 FILENAME="${DB_NAME}_$(date +%Y%m%d_%H%M%S).sql.gz"
 FILEPATH="${BACKUP_DIR}/${FILENAME}"
+# Se vuelca a un archivo .parcial y recién se renombra si pasa la verificación:
+# así un respaldo fallido nunca queda en backups/ con nombre de respaldo bueno.
+PARCIAL="${FILEPATH}.parcial"
+
+limpiar_parcial() { rm -f -- "$PARCIAL"; }
+trap limpiar_parcial EXIT
 
 echo "[$(date)] Iniciando respaldo de ${DB_NAME} (contenedor db)..."
 
@@ -47,7 +64,19 @@ docker compose exec -T db mysqldump \
   --no-tablespaces \
   --routines \
   --triggers \
-  "$DB_NAME" | gzip > "$FILEPATH"
+  "$DB_NAME" | gzip > "$PARCIAL"
+
+# El pipeline de arriba aborta el script si mysqldump falla (pipefail), pero eso
+# no alcanza: gzip de una entrada vacía deja un .gz válido de 20 bytes. Hay que
+# mirar lo que quedó adentro antes de dar el respaldo por bueno.
+echo "[$(date)] Verificando el volcado..."
+if ! validar_dump "$PARCIAL" "el respaldo recién generado"; then
+    echo "[$(date)] RESPALDO DESCARTADO: no pasó la verificación. No se dejó ningún archivo en backups/." >&2
+    exit 1   # el trap borra el .parcial
+fi
+
+mv -- "$PARCIAL" "$FILEPATH"
+trap - EXIT
 
 echo "[$(date)] Respaldo completado: $FILEPATH"
 echo "Tamaño: $(du -sh "$FILEPATH" | cut -f1)"

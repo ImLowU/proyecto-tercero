@@ -8,8 +8,16 @@
 # Usa el usuario root: restaurar un dump completo implica CREATE/DROP
 # TABLE, y el usuario de la app (DB_USER) solo tiene permisos de
 # SELECT/INSERT/UPDATE/DELETE — no alcanza para esto.
+#
+# El archivo se verifica ANTES de pedir confirmación y antes de tocar la base:
+# restaurar desde un respaldo vacío o truncado deja la base peor que como
+# estaba. Mismo criterio que usa backup.sh (ver lib_dump.sh).
 # ============================================================
 set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+source "$SCRIPT_DIR/lib_dump.sh"
 
 if [ -z "${1:-}" ]; then
     echo "Uso: $0 <archivo_respaldo.sql.gz>"
@@ -19,13 +27,20 @@ fi
 BACKUP_FILE="$1"
 
 if [ ! -f "$BACKUP_FILE" ]; then
-    echo "Error: El archivo '$BACKUP_FILE' no existe."
+    echo "Error: El archivo '$BACKUP_FILE' no existe." >&2
     exit 1
 fi
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+# ── Verificación del respaldo ───────────────────────────────────────────────
+# Va primero: es la comprobación más barata y la que más seguido falla.
+echo "[$(date)] Verificando $BACKUP_FILE..."
+if ! validar_dump "$BACKUP_FILE"; then
+    echo "[$(date)] RESTAURACIÓN CANCELADA: el archivo no parece un respaldo completo de SportTime." >&2
+    echo "       No se tocó la base de datos." >&2
+    exit 1
+fi
 
+# ── Configuración ───────────────────────────────────────────────────────────
 if [ -f "$PROJECT_ROOT/.env" ]; then
     set -a
     source "$PROJECT_ROOT/.env"
@@ -33,8 +48,18 @@ if [ -f "$PROJECT_ROOT/.env" ]; then
 fi
 
 DB_NAME="${DB_NAME:-sporttime}"
+# Se usa root porque restaurar un dump implica CREATE/DROP TABLE (ver encabezado).
 DB_USER="root"
-DB_PASS="${DB_ROOT_PASS:-SportTime-Root-2026}"
+
+# Sin valor por defecto, a propósito: un default con pinta de contraseña real
+# termina commiteado en el repositorio y, encima, hace que el script "ande" con
+# la credencial equivocada en vez de avisar.
+if [ -z "${DB_ROOT_PASS:-}" ]; then
+    echo "ERROR: DB_ROOT_PASS no está definida." >&2
+    echo "       Definila en $PROJECT_ROOT/.env (DB_ROOT_PASS=...) o exportala antes de correr este script." >&2
+    exit 1
+fi
+DB_PASS="$DB_ROOT_PASS"
 
 echo "[$(date)] ADVERTENCIA: Se restaurará $DB_NAME desde $BACKUP_FILE (contenedor db)"
 read -rp "¿Confirmar? (s/N): " confirm
