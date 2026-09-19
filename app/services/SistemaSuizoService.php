@@ -4,6 +4,7 @@ declare(strict_types=1);
 class SistemaSuizoService
 {
     use DesempateTrait;
+    use ModuloActivoTrait;
 
     private TorneoModel          $torneoModel;
     private InscripcionModel     $insModel;
@@ -34,6 +35,7 @@ class SistemaSuizoService
     {
         $torneo = $this->torneoModel->findByIdCompleto($torneoId);
         if (!$torneo) throw new RuntimeException('Torneo no encontrado.');
+        $this->assertModuloActivo('suizo');
         if ($this->rondaModel->countByTorneo($torneoId) > 0) {
             throw new RuntimeException('Ya existe una ronda generada para este torneo.');
         }

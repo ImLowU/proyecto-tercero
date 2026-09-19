@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 class EliminacionDirectaService
 {
+    use ModuloActivoTrait;
+
     private TorneoModel         $torneoModel;
     private InscripcionModel    $insModel;
     private RondaModel          $rondaModel;
@@ -28,6 +30,7 @@ class EliminacionDirectaService
     {
         $torneo = $this->torneoModel->findByIdCompleto($torneoId);
         if (!$torneo) throw new RuntimeException('Torneo no encontrado.');
+        $this->assertModuloActivo('eliminacion_directa');
 
         $inscripciones = $this->insModel->getByTorneo($torneoId);
         $n = count($inscripciones);

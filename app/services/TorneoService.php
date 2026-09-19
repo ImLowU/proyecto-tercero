@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 class TorneoService
 {
+    use ModuloActivoTrait;
+
     private TorneoModel      $model;
     private TipoTorneoModel  $tipoModel;
     private AuditoriaService $auditoria;
@@ -21,6 +23,7 @@ class TorneoService
     public function crear(array $d): int
     {
         $this->validar($d);
+        $this->assertFormatoHabilitado((int)$d['tipo_torneo_id']);
         $id = $this->model->insert($this->prepararDatos($d));
         // Asociar organizador (modelo "un organizador por torneo")
         if (array_key_exists('organizador_id', $d)) {
@@ -146,6 +149,18 @@ class TorneoService
             'nombre_puntos'            => trim($d['nombre_puntos'] ?? 'puntos'),
             'creado_por'               => (int)($d['creado_por'] ?? Auth::id()),
         ];
+    }
+
+    /**
+     * Frena la creación (o el cambio) de formato cuando su módulo está deshabilitado.
+     * Es la contraparte de servidor del filtrado del <select> en el formulario: la UI
+     * deja de ofrecer el formato, pero un POST armado a mano podría seguir mandándolo.
+     */
+    private function assertFormatoHabilitado(int $tipoTorneoId): void
+    {
+        $tipo = $this->tipoModel->findById($tipoTorneoId);
+        if (!$tipo) throw new RuntimeException('El formato de torneo seleccionado no existe.');
+        $this->assertModuloActivo((string)$tipo['slug']);
     }
 
     private function validar(array $d): void

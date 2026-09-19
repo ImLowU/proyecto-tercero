@@ -4,6 +4,7 @@ declare(strict_types=1);
 class LigaService
 {
     use DesempateTrait;
+    use ModuloActivoTrait;
 
     private TorneoModel          $torneoModel;
     private InscripcionModel     $insModel;
@@ -30,6 +31,7 @@ class LigaService
     {
         $torneo = $this->torneoModel->findByIdCompleto($torneoId);
         if (!$torneo) throw new RuntimeException('Torneo no encontrado.');
+        $this->assertModuloActivo('liga');
         if ($torneo['estado'] !== 'inscripcion' && $torneo['estado'] !== 'borrador') {
             throw new RuntimeException('El torneo debe estar en estado inscripción o borrador para generar el fixture.');
         }
