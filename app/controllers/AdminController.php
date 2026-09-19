@@ -113,7 +113,7 @@ class AdminController extends BaseController
         } catch (RuntimeException $e) {
             $this->flash('error', $e->getMessage());
         }
-        $return = $this->postStr('return', '/admin/organizadores');
+        $return = Url::interna($this->postStr('return'), '/admin/organizadores');
         $this->redirect($return);
     }
 
@@ -127,7 +127,7 @@ class AdminController extends BaseController
         } catch (RuntimeException $e) {
             $this->flash('error', $e->getMessage());
         }
-        $return = $this->postStr('return', '/admin/organizadores');
+        $return = Url::interna($this->postStr('return'), '/admin/organizadores');
         $this->redirect($return);
     }
 

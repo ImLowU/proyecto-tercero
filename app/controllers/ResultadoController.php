@@ -15,7 +15,8 @@ class ResultadoController extends BaseController
     {
         $enf = (new EnfrentamientoModel())->findById($enfId);
         if (!$enf) return; // el servicio informará "no encontrado"
-        $this->requireTorneoOwnership((int)$enf['torneo_id'], $_SERVER['HTTP_REFERER'] ?? '/organizador/torneos');
+        $this->requireTorneoOwnership((int)$enf['torneo_id'],
+            Url::interna($_SERVER['HTTP_REFERER'] ?? null, '/organizador/torneos'));
     }
 
     public function cargar(): void
@@ -36,7 +37,7 @@ class ResultadoController extends BaseController
             $this->flash('error', $e->getMessage());
         }
 
-        $referer = $_SERVER['HTTP_REFERER'] ?? "/admin/torneos/{$torneoId}";
+        $referer = Url::interna($_SERVER['HTTP_REFERER'] ?? null, "/admin/torneos/{$torneoId}");
         $this->redirect($referer);
     }
 
@@ -57,7 +58,7 @@ class ResultadoController extends BaseController
             $this->flash('error', $e->getMessage());
         }
 
-        $referer = $_SERVER['HTTP_REFERER'] ?? "/admin/torneos/{$torneoId}";
+        $referer = Url::interna($_SERVER['HTTP_REFERER'] ?? null, "/admin/torneos/{$torneoId}");
         $this->redirect($referer);
     }
 
@@ -80,7 +81,7 @@ class ResultadoController extends BaseController
             $this->flash('error', $e->getMessage());
         }
 
-        $referer = $_SERVER['HTTP_REFERER'] ?? "/admin/torneos/{$torneoId}";
+        $referer = Url::interna($_SERVER['HTTP_REFERER'] ?? null, "/admin/torneos/{$torneoId}");
         $this->redirect($referer);
     }
 }
