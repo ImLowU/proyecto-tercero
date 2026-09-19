@@ -22,6 +22,7 @@ class ResultadoController extends BaseController
     public function cargar(): void
     {
         $this->requireOrganizador();
+        $this->requirePermiso('resultados', 'crear', '/organizador/torneos');
         $this->checkCsrf();
 
         $enfId   = $this->postInt('enfrentamiento_id');
@@ -44,6 +45,7 @@ class ResultadoController extends BaseController
     public function programar(): void
     {
         $this->requireOrganizador();
+        $this->requirePermiso('resultados', 'editar', '/organizador/torneos');
         $this->checkCsrf();
 
         $enfId    = $this->postInt('enfrentamiento_id');
@@ -65,6 +67,7 @@ class ResultadoController extends BaseController
     public function corregir(): void
     {
         $this->requireOrganizador();
+        $this->requirePermiso('resultados', 'editar', '/organizador/torneos');
         $this->checkCsrf();
 
         $enfId    = $this->postInt('enfrentamiento_id');

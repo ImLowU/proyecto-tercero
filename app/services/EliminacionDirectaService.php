@@ -98,6 +98,10 @@ class EliminacionDirectaService
         }
 
         $this->auditoria->log('generar_bracket', 'torneos', $torneoId, "Bracket Eliminación Directa generado");
+
+        // Las rondas recién creadas arrancan con el estado que les corresponde
+        // (ver RondaService: 'en_curso' si son jugables, 'pendiente' si les faltan cruces).
+        (new RondaService())->sincronizarTorneo($torneoId);
     }
 
     /** Registra el resultado de un bye (avance automático, sin rival). */

@@ -84,6 +84,13 @@ $router->post('admin/correcciones/{id}/rechazar', 'CorreccionController', 'recha
 
 // ─── ADMIN — SISTEMA ────────────────────────────────────────
 $router->get('admin/auditoria',                   'AdminController', 'auditoria');
+// Cerrar / reabrir rondas (mismo controlador desde los dos paneles)
+$router->post('admin/rondas/{id}/cerrar',         'TorneoController', 'cerrarRonda');
+$router->post('admin/rondas/{id}/reabrir',        'TorneoController', 'reabrirRonda');
+$router->post('organizador/rondas/{id}/cerrar',   'TorneoController', 'cerrarRonda');
+$router->post('organizador/rondas/{id}/reabrir',  'TorneoController', 'reabrirRonda');
+$router->get('admin/permisos',                    'AdminController', 'permisos');
+$router->post('admin/permisos',                   'AdminController', 'permisosGuardar');
 $router->get('admin/modulos',                     'AdminController', 'modulos');
 $router->post('admin/modulos/toggle/{id}',        'AdminController', 'moduloToggle');
 

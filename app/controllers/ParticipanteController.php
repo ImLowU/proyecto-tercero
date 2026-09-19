@@ -6,6 +6,7 @@ class ParticipanteController extends BaseController
     public function dashboard(): void
     {
         $this->requireRole(['participante', 'administrador']);
+        $this->requirePermiso('consulta_publica', 'ver');
         $participante = (new ParticipanteModel())->findByUsuario((int)Auth::id());
 
         $torneos   = [];
@@ -103,6 +104,7 @@ class ParticipanteController extends BaseController
     public function misTorneos(): void
     {
         $this->requireRole(['participante', 'administrador']);
+        $this->requirePermiso('resultados', 'ver');
         $participante = (new ParticipanteModel())->findByUsuario((int)Auth::id());
         $torneos = $participante
             ? (new InscripcionModel())->getByParticipante((int)$participante['id'])

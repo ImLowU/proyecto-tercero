@@ -151,14 +151,18 @@ ON DUPLICATE KEY UPDATE rol_en_equipo = VALUES(rol_en_equipo);
 INSERT INTO permisos (rol_id, modulo_slug, puede_ver, puede_crear, puede_editar, puede_eliminar) VALUES
 (2, 'torneos',          1, 0, 1, 0),
 (2, 'resultados',       1, 1, 1, 0),
-(2, 'participantes',    1, 1, 1, 0),
+(2, 'participantes',    1, 0, 0, 0),   -- Solo lectura: §5.2 le da "inscribir participantes", pero "gestionar participantes y equipos" es del admin (§5.1).
 (2, 'equipos',          1, 0, 0, 0),
 (2, 'liga',             1, 1, 1, 0),
 (2, 'eliminacion_directa', 1, 1, 1, 0),
 (2, 'suizo',            1, 1, 1, 0),
 (3, 'consulta_publica', 1, 0, 0, 0),
 (3, 'resultados',       1, 0, 0, 0)
-ON DUPLICATE KEY UPDATE puede_ver = VALUES(puede_ver);
+ON DUPLICATE KEY UPDATE
+  puede_ver      = VALUES(puede_ver),
+  puede_crear    = VALUES(puede_crear),
+  puede_editar   = VALUES(puede_editar),
+  puede_eliminar = VALUES(puede_eliminar);
 
 -- ─── TORNEOS (6) ─────────────────────────────────────────────
 INSERT INTO torneos (id, nombre, descripcion, tipo_torneo_id, modalidad, estado, fecha_inicio, fecha_fin, publico,

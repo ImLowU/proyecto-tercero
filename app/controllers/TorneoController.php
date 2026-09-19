@@ -17,6 +17,7 @@ class TorneoController extends BaseController
     public function listadoAdmin(): void
     {
         $this->requireOrganizador();
+        $this->requirePermiso('torneos', 'ver');
         // Un organizador solo ve SUS torneos desde este listado; el admin, todos
         // (misma regla que OrganizadorController::misTorneos()).
         $torneos = Auth::isAdmin()
@@ -35,6 +36,7 @@ class TorneoController extends BaseController
         // del proyecto, "crear y configurar torneos" es función del administrador;
         // el organizador únicamente "configura torneos asignados".
         if ($id) {
+            $this->requirePermiso('torneos', 'editar', '/admin/torneos');
             $this->requireTorneoOwnership((int)$id, '/admin/torneos');
         } elseif (!Auth::isAdmin()) {
             $this->flash('error', 'Solo un administrador puede crear torneos nuevos.');
@@ -68,6 +70,7 @@ class TorneoController extends BaseController
         $this->requireOrganizador();
         $torneoActual = $id ? $this->torneoService->getById((int)$id) : null;
         if ($id) {
+            $this->requirePermiso('torneos', 'editar', '/admin/torneos');
             $this->requireTorneoOwnership((int)$id, '/admin/torneos');
         } elseif (!Auth::isAdmin()) {
             $this->flash('error', 'Solo un administrador puede crear torneos nuevos.');
@@ -121,6 +124,7 @@ class TorneoController extends BaseController
     public function gestion(string $id): void
     {
         $this->requireOrganizador();
+        $this->requirePermiso('torneos', 'ver');
         $this->requireTorneoOwnership((int)$id, '/admin/torneos');
         $torneo = $this->torneoService->getById((int)$id);
         if (!$torneo) {
@@ -187,8 +191,18 @@ class TorneoController extends BaseController
         $torneo = $this->torneoService->getById((int)$id);
         if (!$torneo) { $this->flash('error', 'Torneo no encontrado.'); $this->redirect('/admin/torneos'); }
 
+        // Letra §5.2 «generar rondas o llaves»: el permiso se pide sobre el
+        // modulo del formato concreto, no sobre «torneos» en general, para que
+        // el administrador pueda habilitar a un organizador en liga y no en
+        // suizo, por ejemplo.
+        $tipo = $this->tipoModel->findById((int)$torneo['tipo_torneo_id']);
+        if (!$tipo) {
+            $this->flash('error', 'El torneo no tiene un formato valido asignado.');
+            $this->redirect("/admin/torneos/{$id}");
+        }
+        $this->requirePermiso((string)$tipo['slug'], 'crear', "/admin/torneos/{$id}");
+
         try {
-            $tipo = $this->tipoModel->findById((int)$torneo['tipo_torneo_id']);
             match ($tipo['slug']) {
                 'liga'               => (new LigaService())->generarFixture((int)$id),
                 'eliminacion_directa'=> (new EliminacionDirectaService())->generarBracket((int)$id),
@@ -219,6 +233,7 @@ class TorneoController extends BaseController
     public function inscribir(string $id): void
     {
         $this->requireOrganizador();
+        $this->requirePermiso('torneos', 'editar', "/admin/torneos/{$id}");
         $this->requireTorneoOwnership((int)$id, '/admin/torneos');
         $this->checkCsrf();
         try {
@@ -240,6 +255,7 @@ class TorneoController extends BaseController
     public function desinscribir(string $id): void
     {
         $this->requireOrganizador();
+        $this->requirePermiso('torneos', 'editar', "/admin/torneos/{$id}");
         $this->requireTorneoOwnership((int)$id, '/admin/torneos');
         $this->checkCsrf();
         try {
@@ -265,5 +281,71 @@ class TorneoController extends BaseController
             $this->flash('error', $e->getMessage());
         }
         $this->redirect('/admin/torneos');
+    }
+    // ─── Cerrar / reabrir rondas ─────────────────────────────
+    // Facultad del organizador según el §5.2 de la letra ("publicar o cerrar
+    // rondas"). Comparten implementación entre el panel de admin y el de
+    // organizador, igual que la carga de resultados: la ruta cambia, la regla no.
+
+    public function cerrarRonda(string $id): void
+    {
+        $this->accionSobreRonda((int)$id, 'cerrar');
+    }
+
+    public function reabrirRonda(string $id): void
+    {
+        $this->accionSobreRonda((int)$id, 'reabrir');
+    }
+
+    /** Tronco común de cerrar/reabrir: propiedad del torneo, CSRF y vuelta al panel. */
+    private function accionSobreRonda(int $rondaId, string $accion): void
+    {
+        $this->requireOrganizador();
+        // Letra §5.2: «publicar o cerrar rondas».
+        $this->requirePermiso('torneos', 'editar', $this->volverATorneos());
+
+        $rondaService = new RondaService();
+        $ronda        = $rondaService->getById($rondaId);
+        if (!$ronda) {
+            $this->flash('error', 'Ronda no encontrada.');
+            $this->redirect($this->volverATorneos());
+        }
+
+        $torneoId = (int) $ronda['torneo_id'];
+        // El organizador solo puede tocar rondas de SUS torneos; el admin, todas.
+        $this->requireTorneoOwnership($torneoId, $this->volverATorneos());
+        $this->checkCsrf();
+
+        try {
+            if ($accion === 'cerrar') {
+                $rondaService->cerrar($rondaId, Auth::id());
+                $this->flash('success', "Ronda «{$ronda['nombre']}» cerrada.");
+            } else {
+                $rondaService->reabrir($rondaId, Auth::id());
+                $this->flash('success', "Ronda «{$ronda['nombre']}» reabierta.");
+            }
+        } catch (RuntimeException $e) {
+            $this->flash('error', $e->getMessage());
+        }
+
+        $this->redirect($this->volverAlTorneo($torneoId));
+    }
+
+    /** Panel al que corresponde volver según desde dónde se entró. */
+    private function panelBase(): string
+    {
+        return str_starts_with((string)($_SERVER['REQUEST_URI'] ?? ''), '/organizador')
+            ? '/organizador'
+            : '/admin';
+    }
+
+    private function volverATorneos(): string
+    {
+        return $this->panelBase() . '/torneos';
+    }
+
+    private function volverAlTorneo(int $torneoId): string
+    {
+        return $this->panelBase() . '/torneos/' . $torneoId;
     }
 }
