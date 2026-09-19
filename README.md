@@ -129,7 +129,7 @@ sudo bash scripts/install_almalinux.sh
 Opciones: `--no-deps` (Docker ya instalado), `--no-firewall`, `--no-selinux`, `--no-up`
 (preparar todo sin levantar los contenedores todavía).
 
-El script valida `.env` al final: si `APP_SECRET`, `DB_PASS` o `DB_ROOT_PASS` quedaron con
+El script valida `.env` al final: si `DB_PASS` o `DB_ROOT_PASS` quedaron con
 el valor de ejemplo — **o directamente faltan** (sin esas líneas, MySQL y la app caen en
 silencio en el default genérico de `docker-compose.yml`: `change_this_db_password` /
 `change_this_root_password`) — imprime una `ADVERTENCIA` explícita. No bloquea la

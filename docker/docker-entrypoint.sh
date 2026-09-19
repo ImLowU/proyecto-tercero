@@ -83,4 +83,46 @@ else
     echo "==> ADVERTENCIA: la base de datos no respondió a tiempo; arrancando igual." >&2
 fi
 
+# ── Datos de demostración (una vez por instalación) ──────────────────────────
+# La imagen de MySQL corre schema.sql y el seed desde /docker-entrypoint-initdb.d,
+# pero seed_demo.php es PHP y no puede ejecutarse ahí: se corre desde este
+# contenedor, que sí tiene PHP y llega a la base por la red interna.
+#
+# Hasta ahora no se cargaba nunca: el entrypoint no tenía este bloque, así que una
+# instalación desde cero se quedaba con los 6 torneos del seed base.
+#
+# La decisión se toma con una marca en /var/lib/sporttime, un volumen propio del
+# stack. Eso da exactamente la semántica que hace falta:
+#
+#   docker compose restart / up   → la marca sigue ahí, no se vuelve a sembrar
+#   docker compose down -v        → se borra con el resto, se siembra de nuevo
+#
+# Importante: seed_demo.php TRUNCA las tablas de datos antes de sembrar. Por eso
+# la decisión no se infiere del contenido de la base —donde un falso negativo
+# borraría trabajo real— sino de una marca explícita. SEED_DEMO=0 lo desactiva;
+# SEED_DEMO=force siembra igual, pisando lo que haya.
+SEED_DEMO_SCRIPT="/var/www/sporttime/database/seed_demo.php"
+ESTADO_DIR="/var/lib/sporttime"
+MARCA_DEMO="$ESTADO_DIR/datos_demo_cargados"
+
+if [ "$DB_READY" -eq 1 ] && [ "${SEED_DEMO:-1}" != "0" ]; then
+    if [ ! -f "$SEED_DEMO_SCRIPT" ]; then
+        echo "==> No está $SEED_DEMO_SCRIPT (¿falta el bind mount del proyecto?): se omite la siembra." >&2
+    elif [ -f "$MARCA_DEMO" ] && [ "${SEED_DEMO:-1}" != "force" ]; then
+        echo "==> Los datos de demostración ya se cargaron en esta instalación."
+        echo "    Para volver a cargarlos: SEED_DEMO=force, o 'docker compose down -v' y arrancar de cero."
+    else
+        echo "==> Cargando datos de demostración (database/seed_demo.php)."
+        echo "    Tarda un par de minutos y se hace una sola vez por instalación."
+        if php "$SEED_DEMO_SCRIPT"; then
+            mkdir -p "$ESTADO_DIR"
+            date -Iseconds > "$MARCA_DEMO"
+            echo "==> Datos de demostración cargados."
+        else
+            echo "==> ADVERTENCIA: falló la carga de datos de demostración; la app arranca igual." >&2
+        fi
+    fi
+fi
+
+# Apache en primer plano: es el proceso principal del contenedor.
 exec apache2-foreground
