@@ -141,8 +141,11 @@ class TorneoService
             'puntos_victoria'          => (int)($d['puntos_victoria']  ?? 3),
             'puntos_empate'            => (int)($d['puntos_empate']    ?? 1),
             'puntos_derrota'           => (int)($d['puntos_derrota']   ?? 0),
-            'usa_puntos_favor'         => isset($d['usa_puntos_favor']) ? 1 : 0,
-            'requiere_desempate_final' => isset($d['requiere_desempate_final']) ? 1 : 0,
+            // isset() sobre una casilla es una trampa: con el hidden delante el
+            // campo llega SIEMPRE, asi que lo que decide es su valor, no su
+            // presencia. Sin el dato vale el DEFAULT 1 del esquema.
+            'usa_puntos_favor'         => isset($d['usa_puntos_favor'])
+                                            ? (int)(bool)$d['usa_puntos_favor'] : 1,
             'rondas_suizo'             => !empty($d['rondas_suizo']) ? (int)$d['rondas_suizo'] : null,
             'bye_suizo'                => $d['bye_suizo'] ?? 'sin_puntos',
             'puntos_bye_suizo'         => (float)($d['puntos_bye_suizo'] ?? 0),
