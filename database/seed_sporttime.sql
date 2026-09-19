@@ -88,7 +88,36 @@ INSERT INTO usuarios (id, rol_id, nombre, email, password_hash, failed_attempts,
 (26, 3, 'Abril Sandoval',     'abril@sporttime.com',        '$2y$12$UrwIRSDEIRFFmMl8VNXJiOwrFZ9pUoO4yiMKwN9RUQ2ITDohArHFW', 0, 'activo'),
 (27, 3, 'Lautaro Vega',       'lautaro@sporttime.com',      '$2y$12$UrwIRSDEIRFFmMl8VNXJiOwrFZ9pUoO4yiMKwN9RUQ2ITDohArHFW', 0, 'activo'),
 (28, 3, 'Melina Soto',        'melina@sporttime.com',       '$2y$12$UrwIRSDEIRFFmMl8VNXJiOwrFZ9pUoO4yiMKwN9RUQ2ITDohArHFW', 0, 'activo'),
-(29, 3, 'Iñaki Romero',       'inaki@sporttime.com',        '$2y$12$UrwIRSDEIRFFmMl8VNXJiOwrFZ9pUoO4yiMKwN9RUQ2ITDohArHFW', 0, 'activo')
+(29, 3, 'Iñaki Romero',       'inaki@sporttime.com',        '$2y$12$UrwIRSDEIRFFmMl8VNXJiOwrFZ9pUoO4yiMKwN9RUQ2ITDohArHFW', 0, 'activo'),
+-- Estas 26 personas tenian perfil en seed_demo.php pero no cuenta. Un
+-- participante sin cuenta es un estado que la aplicacion no sabe producir:
+-- el alta manual esta deshabilitada y todos se registran solos.
+(30, 3, 'Camila Torres',         'camila@example.com',            '$2y$12$jijiQHc1Calg0K1hbqTEhO1wtJN./CGOo7Jhqs1rScS3kBjp5BmT2', 0, 'activo'),
+(31, 3, 'Lucas Romero',          'lucas@example.com',             '$2y$12$jijiQHc1Calg0K1hbqTEhO1wtJN./CGOo7Jhqs1rScS3kBjp5BmT2', 0, 'activo'),
+(32, 3, 'Sofía Méndez',          'sofia@example.com',             '$2y$12$jijiQHc1Calg0K1hbqTEhO1wtJN./CGOo7Jhqs1rScS3kBjp5BmT2', 0, 'activo'),
+(33, 3, 'Diego Álvarez',         'diego2@example.com',            '$2y$12$jijiQHc1Calg0K1hbqTEhO1wtJN./CGOo7Jhqs1rScS3kBjp5BmT2', 0, 'activo'),
+(34, 3, 'Ana Fernández',         'ana@example.com',               '$2y$12$jijiQHc1Calg0K1hbqTEhO1wtJN./CGOo7Jhqs1rScS3kBjp5BmT2', 0, 'activo'),
+(35, 3, 'Martín Suárez',         'martin@example.com',            '$2y$12$jijiQHc1Calg0K1hbqTEhO1wtJN./CGOo7Jhqs1rScS3kBjp5BmT2', 0, 'activo'),
+(36, 3, 'Julia Herrera',         'julia@example.com',             '$2y$12$jijiQHc1Calg0K1hbqTEhO1wtJN./CGOo7Jhqs1rScS3kBjp5BmT2', 0, 'activo'),
+(37, 3, 'Pablo Castro',          'pablo@example.com',             '$2y$12$jijiQHc1Calg0K1hbqTEhO1wtJN./CGOo7Jhqs1rScS3kBjp5BmT2', 0, 'activo'),
+(38, 3, 'Florencia Reyes',       'florencia@example.com',         '$2y$12$jijiQHc1Calg0K1hbqTEhO1wtJN./CGOo7Jhqs1rScS3kBjp5BmT2', 0, 'activo'),
+(39, 3, 'Sebastián Mora',        'sebastian@example.com',         '$2y$12$jijiQHc1Calg0K1hbqTEhO1wtJN./CGOo7Jhqs1rScS3kBjp5BmT2', 0, 'activo'),
+(40, 3, 'Gabriela Silva',        'gabriela@example.com',          '$2y$12$jijiQHc1Calg0K1hbqTEhO1wtJN./CGOo7Jhqs1rScS3kBjp5BmT2', 0, 'activo'),
+(41, 3, 'Rodrigo Jiménez',       'rodrigo@example.com',           '$2y$12$jijiQHc1Calg0K1hbqTEhO1wtJN./CGOo7Jhqs1rScS3kBjp5BmT2', 0, 'activo'),
+(42, 3, 'Natalia Ruiz',          'natalia@example.com',           '$2y$12$jijiQHc1Calg0K1hbqTEhO1wtJN./CGOo7Jhqs1rScS3kBjp5BmT2', 0, 'activo'),
+(43, 3, 'Franco Núñez',          'franco@example.com',            '$2y$12$jijiQHc1Calg0K1hbqTEhO1wtJN./CGOo7Jhqs1rScS3kBjp5BmT2', 0, 'activo'),
+(44, 3, 'Cecilia Blanco',        'cecilia@example.com',           '$2y$12$jijiQHc1Calg0K1hbqTEhO1wtJN./CGOo7Jhqs1rScS3kBjp5BmT2', 0, 'activo'),
+(45, 3, 'Tomás González',        'tomas@example.com',             '$2y$12$jijiQHc1Calg0K1hbqTEhO1wtJN./CGOo7Jhqs1rScS3kBjp5BmT2', 0, 'activo'),
+(46, 3, 'Silvana Martínez',      'silvana@example.com',           '$2y$12$jijiQHc1Calg0K1hbqTEhO1wtJN./CGOo7Jhqs1rScS3kBjp5BmT2', 0, 'activo'),
+(47, 3, 'Agustín Vargas',        'agustin@example.com',           '$2y$12$jijiQHc1Calg0K1hbqTEhO1wtJN./CGOo7Jhqs1rScS3kBjp5BmT2', 0, 'activo'),
+(48, 3, 'Mariana Sosa',          'mariana@example.com',           '$2y$12$jijiQHc1Calg0K1hbqTEhO1wtJN./CGOo7Jhqs1rScS3kBjp5BmT2', 0, 'activo'),
+(49, 3, 'Eduardo Flores',        'eduardo@example.com',           '$2y$12$jijiQHc1Calg0K1hbqTEhO1wtJN./CGOo7Jhqs1rScS3kBjp5BmT2', 0, 'activo'),
+(50, 3, 'Patricia Campos',       'patricia@example.com',          '$2y$12$jijiQHc1Calg0K1hbqTEhO1wtJN./CGOo7Jhqs1rScS3kBjp5BmT2', 0, 'activo'),
+(51, 3, 'Joaquín Ramos',         'joaquin2@example.com',          '$2y$12$jijiQHc1Calg0K1hbqTEhO1wtJN./CGOo7Jhqs1rScS3kBjp5BmT2', 0, 'activo'),
+(52, 3, 'Lucía Benítez',         'lucia2@example.com',            '$2y$12$jijiQHc1Calg0K1hbqTEhO1wtJN./CGOo7Jhqs1rScS3kBjp5BmT2', 0, 'activo'),
+(53, 3, 'Hernán Ortiz',          'hernan@example.com',            '$2y$12$jijiQHc1Calg0K1hbqTEhO1wtJN./CGOo7Jhqs1rScS3kBjp5BmT2', 0, 'activo'),
+(54, 3, 'Renata Aguirre',        'renata2@example.com',           '$2y$12$jijiQHc1Calg0K1hbqTEhO1wtJN./CGOo7Jhqs1rScS3kBjp5BmT2', 0, 'activo'),
+(55, 3, 'Bruno Medina',          'bruno2@example.com',            '$2y$12$jijiQHc1Calg0K1hbqTEhO1wtJN./CGOo7Jhqs1rScS3kBjp5BmT2', 0, 'activo')
 ON DUPLICATE KEY UPDATE nombre = VALUES(nombre), password_hash = VALUES(password_hash), failed_attempts = VALUES(failed_attempts), estado = VALUES(estado);
 
 -- ─── PARTICIPANTES (24 + 1 pendiente) ─────────────────────────
@@ -231,30 +260,39 @@ INSERT INTO rondas (id, torneo_id, numero, nombre, estado) VALUES
 ON DUPLICATE KEY UPDATE nombre = VALUES(nombre);
 
 -- ─── ENFRENTAMIENTOS ─────────────────────────────────────────
-INSERT INTO enfrentamientos (id, torneo_id, ronda_id, participante_a_id, participante_b_id, ganador_participante_id, perdedor_participante_id, estado, es_bye, orden) VALUES
-(1,  1, 1, 1, 5, 1, 5, 'finalizado', 0, 1),
-(2,  1, 1, 2, 6, 2, 6, 'finalizado', 0, 2),
-(3,  1, 1, 3, 7, 7, 3, 'finalizado', 0, 3),
-(4,  1, 1, 4, 8, 4, 8, 'finalizado', 0, 4),
-(5,  1, 2, 1, 6, 1, 6, 'finalizado', 0, 1),
-(6,  1, 2, 2, 7, 7, 2, 'finalizado', 0, 2),
-(7,  1, 2, 3, 8, 3, 8, 'finalizado', 0, 3),
-(8,  1, 2, 4, 5, 4, 5, 'finalizado', 0, 4),
-(9,  1, 3, 1, 7, NULL, NULL, 'pendiente', 0, 1),
-(10, 1, 3, 2, 8, NULL, NULL, 'pendiente', 0, 2),
-(11, 1, 3, 3, 5, NULL, NULL, 'pendiente', 0, 3),
-(12, 1, 3, 4, 6, NULL, NULL, 'pendiente', 0, 4),
-(13, 2, 8, NULL, NULL, NULL, NULL, 'finalizado', 0, 1),
-(14, 2, 8, NULL, NULL, NULL, NULL, 'finalizado', 0, 2),
-(15, 2, 9, NULL, NULL, NULL, NULL, 'pendiente', 0, 1),
-(16, 3, 10, 9,  13, 9,  13, 'finalizado', 0, 1),
-(17, 3, 10, 10, 14, 14, 10, 'finalizado', 0, 2),
-(18, 3, 10, 11, 12, 11, 12, 'finalizado', 0, 3),
-(19, 3, 10, 15, NULL, 15, NULL, 'bye', 1, 4),
-(20, 3, 11, 9,  14, NULL, NULL, 'pendiente', 0, 1),
-(21, 3, 11, 15, 11, NULL, NULL, 'pendiente', 0, 2),
-(22, 3, 11, 10, NULL, 10, NULL, 'bye', 1, 3)
-ON DUPLICATE KEY UPDATE estado = VALUES(estado);
+-- Los partidos ya jugados llevan su horario real (fecha_inicio_real /
+-- fecha_fin_real): es lo que muestra la columna Fecha del listado de partidos.
+-- Un BYE no lleva ninguno de los dos, porque no se jugo. Los pendientes llevan
+-- fecha_programada, que es la otra mitad de esa columna.
+-- Todas las fechas caen dentro del rango de su torneo y son sabados.
+INSERT INTO enfrentamientos (id, torneo_id, ronda_id, participante_a_id, participante_b_id, ganador_participante_id, perdedor_participante_id, estado, es_bye, orden, fecha_programada, fecha_inicio_real, fecha_fin_real) VALUES
+(1,  1, 1, 1, 5, 1, 5, 'finalizado', 0, 1, '2026-03-07 10:00:00', '2026-03-07 10:03:00', '2026-03-07 11:35:00'),
+(2,  1, 1, 2, 6, 2, 6, 'finalizado', 0, 2, '2026-03-07 12:00:00', '2026-03-07 12:00:00', '2026-03-07 13:31:00'),
+(3,  1, 1, 3, 7, 7, 3, 'finalizado', 0, 3, '2026-03-07 14:00:00', '2026-03-07 14:08:00', '2026-03-07 15:44:00'),
+(4,  1, 1, 4, 8, 4, 8, 'finalizado', 0, 4, '2026-03-07 16:00:00', '2026-03-07 16:01:00', '2026-03-07 17:29:00'),
+(5,  1, 2, 1, 6, 1, 6, 'finalizado', 0, 1, '2026-03-14 10:00:00', '2026-03-14 10:00:00', '2026-03-14 11:32:00'),
+(6,  1, 2, 2, 7, 7, 2, 'finalizado', 0, 2, '2026-03-14 12:00:00', '2026-03-14 12:05:00', '2026-03-14 13:38:00'),
+(7,  1, 2, 3, 8, 3, 8, 'finalizado', 0, 3, '2026-03-14 14:00:00', '2026-03-14 14:02:00', '2026-03-14 15:30:00'),
+(8,  1, 2, 4, 5, 4, 5, 'finalizado', 0, 4, '2026-03-14 16:00:00', '2026-03-14 16:00:00', '2026-03-14 17:33:00'),
+(9,  1, 3, 1, 7, NULL, NULL, 'pendiente', 0, 1, '2026-03-21 10:00:00', NULL, NULL),
+(10, 1, 3, 2, 8, NULL, NULL, 'pendiente', 0, 2, '2026-03-21 12:00:00', NULL, NULL),
+(11, 1, 3, 3, 5, NULL, NULL, 'pendiente', 0, 3, '2026-03-21 14:00:00', NULL, NULL),
+(12, 1, 3, 4, 6, NULL, NULL, 'pendiente', 0, 4, '2026-03-21 16:00:00', NULL, NULL),
+(13, 2, 8, NULL, NULL, NULL, NULL, 'finalizado', 0, 1, '2026-04-11 18:00:00', '2026-04-11 18:04:00', '2026-04-11 19:21:00'),
+(14, 2, 8, NULL, NULL, NULL, NULL, 'finalizado', 0, 2, '2026-04-11 20:00:00', '2026-04-11 20:00:00', '2026-04-11 21:12:00'),
+(15, 2, 9, NULL, NULL, NULL, NULL, 'pendiente', 0, 1, '2026-04-18 20:00:00', NULL, NULL),
+(16, 3, 10, 9,  13, 9,  13, 'finalizado', 0, 1, '2026-05-09 09:00:00', '2026-05-09 09:00:00', '2026-05-09 11:12:00'),
+(17, 3, 10, 10, 14, 14, 10, 'finalizado', 0, 2, '2026-05-09 09:00:00', '2026-05-09 09:00:00', '2026-05-09 10:48:00'),
+(18, 3, 10, 11, 12, 11, 12, 'finalizado', 0, 3, '2026-05-09 09:00:00', '2026-05-09 09:00:00', '2026-05-09 12:05:00'),
+(19, 3, 10, 15, NULL, 15, NULL, 'bye', 1, 4, NULL, NULL, NULL),
+(20, 3, 11, 9,  14, NULL, NULL, 'pendiente', 0, 1, '2026-05-16 09:00:00', NULL, NULL),
+(21, 3, 11, 15, 11, NULL, NULL, 'pendiente', 0, 2, '2026-05-16 09:00:00', NULL, NULL),
+(22, 3, 11, 10, NULL, 10, NULL, 'bye', 1, 3, NULL, NULL, NULL)
+ON DUPLICATE KEY UPDATE
+  estado            = VALUES(estado),
+  fecha_programada  = VALUES(fecha_programada),
+  fecha_inicio_real = VALUES(fecha_inicio_real),
+  fecha_fin_real    = VALUES(fecha_fin_real);
 
 UPDATE enfrentamientos SET equipo_a_id=1, equipo_b_id=4, ganador_equipo_id=1, perdedor_equipo_id=4 WHERE id=13;
 UPDATE enfrentamientos SET equipo_a_id=2, equipo_b_id=3, ganador_equipo_id=2, perdedor_equipo_id=3 WHERE id=14;
