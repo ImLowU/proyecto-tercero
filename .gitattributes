@@ -1,0 +1,11 @@
+# Los scripts que corren dentro de los contenedores (Linux) necesitan fin
+# de línea LF, aunque el repositorio se clone en Windows.
+*.sh text eol=lf
+Dockerfile text eol=lf
+
+# Imágenes y PDF: archivos binarios, nunca se tocan sus fines de línea
+*.png binary
+*.jpg binary
+*.webp binary
+*.ico binary
+*.pdf binary

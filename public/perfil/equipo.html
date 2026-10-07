@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Equipo · NextLeague</title>
+    <link rel="icon" href="../logo/favicon.png">
+    <link rel="stylesheet" href="../shared/base.css">
+    <link rel="stylesheet" href="perfil.css">
+</head>
+<body data-pagina="equipo">
+    <header id="encabezado"></header>
+
+    <main id="contenido" class="contenedor">
+        <div id="estadoCarga">
+            <div class="cargando" role="status"><span class="girando" aria-hidden="true"></span>Cargando equipo…</div>
+        </div>
+
+        <div id="contenidoEquipo" class="oculto">
+            <section class="perfil-cabecera" aria-labelledby="nombreEquipo">
+                <div class="perfil-cabecera__foto perfil-cabecera__foto--equipo">
+                    <img id="logoEquipo" src="../iconos/group-128.webp" alt="" width="120" height="120">
+                </div>
+                <div class="perfil-cabecera__info">
+                    <div class="grupo-chips" id="chipsEquipo"></div>
+                    <h1 id="nombreEquipo"></h1>
+                    <p class="perfil-cabecera__meta" id="metaEquipo"></p>
+                </div>
+                <div class="perfil-cabecera__acciones" id="accionesEquipo"></div>
+            </section>
+
+            <ul class="numeros" id="numerosEquipo" aria-label="Números del equipo"></ul>
+
+            <section class="bloque" aria-labelledby="tituloIntegrantes">
+                <h2 id="tituloIntegrantes">Integrantes</h2>
+                <ul class="miembros" id="miembrosEquipo"></ul>
+            </section>
+
+            <div class="bloque dos-columnas">
+                <section aria-labelledby="tituloProximos">
+                    <h2 class="titulo-columna" id="tituloProximos">Próximos partidos</h2>
+                    <div class="calendario" id="proximosEquipo"></div>
+                </section>
+                <section aria-labelledby="tituloJugados">
+                    <h2 class="titulo-columna" id="tituloJugados">Partidos jugados</h2>
+                    <div class="lista-partidos" id="jugadosEquipo"></div>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <footer id="pie"></footer>
+
+    <script src="../shared/api.js"></script>
+    <script src="../shared/formato.js"></script>
+    <script src="../shared/ui.js"></script>
+    <script src="../shared/layout.js"></script>
+    <script src="equipo.js"></script>
+</body>
+</html>

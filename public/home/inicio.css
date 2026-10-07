@@ -1,0 +1,96 @@
+/* =====================================================================
+   NEXTLEAGUE - PORTADA
+   Solo lo propio de esta página; lo común está en shared/base.css.
+   Antes la portada ocupaba el 90% del alto de la pantalla y mostraba
+   "Desliza hacia abajo" incluso en PC, donde todo ya se veía. Ahora la
+   portada mide lo que su contenido y lo siguiente asoma debajo.
+   ===================================================================== */
+
+/* ── Portada ── */
+.hero {
+    padding-block: 32px 16px;
+    background: radial-gradient(560px 320px at 72% 45%, rgba(141, 2, 255, 0.16), transparent 70%);
+}
+.hero__contenido { display: grid; gap: 28px; align-items: center; text-align: center; }
+
+.hero__etiqueta {
+    display: inline-block; margin-bottom: 16px; padding: 6px 12px;
+    background: var(--tarjeta); color: var(--lila); border-radius: 6px; font-size: 0.9rem;
+}
+.hero h1 { font-size: clamp(2rem, 1.2rem + 3.2vw, 3.4rem); line-height: 1.1; margin-bottom: 16px; }
+.resaltado { color: var(--violeta-claro); }
+.hero__texto p { color: var(--texto-2); font-size: 1.05rem; max-width: 34rem; margin-inline: auto; }
+
+.hero__botones { display: flex; flex-direction: column; gap: 10px; margin-top: 24px; }
+@media (min-width: 480px) {
+    .hero__botones { flex-direction: row; justify-content: center; }
+}
+
+.hero__visual { position: relative; width: 100%; max-width: 560px; margin-inline: auto; }
+.hero__imagen { width: 100%; height: auto; }
+@media (prefers-reduced-motion: no-preference) {
+    .hero__imagen { animation: flotar 6s ease-in-out infinite; }
+}
+@keyframes flotar {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+/* Tarjeta del torneo destacado: debajo de la imagen en celular y
+   apoyada sobre su esquina desde tablets */
+.destacado {
+    display: flex; flex-direction: column; gap: 4px;
+    width: 100%; max-width: 300px; margin: 8px auto 0; padding: 16px;
+    background: rgba(35, 16, 75, 0.95); border: 1px solid transparent; border-radius: var(--radio-tarjeta);
+    color: #fff; text-align: left; text-decoration: none;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
+    transition: border-color 0.2s, transform 0.2s;
+}
+.destacado:hover { border-color: var(--violeta-borde); transform: translateY(-2px); }
+.destacado .chip { align-self: flex-start; margin-bottom: 4px; }
+.destacado__nombre { font-weight: 700; margin-bottom: 6px; }
+.destacado__rotulo { font-size: 13px; color: var(--texto-2); }
+.destacado__premio { font-size: 1.6rem; font-weight: 700; color: var(--lila-premio); line-height: 1.2; }
+.destacado .progreso { margin-top: 6px; }
+
+@media (min-width: 640px) {
+    .destacado { position: absolute; right: 0; bottom: -8px; width: 260px; margin: 0; }
+}
+
+@media (min-width: 960px) {
+    .hero { padding-block: 64px 32px; }
+    .hero__contenido { grid-template-columns: 1.05fr 1fr; gap: 48px; text-align: left; }
+    .hero__texto p { margin-inline: 0; }
+    .hero__botones { justify-content: flex-start; }
+}
+
+/* ── Estadísticas ── */
+.estadisticas { list-style: none; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 24px; }
+.estadistica {
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    padding: 18px 10px; background: var(--tarjeta); border-radius: 10px; text-align: center;
+}
+.estadistica img { width: 44px; height: 44px; margin-bottom: 4px; }
+.estadistica strong { color: var(--lila-numero); font-size: clamp(1.5rem, 1.2rem + 1vw, 2rem); line-height: 1.2; }
+.estadistica span { color: var(--texto-2); font-size: 14px; }
+
+@media (min-width: 960px) {
+    .estadisticas { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px; margin-top: 40px; }
+    .estadistica { padding: 24px 16px; }
+    .estadistica img { width: 56px; height: 56px; }
+}
+
+/* ── Torneos activos: 3 columnas como máximo para que las tarjetas respiren ── */
+.grilla-torneos.grilla-torneos--3 { grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 640px) { .grilla-torneos.grilla-torneos--3 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 960px) { .grilla-torneos.grilla-torneos--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+
+.ver-todos { display: flex; justify-content: center; margin-top: 24px; }
+.seccion--sin-arriba { padding-top: 0; }
+
+/* ── Próximos partidos y últimos resultados ── */
+.partidos-inicio { display: grid; gap: 40px; }
+.partidos-inicio .encabezado-seccion { align-items: center; margin-bottom: 14px; }
+@media (min-width: 960px) {
+    .partidos-inicio { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px; }
+}

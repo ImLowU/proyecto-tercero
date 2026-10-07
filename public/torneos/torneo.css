@@ -1,0 +1,162 @@
+/* =====================================================================
+   NEXTLEAGUE - PÁGINA DE UN TORNEO
+   Solo lo propio de esta página; lo común está en shared/base.css.
+   ===================================================================== */
+
+/* ── Encabezado ── */
+.torneo-cabecera {
+    display: grid; grid-template-columns: 80px minmax(0, 1fr); gap: 14px 16px; align-items: start;
+    padding-block: 28px 18px;
+}
+.torneo-cabecera__portada {
+    position: relative; width: 80px; aspect-ratio: 1; overflow: hidden;
+    border-radius: 14px; background: var(--tarjeta);
+}
+.torneo-cabecera__portada > img { width: 100%; height: 100%; object-fit: cover; }
+.torneo-cabecera__portada .portada-generica img { width: 40px; height: 40px; }
+.torneo-cabecera__portada .portada-generica span { display: none; }
+
+.torneo-cabecera__info .grupo-chips { margin-bottom: 8px; }
+.torneo-cabecera__info h1 { font-size: clamp(1.4rem, 1.1rem + 1.6vw, 2.1rem); }
+.torneo-cabecera__meta { display: flex; flex-wrap: wrap; gap: 4px 16px; margin-top: 8px; color: var(--texto-2); font-size: 14px; }
+.torneo-cabecera__meta span { display: inline-flex; align-items: center; gap: 6px; }
+.torneo-cabecera__meta .icono { width: 16px; height: 16px; color: var(--texto-3); }
+.torneo-cabecera__meta .premio { color: var(--lila-premio); font-weight: 600; }
+.torneo-cabecera__meta .premio .icono { color: inherit; }
+
+.torneo-cabecera__acciones { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 8px; }
+.torneo-cabecera__acciones:empty { display: none; }
+
+@media (min-width: 640px) {
+    .torneo-cabecera { grid-template-columns: 112px minmax(0, 1fr); gap: 16px 22px; padding-block: 40px 22px; align-items: center; }
+    .torneo-cabecera__portada { width: 112px; }
+    .torneo-cabecera__portada .portada-generica img { width: 56px; height: 56px; }
+}
+@media (min-width: 960px) {
+    .torneo-cabecera { grid-template-columns: 120px minmax(0, 1fr) auto; }
+    .torneo-cabecera__portada { width: 120px; }
+    .torneo-cabecera__acciones { grid-column: auto; align-self: start; justify-content: flex-end; }
+}
+
+/* ── Avisos (oculto, cancelado, campeón) ── */
+#avisosTorneo { display: flex; flex-direction: column; gap: 10px; }
+#avisosTorneo:not(:empty) { margin-bottom: 18px; }
+#alertaTorneo { margin-bottom: 16px; }
+
+.campeon {
+    display: flex; align-items: center; gap: 14px; padding: 12px 18px;
+    background: linear-gradient(90deg, rgba(141, 2, 255, 0.28), rgba(141, 2, 255, 0.06));
+    border: 1px solid var(--violeta-borde); border-radius: var(--radio-tarjeta);
+}
+.campeon img { width: 48px; height: 48px; }
+.campeon span { display: block; font-size: 12px; color: var(--texto-2); text-transform: uppercase; letter-spacing: 0.06em; }
+.campeon strong { font-size: 1.25rem; color: var(--lila-premio); }
+
+/* ── Resumen: en celular la inscripción va primero ── */
+.resumen { display: grid; gap: 16px; }
+.resumen__principal, .resumen__lateral { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.resumen .panel + .panel { margin-top: 0; }
+.resumen__lateral { order: -1; }
+@media (min-width: 960px) {
+    .resumen { grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: 20px; align-items: start; }
+    .resumen__lateral { order: 0; }
+}
+
+.texto-largo { color: var(--texto-2); white-space: pre-line; }
+
+#torneoConfiguracion { margin-top: 14px; }
+
+.cupo { margin-bottom: 14px; }
+.cupo p { display: flex; align-items: baseline; gap: 8px; margin-bottom: 8px; }
+.cupo strong { font-size: 1.5rem; color: var(--lila-numero); }
+#inscripcionContenido { display: flex; flex-direction: column; gap: 10px; }
+#inscripcionContenido .btn-texto { align-self: flex-start; padding-inline: 0; }
+
+/* ── Calendario por ronda ── */
+.ronda + .ronda { margin-top: 28px; }
+.ronda__cabecera { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; margin-bottom: 10px; }
+.ronda__cabecera h2 { font-size: 1.05rem; }
+@media (min-width: 960px) {
+    .ronda .lista-partidos { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+/* ── Llaves: una columna por ronda; en celular se deslizan de costado ── */
+.llaves {
+    display: grid; grid-auto-flow: column; grid-auto-columns: minmax(210px, 1fr); gap: 22px;
+    overflow-x: auto; padding-bottom: 10px;
+}
+.llaves__ronda { display: flex; flex-direction: column; min-width: 0; }
+.llaves__titulo { margin-bottom: 10px; font-size: 13px; font-weight: 600; color: var(--texto-3); text-align: center; text-transform: uppercase; letter-spacing: 0.05em; }
+.llaves__partidos { flex: 1; display: flex; flex-direction: column; justify-content: space-around; gap: 14px; }
+
+.llave { position: relative; background: var(--superficie-2); border: 1px solid var(--borde); border-radius: 10px; }
+.llave--propia { border-color: var(--violeta-borde); }
+/* Línea que une cada partido con la ronda siguiente */
+.llaves__ronda:not(:last-child) .llave::after {
+    content: ""; position: absolute; top: 50%; right: -12px; width: 11px; border-top: 1px solid var(--borde-fuerte);
+}
+.llave__fila { display: flex; justify-content: space-between; gap: 10px; padding: 8px 12px; font-size: 14px; }
+.llave__fila:first-child { border-radius: 10px 10px 0 0; }
+.llave__fila + .llave__fila { border-top: 1px solid var(--borde); }
+.llave__fila span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.llave__fila--ganador { color: var(--lila); font-weight: 700; background: rgba(141, 2, 255, 0.1); box-shadow: inset 3px 0 0 var(--violeta); }
+.llave__detalle { display: block; padding: 4px 12px 6px; border-top: 1px solid var(--borde); font-size: 11px; color: var(--texto-3); }
+.llave--campeon {
+    display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 18px 12px;
+    border-color: var(--violeta-borde); color: var(--lila-premio); font-weight: 700; text-align: center;
+}
+/* La muestra torneo.js solo cuando las llaves no entran en la pantalla */
+.nota-deslizar { margin-top: 6px; font-size: 12px; }
+
+/* ── Tabla de posiciones ── */
+.panel--tabla { padding: 0; }
+/* Celular primero: celdas más angostas y sin GF ni GC (la DIF ya los
+   resume), así los puntos se ven sin deslizar la tabla. Los nombres muy
+   largos se cortan con "…". Desde 640 px se ve la tabla completa. */
+.tabla-posiciones th, .tabla-posiciones td { padding: 10px 6px; }
+.tabla-posiciones th:first-child, .tabla-posiciones td:first-child { padding-left: 12px; }
+.tabla-posiciones th:last-child, .tabla-posiciones td:last-child { padding-right: 12px; }
+.tabla-posiciones .col-goles, .leyenda .col-goles { display: none; }
+.tabla-posiciones__nombre > * { display: block; max-width: 38vw; overflow: hidden; text-overflow: ellipsis; }
+@media (min-width: 640px) {
+    .tabla-posiciones th, .tabla-posiciones td { padding: 11px 12px; }
+    .tabla-posiciones .col-goles { display: table-cell; }
+    .leyenda .col-goles { display: inline; }
+    .tabla-posiciones__nombre > * { max-width: none; }
+}
+.tabla-posiciones__nombre { font-weight: 600; }
+.tabla-posiciones abbr { text-decoration: none; cursor: help; }
+.puesto {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 26px; height: 26px; border-radius: 50%; font-weight: 700; font-size: 13px;
+}
+.puesto--1 { background: var(--violeta); }
+.puesto--2 { background: rgba(155, 57, 255, 0.45); }
+.puesto--3 { background: rgba(155, 57, 255, 0.25); }
+.fila-propia td { background: rgba(141, 2, 255, 0.1); }
+.leyenda { margin-top: 10px; font-size: 12px; }
+#tablaPosiciones > .texto-tenue:first-child { margin-bottom: 10px; }
+
+/* ── Participantes ── */
+#listaParticipantes > .texto-tenue { margin-bottom: 12px; }
+.participantes {
+    list-style: none; display: grid; gap: 10px;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 200px), 1fr));
+}
+.participantes--equipos { grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr)); }
+.participante {
+    display: flex; align-items: center; gap: 10px; min-width: 0; padding: 10px 12px;
+    background: var(--superficie-2); border: 1px solid var(--borde); border-radius: 10px;
+}
+.participante img { border-radius: 50%; object-fit: cover; flex-shrink: 0; background: var(--tarjeta); }
+.participante > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+a.participante { color: #fff; text-decoration: none; transition: border-color 0.2s; }
+a.participante:hover { border-color: var(--violeta-borde); }
+.participante__datos a, .tabla-posiciones__nombre a { color: #fff; text-decoration: none; }
+.participante__datos a:hover, .tabla-posiciones__nombre a:hover { color: var(--lila); text-decoration: underline; }
+.participante--equipo { flex-wrap: wrap; align-items: center; }
+.participante__datos { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.participante__datos strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.participante__acciones { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.participante__solicitudes { flex-basis: 100%; display: flex; flex-direction: column; gap: 8px; padding-top: 10px; border-top: 1px solid var(--borde); }
+.solicitud { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; }

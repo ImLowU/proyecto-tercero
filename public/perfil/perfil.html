@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi perfil · NextLeague</title>
+    <link rel="icon" href="../logo/favicon.png">
+    <link rel="stylesheet" href="../shared/base.css">
+    <link rel="stylesheet" href="perfil.css">
+</head>
+<body data-pagina="perfil">
+    <header id="encabezado"></header>
+
+    <main id="contenido" class="contenedor">
+        <div id="estadoCarga">
+            <div class="cargando" role="status"><span class="girando" aria-hidden="true"></span>Cargando tu perfil…</div>
+        </div>
+
+        <div id="contenidoPerfil" class="oculto">
+            <!-- ENCABEZADO -->
+            <section class="perfil-cabecera" aria-labelledby="nombrePerfil">
+                <div class="perfil-cabecera__foto">
+                    <img id="fotoPerfil" src="../iconos/profile-128.webp" alt="Tu foto de perfil" width="120" height="120">
+                    <label class="perfil-cabecera__camara" for="inputFoto" title="Cambiar foto">
+                        <svg class="icono" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13" r="3.5"/></svg>
+                        <span class="solo-lectores">Cambiar foto de perfil</span>
+                    </label>
+                    <input type="file" id="inputFoto" accept="image/jpeg,image/png,image/webp" class="solo-lectores">
+                </div>
+                <div class="perfil-cabecera__info">
+                    <div class="grupo-chips" id="chipsPerfil"></div>
+                    <h1 id="nombrePerfil"></h1>
+                    <p class="perfil-cabecera__meta" id="metaPerfil"></p>
+                </div>
+                <p class="perfil-cabecera__bio" id="bioPerfil"></p>
+                <div class="perfil-cabecera__acciones">
+                    <a class="btn btn-secundario btn-chico" id="enlacePublico" href="#">
+                        <svg class="icono" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>Ver mi perfil público
+                    </a>
+                    <button type="button" class="btn btn-texto btn-chico oculto" id="botonQuitarFoto">Quitar foto</button>
+                </div>
+            </section>
+
+            <ul class="numeros" id="numerosPerfil" aria-label="Tus números"></ul>
+
+            <div id="alertaPerfil" class="oculto"></div>
+
+            <!-- PESTAÑAS -->
+            <div class="pestanas" role="tablist" aria-label="Secciones del perfil" id="pestanasPerfil">
+                <button type="button" class="pestana" role="tab" id="pestanaTorneos" data-pestana="mis-torneos" aria-controls="panelTorneos" aria-selected="true">Mis torneos</button>
+                <button type="button" class="pestana" role="tab" id="pestanaPartidos" data-pestana="mis-partidos" aria-controls="panelPartidos" aria-selected="false" tabindex="-1">Mis partidos</button>
+                <button type="button" class="pestana" role="tab" id="pestanaCuenta" data-pestana="cuenta" aria-controls="panelCuenta" aria-selected="false" tabindex="-1">Cuenta</button>
+            </div>
+
+            <!-- MIS TORNEOS -->
+            <section id="panelTorneos" role="tabpanel" aria-labelledby="pestanaTorneos">
+                <div class="bloque oculto" id="bloqueOrganizo">
+                    <div class="encabezado-seccion">
+                        <h2>Torneos que organizo</h2>
+                        <a class="btn btn-primario btn-chico" href="../createtournament/createtournament">
+                            <svg class="icono" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Crear torneo
+                        </a>
+                    </div>
+                    <ul class="filas-torneo" id="listaOrganizo"></ul>
+                </div>
+                <div class="bloque">
+                    <div class="encabezado-seccion">
+                        <h2>Torneos en los que juego</h2>
+                        <a class="btn btn-texto btn-chico" href="../torneos/explorar?estado=pendiente">Buscar torneos abiertos</a>
+                    </div>
+                    <div class="grilla-torneos" id="listaJuego"></div>
+                </div>
+            </section>
+
+            <!-- MIS PARTIDOS -->
+            <section id="panelPartidos" role="tabpanel" aria-labelledby="pestanaPartidos" class="oculto">
+                <div class="dos-columnas">
+                    <div>
+                        <h2 class="titulo-columna">Próximos partidos</h2>
+                        <div class="calendario" id="misProximos"></div>
+                    </div>
+                    <div>
+                        <h2 class="titulo-columna">Últimos resultados</h2>
+                        <div class="lista-partidos" id="misResultados"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- CUENTA -->
+            <section id="panelCuenta" role="tabpanel" aria-labelledby="pestanaCuenta" class="oculto">
+                <div class="cuenta">
+                    <form class="panel formulario" id="formDatos" novalidate>
+                        <h2 class="panel__titulo">Datos de la cuenta</h2>
+                        <div class="campo">
+                            <label for="nombre_usuario">Nombre de usuario</label>
+                            <input type="text" id="nombre_usuario" maxlength="50" autocomplete="username" required>
+                            <span class="ayuda">Es el nombre que ven los demás. Letras, números y guion bajo.</span>
+                            <span class="error-campo" id="nombre_usuarioError"></span>
+                        </div>
+                        <div class="campo">
+                            <label for="correo">Correo electrónico</label>
+                            <input type="email" id="correo" maxlength="150" autocomplete="email" required>
+                            <span class="ayuda">Solo lo ves vos. Lo usamos para recuperar la contraseña.</span>
+                            <span class="error-campo" id="correoError"></span>
+                        </div>
+                        <!-- Se pide solo si cambia el correo: si alguien deja la sesión
+                             abierta, otra persona no puede adueñarse de la cuenta. -->
+                        <div class="campo oculto" id="campoClaveCorreo">
+                            <label for="clave_para_correo">Tu contraseña actual</label>
+                            <div class="campo-clave">
+                                <input type="password" id="clave_para_correo" autocomplete="current-password">
+                                <button type="button" class="campo-clave__ver" id="verClaveCorreo"></button>
+                            </div>
+                            <span class="ayuda">Para cambiar el correo confirmá que sos vos.</span>
+                            <span class="error-campo" id="clave_para_correoError"></span>
+                        </div>
+                        <div class="campo">
+                            <label for="biografia">Biografía <span class="texto-tenue">(opcional)</span></label>
+                            <textarea id="biografia" maxlength="280" rows="3" placeholder="Contá algo sobre vos: qué jugás, en qué equipo…"></textarea>
+                            <span class="ayuda"><span id="contadorBio">0</span> / 280</span>
+                            <span class="error-campo" id="biografiaError"></span>
+                        </div>
+                        <button type="submit" class="btn btn-primario">Guardar datos</button>
+                    </form>
+
+                    <form class="panel formulario" id="formClave" novalidate>
+                        <h2 class="panel__titulo">Cambiar contraseña</h2>
+                        <div class="campo">
+                            <label for="contrasena_actual">Contraseña actual</label>
+                            <div class="campo-clave">
+                                <input type="password" id="contrasena_actual" autocomplete="current-password" required>
+                                <button type="button" class="campo-clave__ver" id="verClaveActual"></button>
+                            </div>
+                            <span class="error-campo" id="contrasena_actualError"></span>
+                        </div>
+                        <div class="campo">
+                            <label for="contrasena_nueva">Contraseña nueva</label>
+                            <div class="campo-clave">
+                                <input type="password" id="contrasena_nueva" autocomplete="new-password" maxlength="72" required aria-describedby="requisitosClave">
+                                <button type="button" class="campo-clave__ver" id="verClaveNueva"></button>
+                            </div>
+                            <ul class="requisitos" id="requisitosClave" aria-label="Requisitos de la contraseña"></ul>
+                            <span class="error-campo" id="contrasena_nuevaError"></span>
+                        </div>
+                        <div class="campo">
+                            <label for="contrasena_repetida">Repetí la contraseña nueva</label>
+                            <input type="password" id="contrasena_repetida" autocomplete="new-password" maxlength="72" required>
+                            <span class="error-campo" id="contrasena_repetidaError"></span>
+                        </div>
+                        <p class="texto-tenue">Al cambiarla se cierran las sesiones con "Recordarme" en tus otros dispositivos.</p>
+                        <button type="submit" class="btn btn-primario">Cambiar contraseña</button>
+                    </form>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer id="pie"></footer>
+
+    <script src="../shared/api.js"></script>
+    <script src="../shared/formato.js"></script>
+    <script src="../shared/ui.js"></script>
+    <script src="../shared/layout.js"></script>
+    <script src="perfil.js"></script>
+</body>
+</html>

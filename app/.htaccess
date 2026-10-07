@@ -1,0 +1,2 @@
+# El código de la aplicación no se sirve por web: solo se usa desde public/api/index.php.
+Require all denied

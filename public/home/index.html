@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NextLeague · Torneos deportivos, mentales y electrónicos</title>
+    <meta name="description" content="Organizá y seguí torneos de liga, eliminación directa y sistema suizo: calendario, resultados y posiciones en un solo lugar.">
+    <link rel="icon" href="../logo/favicon.png">
+    <link rel="stylesheet" href="../shared/base.css">
+    <link rel="stylesheet" href="inicio.css">
+</head>
+<body data-pagina="inicio">
+    <header id="encabezado"></header>
+
+    <main id="contenido">
+        <!-- PORTADA -->
+        <section class="hero" aria-labelledby="tituloHero">
+            <div class="contenedor hero__contenido">
+                <div class="hero__texto">
+                    <span class="hero__etiqueta">Deportivos, mentales y electrónicos</span>
+                    <h1 id="tituloHero">Organiza y compite en torneos como un <span class="resaltado">profesional</span></h1>
+                    <p>Liga, eliminación directa y sistema suizo. Calendario, resultados y posiciones en un solo lugar.</p>
+                    <div class="hero__botones">
+                        <a href="../createtournament/createtournament" class="btn btn-primario" id="botonCrearTorneo">Crear torneo</a>
+                        <a href="../torneos/explorar" class="btn btn-contorno">Explorar torneos</a>
+                    </div>
+                </div>
+
+                <div class="hero__visual">
+                    <picture>
+                        <source type="image/webp" srcset="../iconos/toros-560.webp 560w, ../iconos/toros-1120.webp 1120w" sizes="(min-width: 960px) 480px, 80vw">
+                        <img src="../iconos/toros.png" alt="" class="hero__imagen" width="560" height="373" fetchpriority="high">
+                    </picture>
+
+                    <!-- Torneo destacado: lo elige la API (uno con lugares libres y el mayor premio) -->
+                    <a id="torneoDestacado" class="destacado oculto" href="#">
+                        <span id="destacadoEstado"></span>
+                        <span class="destacado__nombre" id="destacadoNombre"></span>
+                        <span class="destacado__rotulo" id="destacadoRotulo">Premio total</span>
+                        <span class="destacado__premio" id="destacadoPremio"></span>
+                        <span class="destacado__rotulo" id="destacadoInscriptos"></span>
+                        <progress class="progreso" id="destacadoProgreso" max="100" value="0" aria-label="Lugares ocupados"></progress>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- ESTADÍSTICAS (se calculan en la base de datos) -->
+        <section class="contenedor" aria-label="NextLeague en números">
+            <ul class="estadisticas">
+                <li class="estadistica">
+                    <img src="../iconos/group-128.webp" alt="" width="56" height="56" loading="lazy">
+                    <strong id="cantidadEquipos">—</strong>
+                    <span data-numero="cantidadEquipos" data-singular="Equipo registrado">Equipos registrados</span>
+                </li>
+                <li class="estadistica">
+                    <img src="../iconos/profile-128.webp" alt="" width="56" height="56" loading="lazy">
+                    <strong id="cantidadUsuarios">—</strong>
+                    <span data-numero="cantidadUsuarios" data-singular="Usuario registrado">Usuarios registrados</span>
+                </li>
+                <li class="estadistica">
+                    <img src="../iconos/trophy-128.webp" alt="" width="56" height="56" loading="lazy">
+                    <strong id="cantidadTorneos">—</strong>
+                    <span data-numero="cantidadTorneos" data-singular="Torneo creado">Torneos creados</span>
+                </li>
+                <li class="estadistica">
+                    <img src="../iconos/videogame-128.webp" alt="" width="56" height="56" loading="lazy">
+                    <strong id="cantidadElectronicos">—</strong>
+                    <span data-numero="cantidadElectronicos" data-singular="Torneo electrónico">Torneos electrónicos</span>
+                </li>
+            </ul>
+        </section>
+
+        <!-- TORNEOS ACTIVOS -->
+        <section class="contenedor seccion" aria-labelledby="tituloTorneos">
+            <div class="encabezado-seccion">
+                <div>
+                    <h2 id="tituloTorneos">Torneos activos</h2>
+                    <p>Inscripciones abiertas y torneos en juego. Encontrá tu próxima competencia.</p>
+                </div>
+                <div class="grupo-chips grupo-chips--deslizable" role="group" aria-label="Filtrar por categoría" id="filtroCategoria">
+                    <button type="button" class="filtro-chip" data-categoria="" aria-pressed="true">Todos</button>
+                    <button type="button" class="filtro-chip" data-categoria="deportivo" aria-pressed="false">Deportivo</button>
+                    <button type="button" class="filtro-chip" data-categoria="mental" aria-pressed="false">Mental</button>
+                    <button type="button" class="filtro-chip" data-categoria="electronico" aria-pressed="false">Electrónico</button>
+                </div>
+            </div>
+            <div id="listaTorneos" class="grilla-torneos grilla-torneos--3" aria-live="polite"></div>
+            <div class="ver-todos">
+                <a href="../torneos/explorar" class="btn btn-secundario" id="verTodos">Ver todos los torneos</a>
+            </div>
+        </section>
+
+        <!-- CALENDARIO Y RESULTADOS -->
+        <section class="contenedor seccion seccion--sin-arriba">
+            <div class="partidos-inicio">
+                <div aria-labelledby="tituloProximos">
+                    <div class="encabezado-seccion">
+                        <h2 id="tituloProximos">Próximos partidos</h2>
+                        <a href="../torneos/partidos" class="btn btn-texto">Ver calendario</a>
+                    </div>
+                    <div id="proximosPartidos" class="calendario"></div>
+                </div>
+                <div aria-labelledby="tituloResultados">
+                    <div class="encabezado-seccion">
+                        <h2 id="tituloResultados">Últimos resultados</h2>
+                        <a href="../torneos/partidos?vista=resultados" class="btn btn-texto">Ver resultados</a>
+                    </div>
+                    <div id="ultimosResultados" class="lista-partidos"></div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer id="pie"></footer>
+
+    <script src="../shared/api.js"></script>
+    <script src="../shared/formato.js"></script>
+    <script src="../shared/ui.js"></script>
+    <script src="../shared/layout.js"></script>
+    <script src="inicio.js"></script>
+</body>
+</html>

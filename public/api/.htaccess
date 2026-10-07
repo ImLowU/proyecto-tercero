@@ -1,0 +1,4 @@
+# Cualquier ruta debajo de /api (ej: /api/torneos/5) la atiende index.php.
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^ index.php [QSA,L]

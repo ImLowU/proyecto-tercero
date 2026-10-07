@@ -1,0 +1,119 @@
+# =====================================================================
+# NEXTLEAGUE CON DOCKER
+# Tres contenedores en una red propia (nextleague_red):
+#   web        → la aplicación (PHP 8.2 + Apache), por HTTPS
+#   bd         → MariaDB 10.11; no se publica fuera de la red
+#   phpmyadmin → para ver la base desde el navegador (solo desde esta máquina)
+# Los datos quedan en volúmenes con nombre: sobreviven a los reinicios y a
+# reconstruir las imágenes. Claves y puertos salen del archivo .env
+# (copiar .env.example como .env y completarlo).
+#
+#   docker compose up -d --build   levantar (la primera vez instala la base)
+#   docker compose down            apagar (los datos quedan)
+#   docker compose down -v         apagar y BORRAR los datos (instala de cero)
+#
+# Las carpetas del proyecto que se montan llevan ":z": en AlmaLinux
+# (SELinux activo) les da permiso a los contenedores para leerlas. En
+# Windows y en sistemas sin SELinux no cambia nada.
+# =====================================================================
+name: nextleague
+
+# Registros de cada contenedor: hasta 3 archivos de 10 MB, así no llenan el disco.
+x-registros: &registros
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "3"
+
+services:
+  web:
+    build: .
+    image: nextleague-web
+    container_name: nextleague_web
+    restart: unless-stopped
+    ports:
+      - "${NL_PUERTO_HTTP:-8090}:80"     # solo redirige a HTTPS
+      - "${NL_PUERTO_HTTPS:-8443}:443"
+    environment:
+      NL_ENTORNO: ${NL_ENTORNO:-produccion}
+      NL_URL_PUBLICA: ${NL_URL_PUBLICA:-https://localhost:8443}
+      NL_PUERTO_HTTPS: ${NL_PUERTO_HTTPS:-8443}
+      NL_BD_HOST: bd
+      NL_BD_NOMBRE: ${NL_BD_NOMBRE:-nextleague}
+      NL_BD_CLAVE: ${NL_BD_CLAVE:?Falta NL_BD_CLAVE en el archivo .env}
+      TZ: America/Montevideo
+    volumes:
+      - subidas:/var/www/nextleague/public/uploads   # fotos, logos y reglas
+      - almacen:/var/www/nextleague/storage          # sesiones y registros
+      - ./docker/ssl:/etc/apache2/ssl:z              # certificado HTTPS
+    depends_on:
+      bd:
+        condition: service_healthy   # espera a que la base esté instalada
+    logging: *registros
+    networks:
+      - red
+
+  bd:
+    image: mariadb:10.11
+    container_name: nextleague_bd
+    restart: unless-stopped
+    # Sin "ports": solo la ven los contenedores de nextleague_red.
+    environment:
+      MARIADB_ROOT_PASSWORD: ${NL_BD_CLAVE_ROOT:?Falta NL_BD_CLAVE_ROOT en el archivo .env}
+      MARIADB_DATABASE: ${NL_BD_NOMBRE:-nextleague}
+      # Las usa docker/bd/instalar.sh para crear las cuentas nl_app y nl_lectura
+      NL_BD_CLAVE: ${NL_BD_CLAVE:?Falta NL_BD_CLAVE en el archivo .env}
+      NL_BD_CLAVE_LECTURA: ${NL_BD_CLAVE_LECTURA:?Falta NL_BD_CLAVE_LECTURA en el archivo .env}
+      NL_DATOS_PRUEBA: ${NL_DATOS_PRUEBA:-0}
+      TZ: America/Montevideo
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --default-time-zone=-03:00
+    volumes:
+      - datos_bd:/var/lib/mysql
+      - ./database:/nextleague/database:ro,z
+      - ./docker/bd/instalar.sh:/docker-entrypoint-initdb.d/instalar.sh:ro,z
+    healthcheck:
+      # Script de la imagen: pasa cuando el servidor acepta conexiones por
+      # la red. Durante la primera instalación eso no pasa (el servidor
+      # temporal no escucha en la red), así web no arranca sin tablas.
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 120s
+    logging: *registros
+    networks:
+      - red
+
+  phpmyadmin:
+    image: phpmyadmin:5
+    container_name: nextleague_phpmyadmin
+    restart: unless-stopped
+    ports:
+      # Solo desde esta máquina (127.0.0.1). En un servidor, entrar con un túnel SSH.
+      - "127.0.0.1:${NL_PUERTO_PHPMYADMIN:-8091}:80"
+    environment:
+      # Pide usuario y clave en cada ingreso (sin PMA_USER ni PMA_PASSWORD,
+      # que dejarían entrar a cualquiera sin preguntar).
+      PMA_HOST: bd
+    depends_on:
+      bd:
+        condition: service_healthy
+    logging: *registros
+    networks:
+      - red
+
+volumes:
+  datos_bd:
+    name: nextleague_datos_bd
+  subidas:
+    name: nextleague_subidas
+  almacen:
+    name: nextleague_almacen
+
+networks:
+  red:
+    name: nextleague_red
+    driver: bridge

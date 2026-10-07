@@ -1,0 +1,2 @@
+# Archivos de Docker (y el certificado HTTPS en docker/ssl/): no se sirven por web.
+Require all denied

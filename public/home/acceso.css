@@ -1,0 +1,99 @@
+/* =====================================================================
+   NEXTLEAGUE - PÁGINAS DE ACCESO
+   (ingresar, crear cuenta, recuperar y restablecer la contraseña)
+   Se mantiene el diseño original en dos columnas: a la izquierda la
+   bienvenida con datos reales y a la derecha el formulario. En celular
+   queda solo el formulario.
+   Antes cada página tenía su propia hoja (login.css y register.css,
+   casi iguales); ahora comparten esta.
+   ===================================================================== */
+
+.acceso {
+    position: relative;
+    display: flex; align-items: center;
+    padding-block: 32px 48px;
+    /* Los dos brillos violetas del diseño original, sin elementos extra */
+    background:
+        radial-gradient(420px 420px at 90% 0%, rgba(141, 2, 255, 0.15), transparent 70%),
+        radial-gradient(320px 320px at 0% 100%, rgba(141, 2, 255, 0.08), transparent 70%);
+}
+.acceso__contenido { display: grid; gap: 40px; align-items: center; }
+
+/* ── Bienvenida (solo desde 960px) ── */
+.acceso__info { display: none; }
+.acceso__etiqueta {
+    display: inline-block; margin-bottom: 22px; padding: 7px 14px;
+    background: rgba(155, 57, 255, 0.15); border: 1px solid rgba(155, 57, 255, 0.3); border-radius: 20px;
+    color: var(--lila); font-size: 0.85rem;
+}
+.acceso__titulo { font-size: clamp(2.2rem, 1.4rem + 2.2vw, 3rem); font-weight: 800; line-height: 1.12; margin-bottom: 16px; }
+.acceso__titulo .resaltado { color: var(--violeta-claro); }
+.acceso__info > p { max-width: 30rem; color: var(--texto-2); margin-bottom: 36px; }
+
+.acceso__numeros { list-style: none; display: flex; flex-wrap: wrap; gap: 20px 36px; }
+.acceso__numeros li { display: flex; flex-direction: column; gap: 2px; }
+.acceso__numeros strong { font-size: 1.8rem; font-weight: 800; color: var(--violeta-claro); line-height: 1.1; }
+.acceso__numeros span { font-size: 0.85rem; color: var(--texto-3); }
+
+.acceso__ventajas { list-style: none; display: flex; flex-direction: column; gap: 18px; }
+.acceso__ventajas li { display: flex; align-items: flex-start; gap: 14px; }
+.acceso__ventajas .acceso__icono {
+    display: inline-flex; align-items: center; justify-content: center; width: 42px; height: 42px; flex-shrink: 0;
+    border-radius: 10px; background: var(--violeta-suave); border: 1px solid var(--violeta-borde); color: var(--lila);
+}
+.acceso__ventajas strong { display: block; }
+.acceso__ventajas p { color: var(--texto-3); font-size: 14px; }
+
+/* ── Tarjeta con el formulario ── */
+.acceso__tarjeta {
+    width: 100%; max-width: 460px; margin-inline: auto; padding: 28px 22px;
+    border-radius: 20px;
+}
+.acceso__tarjeta h1 { font-size: 1.75rem; margin-bottom: 6px; }
+.acceso__subtitulo { color: var(--texto-3); margin-bottom: 22px; }
+.acceso__tarjeta .formulario { margin-top: 4px; }
+#alertaAcceso:not(.oculto), #avisoDemo:not(.oculto) { margin-bottom: 16px; }
+#avisoDemo .alerta { overflow-wrap: anywhere; }
+.acceso__fila { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+.acceso__fila a, .acceso__pie a { color: var(--violeta-claro); font-weight: 600; text-decoration: none; font-size: 14px; }
+.acceso__fila a:hover, .acceso__pie a:hover { text-decoration: underline; }
+.acceso__pie { margin-top: 22px; padding-top: 18px; border-top: 1px solid var(--borde); text-align: center; color: var(--texto-3); font-size: 14px; }
+.acceso__tarjeta .btn-primario[type="submit"] { width: 100%; min-height: 48px; margin-top: 4px; }
+
+@media (min-width: 480px) {
+    .acceso__tarjeta { padding: 36px 34px; }
+}
+@media (min-width: 960px) {
+    .acceso { min-height: calc(100vh - var(--altura-nav) - 120px); padding-block: 56px; }
+    .acceso__contenido { grid-template-columns: minmax(0, 1fr) 460px; gap: 64px; align-items: start; }
+    /* Con un formulario largo (registro), la bienvenida acompaña al bajar */
+    .acceso__info { display: block; position: sticky; top: calc(var(--altura-nav) + 56px); padding-top: 24px; }
+    .acceso__tarjeta { margin: 0; }
+    .acceso--angosto .acceso__contenido { grid-template-columns: minmax(0, 460px); justify-content: center; }
+}
+
+/* Campo con ícono a la izquierda (correo, candado, usuario) */
+.campo-icono { position: relative; }
+.campo-icono > .icono { position: absolute; left: 13px; top: 50%; transform: translateY(-50%); color: var(--texto-3); pointer-events: none; }
+.campo-icono input { padding-left: 42px !important; }
+
+/* ¿Qué querés hacer? (rol al registrarse) */
+.opciones-rol { display: grid; gap: 10px; }
+@media (min-width: 480px) { .opciones-rol { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.opcion-rol {
+    display: flex; flex-direction: column; gap: 6px; padding: 14px; cursor: pointer;
+    background: var(--superficie-2); border: 1.5px solid var(--borde-fuerte); border-radius: 10px;
+    transition: border-color 0.2s, background-color 0.2s;
+}
+.opcion-rol:hover { border-color: var(--violeta-borde); }
+.opcion-rol:has(input:checked) { border-color: var(--violeta); background: var(--violeta-suave); }
+.opcion-rol:has(input:focus-visible) { outline: 2px solid var(--lila); outline-offset: 2px; }
+.opcion-rol .icono { color: var(--lila); }
+.opcion-rol strong { font-size: 15px; }
+.opcion-rol small { color: var(--texto-3); font-size: 13px; }
+.opciones-rol.input-error { outline: 1px solid rgba(255, 68, 68, 0.75); outline-offset: 4px; border-radius: var(--radio); }
+
+/* Registro cerrado / ya logueado */
+.acceso__mensaje { text-align: center; }
+.acceso__mensaje .icono { width: 40px; height: 40px; color: var(--lila); margin-bottom: 12px; }
+.acceso__mensaje .btn { margin-top: 18px; }

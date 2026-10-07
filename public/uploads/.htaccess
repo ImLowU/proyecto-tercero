@@ -1,0 +1,8 @@
+# Carpeta de archivos subidos por los usuarios (fotos, logos, reglas).
+# Aunque alguien lograra subir un .php, Apache no lo ejecuta ni lo entrega.
+Options -Indexes
+RemoveHandler .php .phtml .phar
+RemoveType .php .phtml .phar
+<FilesMatch "\.(php\d?|phtml|phar|pht|htaccess)$">
+    Require all denied
+</FilesMatch>

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear cuenta · NextLeague</title>
+    <link rel="icon" href="../logo/favicon.png">
+    <link rel="stylesheet" href="../shared/base.css">
+    <link rel="stylesheet" href="../home/acceso.css">
+</head>
+<body data-pagina="registro">
+    <header id="encabezado"></header>
+
+    <main id="contenido" class="acceso">
+        <div class="contenedor acceso__contenido">
+            <!-- Bienvenida: íconos de línea en vez de emojis y números reales -->
+            <section class="acceso__info" aria-label="Por qué sumarte">
+                <span class="acceso__etiqueta">Deportivos, mentales y electrónicos</span>
+                <p class="acceso__titulo">Sumate a la <span class="resaltado">comunidad</span> NextLeague</p>
+                <p>Creá tu cuenta y empezá a organizar torneos o a competir en ellos.</p>
+                <ul class="acceso__ventajas">
+                    <li>
+                        <span class="acceso__icono"><svg class="icono icono-grande" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 21h8M12 17v4"/><path d="M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M7 6H4a3 3 0 0 0 3 4M17 6h3a3 3 0 0 1-3 4"/></svg></span>
+                        <div><strong>Organizá torneos</strong><p>Liga, eliminación directa o sistema suizo, para cualquier juego.</p></div>
+                    </li>
+                    <li>
+                        <span class="acceso__icono"><svg class="icono icono-grande" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="16" rx="2"/><path d="M16 3v4M8 3v4M4 11h16"/></svg></span>
+                        <div><strong>Calendario y resultados al día</strong><p>La tabla y las llaves se actualizan con cada resultado.</p></div>
+                    </li>
+                    <li>
+                        <span class="acceso__icono"><svg class="icono icono-grande" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="7" r="4"/><path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2M16 3.13a4 4 0 0 1 0 7.75M21 21v-2a4 4 0 0 0-3-3.85"/></svg></span>
+                        <div><strong>Comunidad activa</strong><p><span id="numeroUsuarios">—</span> <span data-numero="numeroUsuarios" data-singular="usuario">usuarios</span> y <span id="numeroEquipos">—</span> <span data-numero="numeroEquipos" data-singular="equipo">equipos</span> ya compiten.</p></div>
+                    </li>
+                </ul>
+            </section>
+
+            <section class="panel acceso__tarjeta" aria-labelledby="tituloRegistro">
+                <h1 id="tituloRegistro">Crear cuenta</h1>
+                <p class="acceso__subtitulo">Completá tus datos. Es gratis.</p>
+
+                <div id="alertaAcceso" class="oculto"></div>
+
+                <form id="formRegistro" class="formulario" novalidate>
+                    <div class="campo">
+                        <label for="nombre_usuario">Nombre de usuario</label>
+                        <div class="campo-icono">
+                            <svg class="icono" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/></svg>
+                            <input type="text" id="nombre_usuario" placeholder="TuNickGamer" autocomplete="username" maxlength="50" required>
+                        </div>
+                        <span class="ayuda">De 3 a 50 caracteres: letras, números o guion bajo. Es el nombre que ven los demás.</span>
+                        <span class="error-campo" id="nombre_usuarioError"></span>
+                    </div>
+                    <div class="campo">
+                        <label for="correo">Correo electrónico</label>
+                        <div class="campo-icono">
+                            <svg class="icono" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
+                            <input type="email" id="correo" placeholder="correo@ejemplo.com" autocomplete="email" maxlength="150" required>
+                        </div>
+                        <span class="error-campo" id="correoError"></span>
+                    </div>
+                    <div class="campo">
+                        <label for="contrasena">Contraseña</label>
+                        <div class="campo-clave campo-icono">
+                            <svg class="icono" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+                            <input type="password" id="contrasena" autocomplete="new-password" maxlength="72" required aria-describedby="requisitosClave">
+                            <button type="button" class="campo-clave__ver" id="verContrasena"></button>
+                        </div>
+                        <ul class="requisitos" id="requisitosClave" aria-label="Requisitos de la contraseña"></ul>
+                        <span class="error-campo" id="contrasenaError"></span>
+                    </div>
+                    <div class="campo">
+                        <label for="contrasena_repetida">Repetí la contraseña</label>
+                        <input type="password" id="contrasena_repetida" autocomplete="new-password" maxlength="72" required>
+                        <span class="error-campo" id="contrasena_repetidaError"></span>
+                    </div>
+                    <div class="campo">
+                        <span class="etiqueta" id="etiquetaRol">¿Qué querés hacer en NextLeague?</span>
+                        <div class="opciones-rol" id="rol" role="radiogroup" aria-labelledby="etiquetaRol">
+                            <label class="opcion-rol">
+                                <input type="radio" name="rol" value="participante" class="solo-lectores">
+                                <svg class="icono icono-grande" viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="7" width="20" height="11" rx="5"/><path d="M7 11v3M5.5 12.5h3M15 12h.01M18 11h.01"/></svg>
+                                <strong>Participar</strong>
+                                <small>Anotarme en torneos, solo o con mi equipo.</small>
+                            </label>
+                            <label class="opcion-rol">
+                                <input type="radio" name="rol" value="organizador" class="solo-lectores">
+                                <svg class="icono icono-grande" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 21h8M12 17v4"/><path d="M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M7 6H4a3 3 0 0 0 3 4M17 6h3a3 3 0 0 1-3 4"/></svg>
+                                <strong>Organizar</strong>
+                                <small>Crear y gestionar torneos (también podés jugar los de otros).</small>
+                            </label>
+                        </div>
+                        <span class="error-campo" id="rolError"></span>
+                    </div>
+                    <div class="campo">
+                        <label class="casilla">
+                            <input type="checkbox" id="acepto">
+                            Acepto que NextLeague guarde estos datos para organizar los torneos. No se comparten con nadie y el correo nunca se muestra.
+                        </label>
+                        <span class="error-campo" id="aceptoError"></span>
+                    </div>
+                    <button type="submit" class="btn btn-primario">Crear mi cuenta</button>
+                </form>
+
+                <p class="acceso__pie">¿Ya tenés cuenta? <a href="../home/login" id="enlaceIngresar">Iniciá sesión</a></p>
+            </section>
+        </div>
+    </main>
+
+    <footer id="pie"></footer>
+
+    <script src="../shared/api.js"></script>
+    <script src="../shared/formato.js"></script>
+    <script src="../shared/ui.js"></script>
+    <script src="../shared/layout.js"></script>
+    <script src="../home/acceso.js"></script>
+    <script src="register.js"></script>
+</body>
+</html>

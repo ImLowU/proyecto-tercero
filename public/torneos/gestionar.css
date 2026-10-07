@@ -1,0 +1,131 @@
+/* =====================================================================
+   NEXTLEAGUE - GESTIONAR TORNEO
+   Solo lo propio de esta página; lo común está en shared/base.css.
+   ===================================================================== */
+
+.grupo-chips--en-linea { display: inline-flex; vertical-align: middle; margin-left: 6px; }
+
+/* ── Pasos del torneo ── */
+.pasos { list-style: none; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin: 8px 0 20px; }
+.paso { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+.paso__nombre { display: inline-flex; align-items: center; gap: 4px; font-size: 13px; font-weight: 600; color: var(--texto-3); }
+.paso__nombre .icono { width: 14px; height: 14px; }
+.paso__detalle { font-size: 12px; color: var(--texto-3); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.paso--hecho .paso__nombre { color: var(--lila); }
+.paso--actual .paso__nombre { color: #fff; }
+@media (min-width: 640px) {
+    .pasos { gap: 14px; }
+    .paso__nombre { font-size: 14px; }
+}
+
+#alertaGestion { margin-bottom: 16px; }
+#alertaGestion:focus { outline: none; }
+
+/* ── Distribución: acciones principales a la izquierda, datos a la derecha ── */
+.gestion { display: grid; gap: 16px; }
+.gestion__principal, .gestion__lateral { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.gestion .panel + .panel { margin-top: 0; }
+@media (min-width: 960px) {
+    .gestion { grid-template-columns: minmax(0, 2fr) minmax(300px, 1fr); gap: 20px; align-items: start; }
+}
+
+.panel--destacado { border-color: var(--violeta-borde); background: linear-gradient(135deg, rgba(141, 2, 255, 0.14), rgba(141, 2, 255, 0.03)); }
+.panel--peligro { border-color: var(--error-borde); }
+#textoProximoPaso + .grupo-botones:not(:empty) { margin-top: 14px; }
+#textoPeligro { margin-bottom: 12px; }
+
+/* ── Selector de rondas ── */
+/* position: relative: el estado de cada ronda para lectores de pantalla
+   (.solo-lectores) queda recortado adentro y no estira la página (ver .tabla-scroll). */
+.selector-rondas { position: relative; display: flex; gap: 6px; margin-bottom: 16px; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
+.selector-rondas::-webkit-scrollbar { display: none; }
+.selector-rondas__boton {
+    display: inline-flex; align-items: center; gap: 7px; flex-shrink: 0;
+    padding: 7px 13px; border-radius: var(--radio-pildora); font-size: 14px; white-space: nowrap;
+    background: var(--superficie-2); border: 1px solid var(--borde-fuerte); color: var(--texto-2);
+}
+.selector-rondas__boton:hover { border-color: var(--violeta-borde); color: #fff; }
+.selector-rondas__boton[aria-selected="true"] { background: var(--violeta-suave); border-color: var(--violeta); color: #fff; }
+.punto { width: 8px; height: 8px; border-radius: 50%; background: #8a83a6; }
+.punto--publicada { background: var(--exito); }
+.punto--cerrada { background: var(--lila); }
+
+/* ── Editor de la ronda ── */
+.ronda-editor__cabecera { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 6px; }
+.ronda-editor__titulo { display: flex; align-items: center; gap: 10px; }
+.ronda-editor__titulo h3 { font-size: 1.1rem; }
+.campo-fecha-ronda { margin: 14px 0; }
+.campo-fecha-ronda input { max-width: 200px; }
+
+.partidos-editor { display: flex; flex-direction: column; gap: 10px; }
+.editor-partido {
+    display: flex; flex-direction: column; gap: 10px; padding: 12px;
+    background: var(--superficie-2); border: 1px solid var(--borde); border-radius: 10px;
+}
+.editor-partido--jugado { box-shadow: inset 3px 0 0 var(--exito-borde); }
+.editor-partido--error { border-color: var(--error-borde); }
+.editor-partido--libre { flex-direction: row; align-items: center; color: var(--texto-2); font-size: 14px; }
+
+/* En celular, un renglón por participante (nombre y su marcador);
+   desde 640px, el partido entero en una línea: local [ ] - [ ] visitante */
+.editor-partido__marcador {
+    display: grid; grid-template-columns: minmax(0, 1fr) 64px; align-items: center; gap: 8px 12px;
+    grid-template-areas: "nombre-local marcador-local" "nombre-visitante marcador-visitante";
+}
+.editor-partido__nombre { grid-area: nombre-local; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600; font-size: 14px; }
+.editor-partido__nombre--visitante { grid-area: nombre-visitante; }
+.editor-partido__marcador [name="local"] { grid-area: marcador-local; }
+.editor-partido__marcador [name="visitante"] { grid-area: marcador-visitante; }
+.separador { display: none; color: var(--texto-3); }
+.control.marcador {
+    min-height: 42px; padding: 6px 4px; text-align: center; font-size: 17px; font-weight: 700;
+    -moz-appearance: textfield; appearance: textfield;
+}
+.control.marcador::-webkit-outer-spin-button, .control.marcador::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.control:disabled { opacity: 0.55; cursor: not-allowed; }
+
+.editor-partido__programa { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; }
+.editor-partido__programa .control { min-height: 40px; padding: 8px 10px; font-size: 14px; }
+.editor-partido__programa .btn { justify-self: start; }
+@media (min-width: 640px) {
+    .editor-partido__programa { grid-template-columns: 220px minmax(0, 1fr) auto; align-items: center; }
+    .editor-partido__marcador {
+        grid-template-columns: minmax(0, 1fr) 64px auto 64px minmax(0, 1fr); gap: 12px;
+        grid-template-areas: "nombre-local marcador-local separador marcador-visitante nombre-visitante";
+    }
+    .editor-partido__nombre--visitante { text-align: right; }
+    .separador { display: inline; grid-area: separador; }
+}
+.editor-partido__nota { font-size: 12px; color: var(--texto-3); }
+
+/* La barra de guardado queda visible al bajar por una ronda larga */
+.ronda-editor__pie {
+    position: sticky; bottom: 0; z-index: 5; display: flex; justify-content: flex-end;
+    margin: 14px -16px -16px; padding: 12px 16px;
+    background: rgba(12, 5, 36, 0.94); backdrop-filter: blur(6px);
+    border-top: 1px solid var(--borde); border-radius: 0 0 var(--radio-tarjeta) var(--radio-tarjeta);
+}
+@media (min-width: 640px) {
+    .ronda-editor__pie { margin: 16px -22px -22px; padding: 12px 22px; }
+}
+
+/* ── Inscripciones ── */
+.formulario--compacto { gap: 12px; margin-bottom: 16px; }
+.inscriptos { list-style: none; display: flex; flex-direction: column; max-height: 380px; overflow-y: auto; }
+.inscripto { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--borde); }
+.inscripto:last-child { border-bottom: none; }
+.inscripto img { border-radius: 50%; object-fit: cover; flex-shrink: 0; background: var(--tarjeta); }
+.inscripto__nombre { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 14px; }
+.inscripto__nombre small { display: block; font-size: 12px; color: var(--texto-3); }
+.inscripto__nombre a { color: #fff; text-decoration: none; }
+.inscripto__nombre a:hover { color: var(--lila); text-decoration: underline; }
+.boton-quitar { color: var(--error); min-height: 32px; padding: 4px 8px; }
+.boton-quitar:hover { color: #fff; }
+
+.interruptor span { font-size: 14px; color: var(--texto-2); }
+
+/* ── Historial de resultados ── */
+.historial { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+.historial li { display: flex; flex-direction: column; gap: 4px; padding: 10px 12px; background: var(--superficie-2); border: 1px solid var(--borde); border-radius: 10px; }
+.historial li div { display: flex; align-items: center; gap: 10px; }
+.historial--vigente { border-color: var(--exito-borde) !important; }

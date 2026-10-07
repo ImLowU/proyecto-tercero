@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jugador · NextLeague</title>
+    <link rel="icon" href="../logo/favicon.png">
+    <link rel="stylesheet" href="../shared/base.css">
+    <link rel="stylesheet" href="perfil.css">
+</head>
+<body data-pagina="jugador">
+    <header id="encabezado"></header>
+
+    <main id="contenido" class="contenedor">
+        <div id="estadoCarga">
+            <div class="cargando" role="status"><span class="girando" aria-hidden="true"></span>Cargando perfil…</div>
+        </div>
+
+        <div id="contenidoJugador" class="oculto">
+            <section class="perfil-cabecera" aria-labelledby="nombreJugador">
+                <div class="perfil-cabecera__foto">
+                    <img id="fotoJugador" src="../iconos/profile-128.webp" alt="" width="120" height="120">
+                </div>
+                <div class="perfil-cabecera__info">
+                    <div class="grupo-chips" id="chipsJugador"></div>
+                    <h1 id="nombreJugador"></h1>
+                    <p class="perfil-cabecera__meta" id="metaJugador"></p>
+                </div>
+                <p class="perfil-cabecera__bio" id="bioJugador"></p>
+                <div class="perfil-cabecera__acciones" id="accionesJugador"></div>
+            </section>
+
+            <ul class="numeros" id="numerosJugador" aria-label="Números del jugador"></ul>
+
+            <div class="bloque dos-columnas">
+                <section aria-labelledby="tituloProximos">
+                    <h2 class="titulo-columna" id="tituloProximos">Próximos partidos</h2>
+                    <div class="calendario" id="proximosJugador"></div>
+                </section>
+                <section aria-labelledby="tituloResultados">
+                    <h2 class="titulo-columna" id="tituloResultados">Últimos resultados</h2>
+                    <div class="lista-partidos" id="resultadosJugador"></div>
+                </section>
+            </div>
+
+            <section class="bloque" aria-labelledby="tituloJuega">
+                <h2 id="tituloJuega">Torneos en los que juega</h2>
+                <div class="grilla-torneos" id="torneosJuega"></div>
+            </section>
+
+            <section class="bloque oculto" id="bloqueOrganiza" aria-labelledby="tituloOrganiza">
+                <h2 id="tituloOrganiza">Torneos que organiza</h2>
+                <div class="grilla-torneos" id="torneosOrganiza"></div>
+            </section>
+        </div>
+    </main>
+
+    <footer id="pie"></footer>
+
+    <script src="../shared/api.js"></script>
+    <script src="../shared/formato.js"></script>
+    <script src="../shared/ui.js"></script>
+    <script src="../shared/layout.js"></script>
+    <script src="jugador.js"></script>
+</body>
+</html>

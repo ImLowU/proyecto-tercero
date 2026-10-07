@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ingresar · NextLeague</title>
+    <link rel="icon" href="../logo/favicon.png">
+    <link rel="stylesheet" href="../shared/base.css">
+    <link rel="stylesheet" href="acceso.css">
+</head>
+<body data-pagina="ingresar">
+    <header id="encabezado"></header>
+
+    <main id="contenido" class="acceso">
+        <div class="contenedor acceso__contenido">
+            <!-- Bienvenida, con números reales (antes decía "120+", "$5.5K" y "256" fijos) -->
+            <section class="acceso__info" aria-label="Bienvenida">
+                <span class="acceso__etiqueta">Bienvenido de vuelta</span>
+                <p class="acceso__titulo">Entrá a tu <span class="resaltado">cuenta</span> NextLeague</p>
+                <p>Accedé a tus torneos, equipos y partidos. Todo te está esperando.</p>
+                <ul class="acceso__numeros">
+                    <li><strong id="numeroTorneos">—</strong><span data-numero="numeroTorneos" data-singular="Torneo activo">Torneos activos</span></li>
+                    <li><strong id="numeroEquipos">—</strong><span data-numero="numeroEquipos" data-singular="Equipo registrado">Equipos registrados</span></li>
+                    <li><strong id="numeroPartidos">—</strong><span data-numero="numeroPartidos" data-singular="Partido jugado">Partidos jugados</span></li>
+                </ul>
+            </section>
+
+            <section class="panel acceso__tarjeta" aria-labelledby="tituloIngresar">
+                <h1 id="tituloIngresar">Iniciar sesión</h1>
+                <p class="acceso__subtitulo">Ingresá con tu correo y tu contraseña.</p>
+
+                <div id="alertaAcceso" class="oculto"></div>
+
+                <form id="formIngresar" class="formulario" novalidate>
+                    <div class="campo">
+                        <label for="correo">Correo electrónico</label>
+                        <div class="campo-icono">
+                            <svg class="icono" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
+                            <input type="email" id="correo" placeholder="correo@ejemplo.com" autocomplete="email" maxlength="150" required>
+                        </div>
+                        <span class="error-campo" id="correoError"></span>
+                    </div>
+                    <div class="campo">
+                        <div class="acceso__fila">
+                            <label for="contrasena" class="etiqueta">Contraseña</label>
+                            <a href="recuperar" class="tocable">¿Olvidaste tu contraseña?</a>
+                        </div>
+                        <div class="campo-clave campo-icono">
+                            <svg class="icono" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+                            <input type="password" id="contrasena" placeholder="Tu contraseña" autocomplete="current-password" maxlength="72" required>
+                            <button type="button" class="campo-clave__ver" id="verContrasena"></button>
+                        </div>
+                        <span class="error-campo" id="contrasenaError"></span>
+                    </div>
+                    <label class="casilla">
+                        <input type="checkbox" id="recordar">
+                        Recordarme en este dispositivo
+                    </label>
+                    <button type="submit" class="btn btn-primario">Iniciar sesión</button>
+                </form>
+
+                <p class="acceso__pie" id="pieRegistro">¿No tenés cuenta? <a href="../register/register">Registrate gratis</a></p>
+            </section>
+        </div>
+    </main>
+
+    <footer id="pie"></footer>
+
+    <script src="../shared/api.js"></script>
+    <script src="../shared/formato.js"></script>
+    <script src="../shared/ui.js"></script>
+    <script src="../shared/layout.js"></script>
+    <script src="acceso.js"></script>
+    <script src="login.js"></script>
+</body>
+</html>

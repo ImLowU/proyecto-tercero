@@ -1,0 +1,3 @@
+# Los scripts SQL y las herramientas de la base de datos no se sirven por web.
+# Se importan desde phpMyAdmin o desde la línea de comandos.
+Require all denied

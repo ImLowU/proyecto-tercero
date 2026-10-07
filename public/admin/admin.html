@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administración · NextLeague</title>
+    <link rel="icon" href="../logo/favicon.png">
+    <link rel="stylesheet" href="../shared/base.css">
+    <link rel="stylesheet" href="admin.css">
+</head>
+<body data-pagina="admin">
+    <header id="encabezado"></header>
+
+    <main id="contenido" class="contenedor">
+        <div id="estadoCarga">
+            <div class="cargando" role="status"><span class="girando" aria-hidden="true"></span>Cargando el panel…</div>
+        </div>
+
+        <div id="panelAdmin" class="admin oculto">
+            <!-- MENÚ LATERAL (en celular, una fila que se desliza) -->
+            <nav class="admin__menu" aria-label="Secciones de administración" id="menuAdmin">
+                <p class="admin__titulo">Administración</p>
+                <a href="#resumen" data-seccion="resumen"><svg class="icono" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h16M7 16v-4M12 16V8M17 16V5"/></svg>Resumen</a>
+                <a href="#usuarios" data-seccion="usuarios"><svg class="icono" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="7" r="4"/><path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2M16 3.13a4 4 0 0 1 0 7.75M21 21v-2a4 4 0 0 0-3-3.85"/></svg>Usuarios</a>
+                <a href="#torneos" data-seccion="torneos"><svg class="icono" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 21h8M12 17v4"/><path d="M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M7 6H4a3 3 0 0 0 3 4M17 6h3a3 3 0 0 1-3 4"/></svg>Torneos</a>
+                <a href="#modulos" data-seccion="modulos"><svg class="icono" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/></svg>Módulos</a>
+                <a href="#configuracion" data-seccion="configuracion"><svg class="icono" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h8M16 6h4M4 12h2M10 12h10M4 18h12"/><circle cx="14" cy="6" r="2"/><circle cx="8" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></svg>Configuración</a>
+                <a href="#auditoria" data-seccion="auditoria"><svg class="icono" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8v4l3 2"/><path d="M3.05 11a9 9 0 1 1 .5 4"/><path d="M3 4v5h5"/></svg>Auditoría</a>
+                <a href="#reportes" data-seccion="reportes"><svg class="icono" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2M7 11l5 5 5-5M12 4v12"/></svg>Reportes</a>
+            </nav>
+
+            <div class="admin__contenido">
+                <div id="alertaAdmin" class="oculto"></div>
+
+                <!-- RESUMEN -->
+                <section id="seccion-resumen" class="admin__seccion" aria-labelledby="tituloResumen">
+                    <h1 id="tituloResumen">Resumen</h1>
+                    <ul class="tarjetas-resumen" id="tarjetasResumen"></ul>
+                    <div class="resumen-columnas">
+                        <div class="panel">
+                            <h2 class="panel__titulo">Usuarios activos por rol</h2>
+                            <ul class="barras" id="barrasRoles"></ul>
+                        </div>
+                        <div class="panel">
+                            <h2 class="panel__titulo">Torneos por estado</h2>
+                            <ul class="barras" id="barrasEstados"></ul>
+                        </div>
+                    </div>
+                    <div class="panel">
+                        <div class="panel__titulo">
+                            <h2>Actividad reciente</h2>
+                            <a href="#auditoria" class="btn btn-texto btn-chico">Ver toda la auditoría</a>
+                        </div>
+                        <div id="actividadReciente"></div>
+                    </div>
+                </section>
+
+                <!-- USUARIOS -->
+                <section id="seccion-usuarios" class="admin__seccion oculto" aria-labelledby="tituloUsuarios">
+                    <div class="encabezado-seccion">
+                        <h1 id="tituloUsuarios">Usuarios</h1>
+                        <button type="button" class="btn btn-primario" id="botonNuevoUsuario">
+                            <svg class="icono" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="4"/><path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2M19 8v6M16 11h6"/></svg>Nuevo usuario
+                        </button>
+                    </div>
+                    <form class="filtros-admin" id="filtrosUsuarios" role="search">
+                        <label class="solo-lectores" for="buscarUsuario">Buscar usuarios</label>
+                        <input type="search" class="control" id="buscarUsuario" placeholder="Buscar por usuario o correo" maxlength="100">
+                        <label class="solo-lectores" for="filtroRol">Rol</label>
+                        <select class="control" id="filtroRol">
+                            <option value="">Todos los roles</option>
+                            <option value="administrador">Administradores</option>
+                            <option value="organizador">Organizadores</option>
+                            <option value="participante">Participantes</option>
+                        </select>
+                        <label class="solo-lectores" for="filtroActivo">Estado</label>
+                        <select class="control" id="filtroActivo">
+                            <option value="">Activos e inactivos</option>
+                            <option value="1">Solo activos</option>
+                            <option value="0">Solo inactivos</option>
+                        </select>
+                    </form>
+                    <p class="texto-tenue cantidad-admin" id="cantidadUsuarios" role="status"></p>
+                    <div id="tablaUsuarios"></div>
+                    <nav class="paginacion" id="paginacionUsuarios" aria-label="Páginas de usuarios"></nav>
+                </section>
+
+                <!-- TORNEOS -->
+                <section id="seccion-torneos" class="admin__seccion oculto" aria-labelledby="tituloTorneosAdmin">
+                    <h1 id="tituloTorneosAdmin">Torneos</h1>
+                    <p class="texto-secundario">Todos los torneos, también los ocultos y cancelados. Un torneo que no empezó se puede eliminar; uno en curso, solo cancelar (se conserva su historial).</p>
+                    <form class="filtros-admin" id="filtrosTorneos" role="search">
+                        <label class="solo-lectores" for="buscarTorneo">Buscar torneos</label>
+                        <input type="search" class="control" id="buscarTorneo" placeholder="Buscar por nombre o juego" maxlength="100">
+                        <label class="solo-lectores" for="filtroEstadoTorneo">Estado</label>
+                        <select class="control" id="filtroEstadoTorneo">
+                            <option value="">Todos los estados</option>
+                            <option value="pendiente">Inscripciones abiertas</option>
+                            <option value="en_curso">En curso</option>
+                            <option value="finalizado">Finalizados</option>
+                            <option value="cancelado">Cancelados</option>
+                        </select>
+                        <label class="solo-lectores" for="filtroModuloTorneo">Formato</label>
+                        <select class="control" id="filtroModuloTorneo">
+                            <option value="">Todos los formatos</option>
+                            <option value="liga">Liga</option>
+                            <option value="eliminacion_directa">Eliminación directa</option>
+                            <option value="sistema_suizo">Sistema suizo</option>
+                        </select>
+                    </form>
+                    <p class="texto-tenue cantidad-admin" id="cantidadTorneos" role="status"></p>
+                    <div id="tablaTorneos"></div>
+                    <nav class="paginacion" id="paginacionTorneos" aria-label="Páginas de torneos"></nav>
+                </section>
+
+                <!-- MÓDULOS -->
+                <section id="seccion-modulos" class="admin__seccion oculto" aria-labelledby="tituloModulos">
+                    <h1 id="tituloModulos">Módulos de competencia</h1>
+                    <p class="texto-secundario">Los formatos que se ofrecen al crear un torneo. Deshabilitar uno no afecta a los torneos que ya lo usan; tiene que quedar al menos uno habilitado.</p>
+                    <div class="modulos" id="listaModulos"></div>
+                </section>
+
+                <!-- CONFIGURACIÓN -->
+                <section id="seccion-configuracion" class="admin__seccion oculto" aria-labelledby="tituloConfiguracion">
+                    <h1 id="tituloConfiguracion">Configuración</h1>
+                    <p class="texto-secundario">Parámetros generales del sistema. Se guardan todos juntos: si alguno es inválido, no se cambia ninguno.</p>
+                    <form id="formConfiguracion" novalidate>
+                        <div id="camposConfiguracion"></div>
+                        <div class="acciones-admin">
+                            <button type="submit" class="btn btn-primario">Guardar configuración</button>
+                        </div>
+                    </form>
+                </section>
+
+                <!-- AUDITORÍA -->
+                <section id="seccion-auditoria" class="admin__seccion oculto" aria-labelledby="tituloAuditoria">
+                    <div class="encabezado-seccion">
+                        <h1 id="tituloAuditoria">Auditoría</h1>
+                        <a class="btn btn-secundario btn-chico" href="../api/admin/reportes/auditoria" download>
+                            <svg class="icono" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2M7 11l5 5 5-5M12 4v12"/></svg>Exportar CSV
+                        </a>
+                    </div>
+                    <p class="texto-secundario">Cada alta, cambio o baja queda registrado por la base de datos (con los valores de antes y después), junto con los eventos de la aplicación como inicios de sesión o calendarios generados.</p>
+                    <form class="filtros-admin filtros-admin--auditoria" id="filtrosAuditoria" role="search">
+                        <label class="solo-lectores" for="buscarAuditoria">Buscar en los cambios</label>
+                        <input type="search" class="control" id="buscarAuditoria" placeholder="Buscar en el detalle o los valores" maxlength="100">
+                        <label class="solo-lectores" for="filtroAccion">Acción</label>
+                        <select class="control" id="filtroAccion"></select>
+                        <label class="solo-lectores" for="filtroTabla">Tabla</label>
+                        <select class="control" id="filtroTabla"></select>
+                        <label class="solo-lectores" for="filtroOrigen">Origen</label>
+                        <select class="control" id="filtroOrigen">
+                            <option value="">Base de datos y aplicación</option>
+                            <option value="bd">Base de datos (triggers)</option>
+                            <option value="app">Aplicación (eventos)</option>
+                        </select>
+                        <div class="rango-fechas">
+                            <label for="filtroDesde">Desde</label>
+                            <input type="date" class="control" id="filtroDesde">
+                            <label for="filtroHasta">Hasta</label>
+                            <input type="date" class="control" id="filtroHasta">
+                        </div>
+                    </form>
+                    <p class="texto-tenue cantidad-admin" id="cantidadAuditoria" role="status"></p>
+                    <div id="tablaAuditoria"></div>
+                    <nav class="paginacion" id="paginacionAuditoria" aria-label="Páginas de la auditoría"></nav>
+                </section>
+
+                <!-- REPORTES -->
+                <section id="seccion-reportes" class="admin__seccion oculto" aria-labelledby="tituloReportes">
+                    <h1 id="tituloReportes">Reportes</h1>
+                    <p class="texto-secundario">Descargas en CSV (separado por punto y coma) que abren directo en Excel o LibreOffice.</p>
+                    <div class="reportes">
+                        <a class="panel reporte" href="../api/admin/reportes/usuarios" download>
+                            <svg class="icono icono-grande" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="7" r="4"/><path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2M16 3.13a4 4 0 0 1 0 7.75M21 21v-2a4 4 0 0 0-3-3.85"/></svg>
+                            <strong>Usuarios</strong>
+                            <span>Todos los usuarios con su rol, estado, registro, último acceso y torneos creados.</span>
+                        </a>
+                        <a class="panel reporte" href="../api/admin/reportes/torneos" download>
+                            <svg class="icono icono-grande" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 21h8M12 17v4"/><path d="M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M7 6H4a3 3 0 0 0 3 4M17 6h3a3 3 0 0 1-3 4"/></svg>
+                            <strong>Torneos</strong>
+                            <span>Todos los torneos con formato, inscriptos, premio, fechas, estado y organizador.</span>
+                        </a>
+                        <a class="panel reporte" href="../api/admin/reportes/auditoria" download>
+                            <svg class="icono icono-grande" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8v4l3 2"/><path d="M3.05 11a9 9 0 1 1 .5 4"/><path d="M3 4v5h5"/></svg>
+                            <strong>Auditoría</strong>
+                            <span>El registro completo de cambios, con los valores de antes y después.</span>
+                        </a>
+                    </div>
+                    <p class="texto-tenue">Cada torneo tiene además su propio reporte (posiciones y partidos) en "Gestionar torneo".</p>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <footer id="pie"></footer>
+
+    <!-- Crear / editar usuario -->
+    <dialog class="modal" id="modalUsuario" aria-labelledby="tituloModalUsuario">
+        <h2 id="tituloModalUsuario">Nuevo usuario</h2>
+        <form id="formUsuario" class="formulario" novalidate>
+            <div class="campo">
+                <label for="usuario_nombre">Nombre de usuario</label>
+                <input type="text" id="usuario_nombre" maxlength="50" autocomplete="off" required>
+                <span class="error-campo" id="usuario_nombreError"></span>
+            </div>
+            <div class="campo">
+                <label for="usuario_correo">Correo</label>
+                <input type="email" id="usuario_correo" maxlength="150" autocomplete="off" required>
+                <span class="error-campo" id="usuario_correoError"></span>
+            </div>
+            <div class="campo" id="campoUsuarioClave">
+                <label for="usuario_clave">Contraseña temporal</label>
+                <div class="campo-clave">
+                    <input type="password" id="usuario_clave" maxlength="72" autocomplete="new-password" aria-describedby="requisitosUsuario">
+                    <button type="button" class="campo-clave__ver" id="verClaveUsuario"></button>
+                </div>
+                <ul class="requisitos" id="requisitosUsuario" aria-label="Requisitos de la contraseña"></ul>
+                <span class="ayuda">Al entrar por primera vez, el usuario la tiene que cambiar.</span>
+                <span class="error-campo" id="usuario_claveError"></span>
+            </div>
+            <div class="campo" id="campoUsuarioRol">
+                <label for="usuario_rol">Rol</label>
+                <select id="usuario_rol">
+                    <option value="participante">Participante</option>
+                    <option value="organizador">Organizador</option>
+                    <option value="administrador">Administrador</option>
+                </select>
+                <span class="error-campo" id="usuario_rolError"></span>
+            </div>
+            <div class="modal__acciones">
+                <button type="button" class="btn btn-secundario" id="cancelarUsuario">Volver</button>
+                <button type="submit" class="btn btn-primario" id="guardarUsuario">Crear usuario</button>
+            </div>
+        </form>
+    </dialog>
+
+    <script src="../shared/api.js"></script>
+    <script src="../shared/formato.js"></script>
+    <script src="../shared/ui.js"></script>
+    <script src="../shared/layout.js"></script>
+    <script src="admin.js"></script>
+</body>
+</html>

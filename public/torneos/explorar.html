@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Torneos · NextLeague</title>
+    <meta name="description" content="Buscá torneos deportivos, mentales y electrónicos por nombre, juego, formato y estado.">
+    <link rel="icon" href="../logo/favicon.png">
+    <link rel="stylesheet" href="../shared/base.css">
+    <link rel="stylesheet" href="explorar.css">
+</head>
+<body data-pagina="torneos">
+    <header id="encabezado"></header>
+
+    <main id="contenido" class="contenedor">
+        <div class="titulo-pagina encabezado-seccion">
+            <div>
+                <h1>Torneos</h1>
+                <p>Buscá por nombre o juego y filtrá por categoría, formato y estado.</p>
+            </div>
+            <a href="../createtournament/createtournament" class="btn btn-primario oculto" id="botonCrear">Crear torneo</a>
+        </div>
+
+        <form class="filtros" id="formFiltros" role="search" aria-label="Buscar torneos">
+            <div class="filtros__fila">
+                <div class="buscador">
+                    <label for="buscar" class="solo-lectores">Buscar por nombre o juego</label>
+                    <svg class="icono" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-5-5"/></svg>
+                    <input type="search" id="buscar" class="control" placeholder="Buscar por nombre o juego" maxlength="100" autocomplete="off">
+                </div>
+                <div class="grupo-chips grupo-chips--deslizable" role="group" aria-label="Categoría" id="filtroCategoria">
+                    <button type="button" class="filtro-chip" data-categoria="" aria-pressed="true">Todos</button>
+                    <button type="button" class="filtro-chip" data-categoria="deportivo" aria-pressed="false">Deportivo</button>
+                    <button type="button" class="filtro-chip" data-categoria="mental" aria-pressed="false">Mental</button>
+                    <button type="button" class="filtro-chip" data-categoria="electronico" aria-pressed="false">Electrónico</button>
+                </div>
+                <button type="button" class="btn btn-secundario filtros__abrir" id="botonFiltros" aria-expanded="false" aria-controls="filtrosAvanzados">
+                    <svg class="icono" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h8M16 6h4M4 12h2M10 12h10M4 18h12"/><circle cx="14" cy="6" r="2"/><circle cx="8" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></svg>
+                    Filtros <span class="chip oculto" id="cantidadFiltros"></span>
+                </button>
+            </div>
+
+            <div class="filtros__avanzados" id="filtrosAvanzados">
+                <div class="campo">
+                    <label for="filtroJuego">Juego</label>
+                    <select id="filtroJuego"><option value="">Todos</option></select>
+                </div>
+                <div class="campo">
+                    <label for="filtroModulo">Formato</label>
+                    <select id="filtroModulo">
+                        <option value="">Todos</option>
+                        <option value="liga">Liga</option>
+                        <option value="eliminacion_directa">Eliminación directa</option>
+                        <option value="sistema_suizo">Sistema suizo</option>
+                    </select>
+                </div>
+                <div class="campo">
+                    <label for="filtroModalidad">Modalidad</label>
+                    <select id="filtroModalidad">
+                        <option value="">Todas</option>
+                        <option value="individual">Individual</option>
+                        <option value="equipos">Por equipos</option>
+                    </select>
+                </div>
+                <div class="campo">
+                    <label for="filtroEstado">Estado</label>
+                    <select id="filtroEstado">
+                        <option value="">Todos</option>
+                        <option value="activos">Activos</option>
+                        <option value="pendiente">Inscripciones abiertas</option>
+                        <option value="en_curso">En curso</option>
+                        <option value="finalizado">Finalizados</option>
+                    </select>
+                </div>
+            </div>
+        </form>
+
+        <div class="resumen-busqueda">
+            <p id="cantidadTorneos" role="status"></p>
+            <button type="button" class="btn btn-texto btn-chico oculto" id="botonLimpiar">Limpiar filtros</button>
+        </div>
+
+        <div id="listaTorneos" class="grilla-torneos"></div>
+        <nav class="paginacion" id="paginacion" aria-label="Páginas de torneos"></nav>
+    </main>
+
+    <footer id="pie"></footer>
+
+    <script src="../shared/api.js"></script>
+    <script src="../shared/formato.js"></script>
+    <script src="../shared/ui.js"></script>
+    <script src="../shared/layout.js"></script>
+    <script src="explorar.js"></script>
+</body>
+</html>

@@ -1,0 +1,20 @@
+# =====================================================================
+# Protección de la raíz del proyecto cuando se sirve con Apache.
+# Lo único que tiene que ser público es la carpeta public/ (y index.php,
+# que redirige al inicio). Los archivos de configuración y de desarrollo
+# (incluidos los de Node/Cypress para las pruebas y los de Docker) no se
+# pueden descargar desde el navegador. La carpeta docker/ tiene su propio
+# .htaccess; .env, como todo archivo oculto, lo bloquea la regla de abajo.
+# =====================================================================
+Options -Indexes
+
+<FilesMatch "^(phpunit\.xml|config\.php|config\.ejemplo\.php|\.gitignore|.*\.md|package(-lock)?\.json|cypress\.config\.js|Dockerfile|docker-compose\.yml)$">
+    Require all denied
+</FilesMatch>
+
+<IfModule mod_alias.c>
+    RedirectMatch 403 (^|/)node_modules(/|$)
+    # Archivos y carpetas ocultos (empiezan con punto). Sobre todo .git:
+    # tiene el repositorio entero, con el historial y los archivos borrados.
+    RedirectMatch 403 (^|/)\.
+</IfModule>

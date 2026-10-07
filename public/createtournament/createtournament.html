@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear torneo · NextLeague</title>
+    <link rel="icon" href="../logo/favicon.png">
+    <link rel="stylesheet" href="../shared/base.css">
+    <link rel="stylesheet" href="createtournament.css">
+</head>
+<body data-pagina="torneos">
+    <header id="encabezado"></header>
+
+    <main id="contenido" class="contenedor">
+        <div class="titulo-pagina">
+            <a class="volver oculto" id="enlaceVolver" href="#">
+                <svg class="icono" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>Volver a gestionar
+            </a>
+            <h1 id="tituloFormulario">Crear torneo</h1>
+            <p id="subtituloFormulario">Completá los datos. Los marcados con * son obligatorios; el resto se puede dejar como está.</p>
+        </div>
+
+        <div id="alertaFormulario" class="oculto"></div>
+        <div id="avisoBloqueo" class="oculto"></div>
+
+        <div class="formulario-torneo">
+            <form id="formTorneo" class="formulario-torneo__campos" novalidate>
+                <!-- 1. Datos básicos -->
+                <fieldset class="panel seccion-form">
+                    <legend class="seccion-form__titulo"><span>1</span>Datos básicos</legend>
+                    <div class="campo">
+                        <label for="nombre">Nombre del torneo *</label>
+                        <input type="text" id="nombre" name="nombre" maxlength="150" required placeholder="Ej.: Copa Primavera de Fútbol 5">
+                        <span class="error-campo" id="nombreError"></span>
+                    </div>
+                    <div class="campo">
+                        <label for="id_juego">Juego o disciplina *</label>
+                        <select id="id_juego" name="id_juego" required data-estructural>
+                            <option value="">Cargando juegos…</option>
+                        </select>
+                        <span class="error-campo" id="id_juegoError"></span>
+                    </div>
+                    <div class="campo oculto" id="campoOrganizador">
+                        <label for="id_organizador">Organizador a cargo</label>
+                        <select id="id_organizador" name="id_organizador">
+                            <option value="">Cargando organizadores…</option>
+                        </select>
+                        <span class="ayuda">Quien va a configurar el torneo, inscribir participantes, armar las rondas y cargar los resultados. Solo lo elige el administrador.</span>
+                        <span class="error-campo" id="id_organizadorError"></span>
+                    </div>
+                    <div class="campo">
+                        <label for="descripcion">Descripción</label>
+                        <textarea id="descripcion" name="descripcion" maxlength="2000" rows="4" placeholder="Reglas generales, lugar, horarios, cómo se juega…"></textarea>
+                        <span class="ayuda"><span id="contadorDescripcion">0</span> / 2000</span>
+                        <span class="error-campo" id="descripcionError"></span>
+                    </div>
+                </fieldset>
+
+                <!-- 2. Formato y participantes -->
+                <fieldset class="panel seccion-form">
+                    <legend class="seccion-form__titulo"><span>2</span>Formato y participantes</legend>
+                    <div class="campo">
+                        <span class="etiqueta" id="etiquetaModulo">Formato *</span>
+                        <div class="opciones-formato" id="modulo" role="radiogroup" aria-labelledby="etiquetaModulo"></div>
+                        <span class="error-campo" id="moduloError"></span>
+                    </div>
+                    <div class="campo">
+                        <span class="etiqueta" id="etiquetaModalidad">Modalidad</span>
+                        <div class="opciones-modalidad" id="modalidad" role="radiogroup" aria-labelledby="etiquetaModalidad">
+                            <label class="opcion">
+                                <input type="radio" name="modalidad" value="individual" data-estructural>
+                                <span class="opcion__texto"><strong>Individual</strong><small>Cada persona juega por su cuenta</small></span>
+                            </label>
+                            <label class="opcion">
+                                <input type="radio" name="modalidad" value="equipos" data-estructural>
+                                <span class="opcion__texto"><strong>Por equipos</strong><small>Los jugadores se agrupan en equipos</small></span>
+                            </label>
+                        </div>
+                        <span class="ayuda" id="ayudaModalidad"></span>
+                        <span class="error-campo" id="modalidadError"></span>
+                    </div>
+                    <div class="fila-campos">
+                        <div class="campo">
+                            <label for="cupo">Cupo * <span class="texto-tenue" id="unidadCupo">(jugadores)</span></label>
+                            <input type="number" id="cupo" name="cupo" min="2" max="256" value="8" required data-estructural>
+                            <span class="ayuda" id="ayudaCupo">Entre 2 y 256.</span>
+                            <span class="error-campo" id="cupoError"></span>
+                        </div>
+                        <div class="campo solo-equipos">
+                            <label for="max_integrantes_equipo">Máximo de integrantes por equipo</label>
+                            <input type="number" id="max_integrantes_equipo" name="max_integrantes_equipo" min="1" max="50" placeholder="Sin límite" data-estructural>
+                            <span class="error-campo" id="max_integrantes_equipoError"></span>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <!-- 3. Puntuación (liga y suizo) -->
+                <fieldset class="panel seccion-form" id="seccionPuntuacion">
+                    <legend class="seccion-form__titulo"><span>3</span>Puntuación</legend>
+                    <p class="texto-tenue">Cuántos puntos suma cada resultado en la tabla de posiciones.</p>
+                    <div class="fila-campos fila-campos-3">
+                        <div class="campo">
+                            <label for="puntos_victoria">Por victoria</label>
+                            <input type="number" id="puntos_victoria" name="puntos_victoria" min="0" max="20" value="3" data-estructural>
+                            <span class="error-campo" id="puntos_victoriaError"></span>
+                        </div>
+                        <div class="campo">
+                            <label for="puntos_empate">Por empate</label>
+                            <input type="number" id="puntos_empate" name="puntos_empate" min="0" max="20" value="1" data-estructural>
+                            <span class="error-campo" id="puntos_empateError"></span>
+                        </div>
+                        <div class="campo">
+                            <label for="puntos_derrota">Por derrota</label>
+                            <input type="number" id="puntos_derrota" name="puntos_derrota" min="0" max="20" value="0" data-estructural>
+                            <span class="error-campo" id="puntos_derrotaError"></span>
+                        </div>
+                    </div>
+                    <label class="interruptor">
+                        <input type="checkbox" id="permitir_empates" name="permitir_empates" checked data-estructural>
+                        <span>Se permiten empates</span>
+                    </label>
+                    <label class="interruptor solo-liga">
+                        <input type="checkbox" id="ida_y_vuelta" name="ida_y_vuelta" data-estructural>
+                        <span>Ida y vuelta (cada par juega dos veces)</span>
+                    </label>
+                    <div class="campo solo-suizo">
+                        <label for="rondas_suizo">Cantidad de rondas</label>
+                        <input type="number" id="rondas_suizo" name="rondas_suizo" min="1" max="20" placeholder="Automático" data-estructural>
+                        <span class="ayuda">Si lo dejás vacío se calcula según los inscriptos (con 8 jugadores, 3 rondas).</span>
+                        <span class="error-campo" id="rondas_suizoError"></span>
+                    </div>
+                </fieldset>
+
+                <!-- 4. Fechas y premio -->
+                <fieldset class="panel seccion-form">
+                    <legend class="seccion-form__titulo"><span id="numeroFechas">4</span>Fechas y premio</legend>
+                    <div class="fila-campos">
+                        <div class="campo">
+                            <label for="fecha_inicio">Fecha de inicio *</label>
+                            <input type="date" id="fecha_inicio" name="fecha_inicio" required>
+                            <span class="error-campo" id="fecha_inicioError"></span>
+                        </div>
+                        <div class="campo">
+                            <label for="fecha_fin">Fecha de finalización *</label>
+                            <input type="date" id="fecha_fin" name="fecha_fin" required>
+                            <span class="error-campo" id="fecha_finError"></span>
+                        </div>
+                    </div>
+                    <div class="campo">
+                        <label for="premio">Premio total <span class="texto-tenue">(0 si no hay)</span></label>
+                        <div class="premio">
+                            <input type="number" id="premio" name="premio" min="0" step="0.01" value="0">
+                            <select id="moneda" name="moneda" aria-label="Moneda del premio">
+                                <option value="UYU">UYU ($)</option>
+                                <option value="USD">USD (US$)</option>
+                            </select>
+                        </div>
+                        <span class="error-campo" id="premioError"></span>
+                    </div>
+                </fieldset>
+
+                <!-- 5. Logo y reglas -->
+                <fieldset class="panel seccion-form">
+                    <legend class="seccion-form__titulo"><span id="numeroArchivos">5</span>Logo y reglas</legend>
+                    <div class="fila-campos">
+                        <div class="campo">
+                            <span class="etiqueta">Logo <span class="texto-tenue">(opcional)</span></span>
+                            <label class="subida" for="logo">
+                                <img src="../iconos/camera-64.webp" alt="" width="40" height="40">
+                                <span><strong>Elegir imagen</strong><small>JPG, PNG o WEBP · hasta <span class="max-imagen">3</span> MB</small></span>
+                            </label>
+                            <input type="file" id="logo" name="logo" accept="image/jpeg,image/png,image/webp" class="solo-lectores">
+                            <div class="archivo-elegido oculto" id="logoElegido"></div>
+                            <span class="error-campo" id="logoError"></span>
+                        </div>
+                        <div class="campo">
+                            <span class="etiqueta">Reglas <span class="texto-tenue">(opcional)</span></span>
+                            <label class="subida" for="reglas">
+                                <img src="../iconos/folder-64.webp" alt="" width="40" height="40">
+                                <span><strong>Elegir PDF</strong><small>Solo PDF · hasta <span class="max-reglas">5</span> MB</small></span>
+                            </label>
+                            <input type="file" id="reglas" name="reglas" accept="application/pdf" class="solo-lectores">
+                            <div class="archivo-elegido oculto" id="reglasElegido"></div>
+                            <span class="error-campo" id="reglasError"></span>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <!-- 6. Publicación -->
+                <fieldset class="panel seccion-form">
+                    <legend class="seccion-form__titulo"><span id="numeroPublicacion">6</span>Publicación y resultados</legend>
+                    <label class="interruptor" id="opcionPublicado">
+                        <input type="checkbox" id="publicado" name="publicado" checked>
+                        <span>Publicar ahora <small class="texto-tenue">— si no, queda oculto hasta que lo publiques desde "Gestionar"</small></span>
+                    </label>
+                    <label class="interruptor">
+                        <input type="checkbox" id="permitir_correcciones" name="permitir_correcciones">
+                        <span>El organizador puede corregir resultados <small class="texto-tenue" id="ayudaCorrecciones">— lo autoriza el administrador; si no, solo el administrador los corrige</small></span>
+                    </label>
+                </fieldset>
+
+                <div class="acciones-formulario">
+                    <a href="../torneos/explorar" class="btn btn-secundario" id="botonCancelar">Cancelar</a>
+                    <button type="submit" class="btn btn-primario" id="botonGuardar" disabled>Crear torneo</button>
+                </div>
+            </form>
+
+            <!-- Vista previa de la tarjeta -->
+            <aside class="formulario-torneo__vista" aria-label="Vista previa">
+                <p class="etiqueta">Así se va a ver en los listados</p>
+                <div id="vistaPrevia" class="vista-previa" aria-hidden="true" inert></div>
+            </aside>
+        </div>
+    </main>
+
+    <footer id="pie"></footer>
+
+    <script src="../shared/api.js"></script>
+    <script src="../shared/formato.js"></script>
+    <script src="../shared/ui.js"></script>
+    <script src="../shared/layout.js"></script>
+    <script src="crear-torneo.js"></script>
+</body>
+</html>

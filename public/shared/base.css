@@ -1,0 +1,559 @@
+/* =====================================================================
+   NEXTLEAGUE - SISTEMA DE DISEÑO (compartido por todas las páginas)
+   Antes cada página copiaba sus propios botones, barra de navegación y
+   alertas, y cada copia quedaba un poco distinta. Ahora todo vive acá y
+   las hojas de cada página solo tienen lo propio de esa página.
+
+   Mobile First: los estilos base son para celular y las media queries
+   (min-width) agregan lo necesario para pantallas más grandes:
+     480px  → celulares grandes
+     640px  → tablets chicas
+     960px  → tablets en horizontal y notebooks
+     1200px → escritorio
+   ===================================================================== */
+
+/* ── Colores y medidas (la paleta original de NextLeague) ── */
+:root {
+    --fondo: #05001b;
+    --fondo-elevado: #0d0626;
+    --superficie: rgba(255, 255, 255, 0.03);
+    --superficie-2: rgba(255, 255, 255, 0.06);
+    --superficie-3: rgba(255, 255, 255, 0.1);
+    --borde: rgba(255, 255, 255, 0.08);
+    --borde-fuerte: rgba(255, 255, 255, 0.16);
+
+    --violeta: #8d02ff;
+    --violeta-hover: #7a00e0;
+    --violeta-claro: #9b39ff;
+    --violeta-suave: rgba(141, 2, 255, 0.18);
+    --violeta-borde: rgba(141, 2, 255, 0.45);
+    --lila: #c89cff;
+    --lila-numero: #b970ff;
+    --lila-premio: #c07cff;
+
+    --tarjeta: #1b073f;
+    --tarjeta-torneo: #23104b;
+    --calendario: #090e2b;
+    --calendario-borde: #142157;
+    --fila-violeta: #380c4d;
+
+    --texto: #ffffff;
+    --texto-2: rgba(255, 255, 255, 0.78);
+    --texto-3: rgba(255, 255, 255, 0.58);
+
+    --exito: #7cf2b0;
+    --exito-fondo: rgba(0, 200, 83, 0.14);
+    --exito-borde: rgba(0, 200, 83, 0.4);
+    --error: #ffa3a3;
+    --error-fondo: rgba(255, 68, 68, 0.14);
+    --error-borde: rgba(255, 68, 68, 0.4);
+    --aviso: #ffd48a;
+    --aviso-fondo: rgba(255, 180, 0, 0.12);
+    --aviso-borde: rgba(255, 180, 0, 0.4);
+
+    --radio: 8px;
+    --radio-tarjeta: 12px;
+    --radio-pildora: 999px;
+    --altura-nav: 64px;
+    --fuente: 'Segoe UI', system-ui, -apple-system, Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+/* ── Base ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+
+/* Quien pidió "reducir movimiento" en su sistema (por mareos o por comodidad)
+   no ve desplazamientos suaves ni animaciones. */
+@media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important; animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--fondo);
+    color: var(--texto);
+    font-family: var(--fuente);
+    font-size: 16px;
+    line-height: 1.55;
+    overflow-x: hidden;
+}
+
+main { flex: 1; }
+img { max-width: 100%; display: block; }
+a { color: var(--lila); }
+button, input, select, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; }
+
+h1, h2, h3 { line-height: 1.2; font-weight: 700; }
+h1 { font-size: clamp(1.75rem, 1.2rem + 2.4vw, 2.5rem); }
+h2 { font-size: clamp(1.3rem, 1.1rem + 0.9vw, 1.6rem); }
+h3 { font-size: 1.05rem; }
+
+/* Foco visible para quien navega con teclado */
+:focus-visible { outline: 2px solid var(--lila); outline-offset: 2px; border-radius: 4px; }
+
+/* Enlace para saltar la navegación (lectores de pantalla y teclado) */
+.saltar {
+    position: absolute; left: 16px; top: -48px; z-index: 300;
+    background: var(--violeta); color: #fff; padding: 8px 14px; border-radius: var(--radio);
+    text-decoration: none; font-weight: 600;
+}
+.saltar:focus { top: 12px; }
+
+.solo-lectores {
+    position: absolute; width: 1px; height: 1px; overflow: hidden;
+    clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+.oculto, .hidden { display: none !important; }
+.texto-secundario { color: var(--texto-2); }
+.texto-tenue { color: var(--texto-3); font-size: 14px; }
+.centrado { text-align: center; }
+
+/* Botón que se ve como un enlace (acciones dentro de un texto) */
+.btn-enlace { background: none; border: none; padding: 0; color: var(--lila); font: inherit; text-decoration: underline; }
+.btn-enlace:hover { color: #fff; }
+
+/* ── Contenedores y secciones ── */
+.contenedor { width: min(100% - 32px, 1200px); margin-inline: auto; }
+.contenedor-angosto { width: min(100% - 32px, 960px); margin-inline: auto; }
+.seccion { padding-block: 40px; }
+.titulo-pagina { padding-block: 32px 8px; }
+.titulo-pagina p { color: var(--texto-2); margin-top: 6px; }
+
+/* Enlace "← Volver a ..." arriba del título */
+.volver { display: inline-flex; align-items: center; gap: 6px; margin-bottom: 10px; color: var(--texto-2); font-size: 14px; text-decoration: none; }
+.volver:hover { color: #fff; }
+
+.encabezado-seccion {
+    display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between;
+    gap: 12px 24px; margin-bottom: 20px;
+}
+.encabezado-seccion p { color: var(--texto-2); margin-top: 4px; }
+
+@media (min-width: 960px) {
+    .seccion { padding-block: 56px; }
+    .titulo-pagina { padding-block: 48px 8px; }
+}
+
+/* ── Barra de navegación ── */
+.sitio-nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(5, 0, 27, 0.92);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--borde);
+}
+.sitio-nav__barra { display: flex; align-items: center; gap: 12px; min-height: var(--altura-nav); }
+.sitio-nav__marca { display: flex; align-items: center; gap: 10px; flex-shrink: 0; color: #fff; text-decoration: none; }
+.sitio-nav__marca img { height: 38px; width: auto; transition: transform 0.2s; }
+.sitio-nav__marca:hover img { transform: scale(1.05); }
+.sitio-nav__marca span { display: none; font-size: 18px; font-weight: 700; letter-spacing: 0.01em; }
+@media (min-width: 640px) { .sitio-nav__marca span { display: inline; } }
+
+.sitio-nav__menu {
+    display: none;
+    position: absolute; top: 100%; left: 0; right: 0;
+    flex-direction: column; gap: 4px;
+    padding: 12px 16px 16px;
+    background: #12063a;
+    border-bottom: 1px solid var(--borde-fuerte);
+}
+.sitio-nav__menu.abierto { display: flex; }
+.sitio-nav__menu a {
+    color: var(--texto-2); text-decoration: none; padding: 10px 12px; border-radius: var(--radio);
+    font-size: 15px;
+}
+.sitio-nav__menu a:hover, .sitio-nav__menu a[aria-current="page"] { color: #fff; background: var(--superficie-2); }
+.sitio-nav__menu a[aria-current="page"] { box-shadow: inset 3px 0 0 var(--violeta); }
+
+.sitio-nav__sesion { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+.sitio-nav__extra { display: contents; }
+
+/* "Registrarse" va en la barra desde 480px; en celulares angostos va dentro del menú */
+.btn.solo-desde-chico { display: none; }
+@media (min-width: 480px) {
+    .btn.solo-desde-chico { display: inline-flex; }
+    .sitio-nav__menu a.solo-celular-angosto { display: none; }
+}
+.sitio-nav__abrir {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 44px; height: 44px; border: none; background: none; border-radius: var(--radio);
+}
+.sitio-nav__abrir img { width: 26px; height: 26px; }
+.sitio-nav__abrir:hover { background: var(--superficie-2); }
+
+@media (min-width: 960px) {
+    .sitio-nav__menu {
+        display: flex; position: static; flex-direction: row; gap: 4px;
+        padding: 0; margin-left: 20px; background: none; border: none;
+    }
+    .sitio-nav__menu a { padding: 8px 12px; }
+    .sitio-nav__menu a[aria-current="page"] { box-shadow: inset 0 -2px 0 var(--violeta); background: none; border-radius: 0; }
+    .sitio-nav__abrir { display: none; }
+}
+
+/* Menú del usuario logueado */
+.menu-usuario { position: relative; }
+.menu-usuario__boton {
+    display: flex; align-items: center; gap: 8px; max-width: 200px;
+    padding: 5px; border-radius: var(--radio-pildora);
+    background: var(--violeta-suave); border: 1px solid var(--violeta-borde); color: #fff; font-size: 14px;
+}
+.menu-usuario__boton:hover { background: rgba(141, 2, 255, 0.28); }
+.menu-usuario__boton span { display: none; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+@media (min-width: 480px) {
+    .menu-usuario__boton { padding-right: 12px; }
+    .menu-usuario__boton span { display: inline; }
+}
+.menu-usuario__avatar { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; background: var(--tarjeta); flex-shrink: 0; }
+.menu-usuario__lista {
+    position: absolute; top: calc(100% + 8px); right: 0; z-index: 200;
+    min-width: 210px; padding: 6px; display: none; flex-direction: column;
+    background: #150a2e; border: 1px solid var(--borde-fuerte); border-radius: var(--radio-tarjeta);
+}
+.menu-usuario__lista.abierto { display: flex; }
+.menu-usuario__lista a, .menu-usuario__lista button {
+    display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 6px;
+    background: none; border: none; color: var(--texto-2); text-align: left; text-decoration: none; font-size: 14px;
+}
+.menu-usuario__lista a:hover, .menu-usuario__lista button:hover { background: var(--superficie-2); color: #fff; }
+.menu-usuario__lista .cerrar-sesion { color: var(--error); border-top: 1px solid var(--borde); border-radius: 0 0 6px 6px; margin-top: 4px; }
+.menu-usuario__rol { padding: 8px 12px 6px; font-size: 12px; color: var(--texto-3); }
+
+/* ── Pie de página ── */
+.sitio-pie { border-top: 1px solid var(--borde); padding-block: 32px; color: var(--texto-3); font-size: 14px; margin-top: 48px; }
+.sitio-pie__contenido { display: flex; flex-direction: column; align-items: center; gap: 14px; text-align: center; }
+.sitio-pie__marca { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.sitio-pie__marca img { height: 34px; width: auto; }
+.sitio-pie__enlaces { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 18px; }
+.sitio-pie__enlaces a { color: var(--texto-2); text-decoration: none; }
+.sitio-pie__enlaces a:hover { color: var(--violeta-claro); }
+
+@media (min-width: 960px) {
+    .sitio-pie__contenido { flex-direction: row; justify-content: space-between; text-align: left; }
+    .sitio-pie__marca { flex-direction: row; gap: 14px; }
+}
+
+/* ── Íconos de línea (SVG que arma shared/ui.js) ── */
+.icono { width: 18px; height: 18px; flex-shrink: 0; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.icono-grande { width: 22px; height: 22px; }
+
+/* ── Botones ── */
+.btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    min-height: 44px; padding: 10px 18px;
+    border: 1.5px solid transparent; border-radius: var(--radio);
+    font-size: 15px; font-weight: 600; line-height: 1.2; text-decoration: none; white-space: nowrap;
+    transition: background-color 0.2s, border-color 0.2s, color 0.2s, transform 0.2s;
+}
+.btn:hover { transform: translateY(-1px); }
+.btn:active { transform: none; }
+.btn[disabled], .btn[aria-disabled="true"] { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+.btn-primario { background: var(--violeta); color: #fff; }
+.btn-primario:hover { background: var(--violeta-hover); }
+.btn-contorno { background: transparent; border-color: var(--violeta); color: var(--lila); }
+.btn-contorno:hover { background: var(--violeta); color: #fff; }
+.btn-secundario { background: var(--superficie-2); border-color: var(--borde-fuerte); color: #fff; }
+.btn-secundario:hover { background: var(--superficie-3); }
+.btn-peligro { background: var(--error-fondo); border-color: var(--error-borde); color: var(--error); }
+.btn-peligro:hover { background: rgba(255, 68, 68, 0.24); }
+.btn-texto { background: none; color: var(--lila); padding-inline: 8px; }
+.btn-texto:hover { color: #fff; }
+
+.btn-chico { min-height: 34px; padding: 6px 12px; font-size: 13px; }
+.btn-bloque { width: 100%; }
+.grupo-botones { display: flex; flex-wrap: wrap; gap: 8px; }
+
+/* Rueda de "cargando" dentro de un botón */
+.btn .girando, .girando {
+    width: 16px; height: 16px; border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.35); border-top-color: #fff;
+    animation: girar 0.7s linear infinite;
+}
+@keyframes girar { to { transform: rotate(360deg); } }
+
+/* ── Chips (estados y etiquetas) ── */
+.chip {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 3px 10px; border-radius: var(--radio-pildora);
+    font-size: 12px; font-weight: 600; white-space: nowrap;
+    background: var(--violeta-suave); border: 1px solid var(--violeta-borde); color: #e3ccff;
+}
+.chip-gris { background: var(--superficie-2); border-color: var(--borde-fuerte); color: var(--texto-2); }
+.chip-exito { background: var(--exito-fondo); border-color: var(--exito-borde); color: var(--exito); }
+.chip-aviso { background: var(--aviso-fondo); border-color: var(--aviso-borde); color: var(--aviso); }
+.chip-peligro { background: var(--error-fondo); border-color: var(--error-borde); color: var(--error); }
+.grupo-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+/* Filas de chips que en vez de amontonarse en dos líneas se deslizan de costado
+   (Explorar y la portada; antes en la portada "Electrónico" bajaba solo) */
+.grupo-chips--deslizable { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
+.grupo-chips--deslizable::-webkit-scrollbar { display: none; }
+.grupo-chips--deslizable .filtro-chip { flex-shrink: 0; }
+
+/* Chips que funcionan como filtro (botones que se marcan). En celular, con
+   un poco menos de relleno entran las cuatro categorías en una sola fila. */
+.filtro-chip {
+    padding: 7px 11px; border-radius: var(--radio-pildora); font-size: 14px;
+    background: var(--superficie-2); border: 1px solid var(--borde-fuerte); color: var(--texto-2);
+    transition: background-color 0.2s, border-color 0.2s;
+}
+@media (min-width: 480px) { .filtro-chip { padding: 7px 14px; } }
+.filtro-chip:hover { border-color: var(--violeta-borde); color: #fff; }
+.filtro-chip[aria-pressed="true"] { background: var(--violeta-suave); border-color: var(--violeta); color: #fff; }
+
+/* ── Paneles y tarjetas ── */
+.panel {
+    background: var(--superficie); border: 1px solid var(--borde);
+    border-radius: var(--radio-tarjeta); padding: 16px;
+}
+.panel + .panel { margin-top: 16px; }
+.panel__titulo { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
+.panel__titulo h2, .panel__titulo h3, h2.panel__titulo, h3.panel__titulo { font-size: 1.1rem; }
+@media (min-width: 640px) { .panel { padding: 22px; } }
+
+/* Tarjeta de torneo (portada, explorar, perfiles) */
+.grilla-torneos { display: grid; gap: 16px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 250px), 1fr)); }
+.tarjeta-torneo {
+    display: flex; flex-direction: column; overflow: hidden;
+    background: var(--tarjeta-torneo); border: 1px solid transparent; border-radius: var(--radio-tarjeta);
+    color: #fff; text-decoration: none; transition: transform 0.2s, border-color 0.2s;
+}
+.tarjeta-torneo:hover { transform: translateY(-3px); border-color: var(--violeta-borde); }
+.tarjeta-torneo__imagen { position: relative; aspect-ratio: 16 / 9; background: var(--tarjeta); }
+.tarjeta-torneo__imagen img { width: 100%; height: 100%; object-fit: cover; }
+.tarjeta-torneo__fecha {
+    position: absolute; top: 10px; left: 10px; padding: 3px 10px; border-radius: 20px;
+    background: rgba(16, 1, 20, 0.82); font-size: 12px; font-weight: 600;
+}
+.tarjeta-torneo__estado { position: absolute; top: 10px; right: 10px; }
+/* Sobre una imagen el chip necesita fondo sólido para leerse bien */
+.tarjeta-torneo__estado .chip { background-color: rgba(16, 1, 20, 0.88); }
+
+/* Portada genérica para torneos sin logo (colores de la paleta por categoría) */
+.portada-generica {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
+    background: radial-gradient(circle at 50% 38%, rgba(141, 2, 255, 0.42), transparent 62%), linear-gradient(135deg, #2a0b5e, #12052b);
+    color: var(--lila); font-size: 13px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; text-align: center;
+}
+.portada-generica img { width: 64px; height: 64px; }
+.portada-generica span { padding-inline: 12px; }
+.portada-generica--deportivo { background: radial-gradient(circle at 50% 38%, rgba(141, 2, 255, 0.35), transparent 62%), linear-gradient(135deg, var(--calendario-borde), #0a0626); }
+.portada-generica--mental { background: radial-gradient(circle at 50% 38%, rgba(141, 2, 255, 0.35), transparent 62%), linear-gradient(135deg, var(--fila-violeta), #12052b); }
+.tarjeta-torneo__cuerpo { display: flex; flex-direction: column; gap: 6px; padding: 14px; flex: 1; }
+.tarjeta-torneo__titulo { font-size: 1.02rem; font-weight: 700; }
+.tarjeta-torneo__meta { color: var(--texto-3); font-size: 13px; }
+.tarjeta-torneo__pie { margin-top: auto; padding-top: 8px; display: flex; flex-direction: column; gap: 6px; font-size: 13px; color: var(--texto-2); }
+.tarjeta-torneo__fila { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.tarjeta-torneo__premio { color: var(--lila-premio); font-weight: 700; }
+
+/* Barra de progreso (inscriptos / cupo): <progress> nativo, sin estilos en línea */
+.progreso {
+    appearance: none; -webkit-appearance: none; display: block;
+    width: 100%; height: 6px; border: none; border-radius: 20px; overflow: hidden;
+    background: rgba(255, 255, 255, 0.1); color: var(--violeta);
+}
+.progreso::-webkit-progress-bar { background: rgba(255, 255, 255, 0.1); border-radius: 20px; }
+.progreso::-webkit-progress-value { background: var(--violeta); border-radius: 20px; transition: width 0.4s; }
+.progreso::-moz-progress-bar { background: var(--violeta); border-radius: 20px; }
+
+/* ── Formularios ── */
+.formulario { display: flex; flex-direction: column; gap: 16px; }
+.campo { display: flex; flex-direction: column; gap: 6px; }
+.campo > label, .etiqueta { font-size: 14px; font-weight: 600; color: var(--texto-2); }
+.campo input:not([type="checkbox"]):not([type="radio"]):not([type="file"]), .campo select, .campo textarea, .control {
+    width: 100%; min-height: 44px; padding: 10px 12px;
+    background: var(--superficie-2); border: 1px solid var(--borde-fuerte); border-radius: var(--radio);
+    color: #fff; font-size: 15px; transition: border-color 0.2s, box-shadow 0.2s;
+}
+.campo textarea { resize: vertical; min-height: 96px; }
+/* Calendarios y selectores nativos en modo oscuro (se ve el ícono del calendario) */
+.campo input, .campo select, .control { color-scheme: dark; }
+.campo input::placeholder, .campo textarea::placeholder, .control::placeholder { color: rgba(255, 255, 255, 0.38); }
+.campo input:focus, .campo select:focus, .campo textarea:focus, .control:focus {
+    outline: none; border-color: var(--violeta-claro); box-shadow: 0 0 0 3px rgba(141, 2, 255, 0.25);
+}
+.campo select option, .control option { background: var(--tarjeta); color: #fff; }
+.campo .ayuda { font-size: 13px; color: var(--texto-3); }
+.error-campo, .field-error { font-size: 13px; color: var(--error); min-height: 0; }
+.error-campo:empty, .field-error:empty { display: none; }
+.input-error, .campo .input-error { border-color: rgba(255, 68, 68, 0.75) !important; }
+
+/* Campo con la etiqueta al costado (filtros en barras) */
+@media (min-width: 640px) {
+    .campo--en-linea { flex-direction: row; align-items: center; gap: 10px; }
+    .campo--en-linea > label { white-space: nowrap; }
+}
+
+/* Contraseña con botón para ver lo escrito */
+.campo-clave { position: relative; }
+.campo-clave input { padding-right: 48px !important; }
+.campo-clave__ver {
+    position: absolute; right: 4px; top: 50%; transform: translateY(-50%);
+    display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px;
+    background: none; border: none; border-radius: var(--radio); color: var(--texto-3);
+}
+.campo-clave__ver:hover { color: #fff; background: var(--superficie-2); }
+
+/* Requisitos de la contraseña (se marcan mientras se escribe) */
+.requisitos { list-style: none; display: grid; gap: 4px 14px; font-size: 13px; color: var(--texto-3); }
+.requisitos li { display: flex; align-items: center; gap: 6px; }
+.requisitos .icono { width: 14px; height: 14px; }
+.requisitos .cumple { color: var(--exito); }
+@media (min-width: 480px) { .requisitos { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+.fila-campos { display: grid; gap: 16px; }
+@media (min-width: 640px) {
+    .fila-campos { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .fila-campos-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+.casilla { display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--texto-2); cursor: pointer; }
+.casilla input { width: 18px; height: 18px; accent-color: var(--violeta); }
+
+/* Interruptor (sí / no) */
+.interruptor { position: relative; display: inline-flex; align-items: center; gap: 10px; cursor: pointer; }
+.interruptor input { appearance: none; width: 42px; height: 24px; border-radius: 999px; background: #3a2a5a; position: relative; cursor: pointer; transition: background 0.2s; flex-shrink: 0; }
+.interruptor input::after { content: ""; position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; border-radius: 50%; background: #fff; transition: transform 0.2s; }
+.interruptor input:checked { background: var(--violeta); }
+.interruptor input:checked::after { transform: translateX(18px); }
+
+/* ── Zonas para tocar con el dedo (celular y tablet) ──
+   Lo cómodo es que lo que se toca mida al menos 44 px de alto. En una
+   casilla o un interruptor lo que se toca es toda su etiqueta; en un enlace
+   suelto (.tocable, .volver) el relleno agranda la zona y el margen
+   negativo lo compensa, así el diseño no se mueve. En PC, con mouse, no hace falta. */
+.tocable { display: inline-block; padding-block: 12px; margin-block: -12px; }
+@media (max-width: 959px) {
+    .casilla, .interruptor { min-height: 44px; }
+    .volver { padding-block: 12px; margin-top: -12px; margin-bottom: -2px; }
+}
+@media (min-width: 960px) {
+    .tocable { padding-block: 0; margin-block: 0; }
+}
+
+/* ── Alertas ── */
+.alerta {
+    display: flex; align-items: flex-start; gap: 10px;
+    padding: 12px 16px; border-radius: var(--radio); font-size: 14px;
+    background: var(--violeta-suave); border: 1px solid var(--violeta-borde); color: #e3ccff;
+}
+.alerta-exito { background: var(--exito-fondo); border-color: var(--exito-borde); color: var(--exito); }
+.alerta-error { background: var(--error-fondo); border-color: var(--error-borde); color: var(--error); }
+.alerta-aviso { background: var(--aviso-fondo); border-color: var(--aviso-borde); color: var(--aviso); }
+.alerta a { color: inherit; font-weight: 600; }
+
+/* ── Lista de datos (nombre a la izquierda, valor a la derecha) ── */
+.datos div { display: flex; justify-content: space-between; gap: 16px; padding: 9px 0; border-bottom: 1px solid var(--borde); font-size: 14px; }
+.datos div:last-child { border-bottom: none; }
+.datos dt { color: var(--texto-3); }
+.datos dd { text-align: right; }
+
+/* ── Tablas ── */
+/* position: relative hace que los textos para lectores de pantalla de la
+   tabla (.solo-lectores, que tienen position: absolute) queden recortados
+   adentro. Sin eso se escapaban y estiraban la página en el celular. */
+.tabla-scroll { position: relative; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.tabla { width: 100%; border-collapse: collapse; font-size: 14px; }
+.tabla th, .tabla td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--borde); white-space: nowrap; }
+.tabla th { font-size: 12px; font-weight: 600; color: var(--texto-3); letter-spacing: 0.03em; }
+.tabla .numero { text-align: center; }
+.tabla tbody tr:hover { background: var(--superficie); }
+.tabla .destacada { color: var(--lila); font-weight: 700; }
+
+/* ── Pestañas ── */
+.pestanas {
+    display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none;
+    border-bottom: 1px solid var(--borde); margin-bottom: 20px;
+}
+.pestanas::-webkit-scrollbar { display: none; }
+.pestana {
+    padding: 10px 14px; background: none; border: none; border-bottom: 2px solid transparent;
+    color: var(--texto-3); font-size: 15px; white-space: nowrap;
+}
+.pestana:hover { color: #fff; }
+.pestana[aria-selected="true"] { color: #fff; border-bottom-color: var(--violeta); }
+@media (max-width: 479px) {
+    .pestana { padding: 10px 9px; font-size: 14px; }
+}
+
+/* ── Estados vacíos y de carga ── */
+.vacio { padding: 32px 16px; text-align: center; color: var(--texto-3); }
+.vacio .btn { margin-top: 14px; }
+
+/* Aviso cuando el servidor no responde (layout.js → nlMostrarSinServicio) */
+.sin-servicio { display: grid; justify-items: center; gap: 12px; max-width: 520px; margin: 0 auto; padding: 72px 16px; text-align: center; }
+.sin-servicio .icono { width: 44px; height: 44px; color: var(--aviso); }
+.sin-servicio h1 { font-size: 1.6rem; }
+.cargando { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 32px 16px; color: var(--texto-3); }
+
+/* ── Ventana modal (<dialog>) ── */
+.modal {
+    margin: auto; width: min(100% - 32px, 520px); max-height: calc(100vh - 32px);
+    padding: 24px; border: 1px solid var(--borde-fuerte); border-radius: var(--radio-tarjeta);
+    background: #120833; color: #fff;
+}
+.modal::backdrop { background: rgba(0, 0, 0, 0.65); }
+.modal h2 { font-size: 1.2rem; margin-bottom: 16px; }
+.modal__acciones { display: flex; justify-content: flex-end; flex-wrap: wrap; gap: 8px; margin-top: 20px; }
+
+/* ── Partidos (calendario, llaves y gestión) ── */
+.partido {
+    display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; gap: 8px 12px;
+    padding: 10px 12px; background: var(--superficie-2); border: 1px solid var(--borde); border-radius: 10px; font-size: 14px;
+}
+.partido__lado { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.partido__lado--visitante { text-align: right; }
+.partido__centro { display: flex; flex-direction: column; align-items: center; gap: 2px; min-width: 56px; }
+.partido__marcador { font-weight: 700; font-size: 15px; }
+.partido__vs { color: var(--violeta-claro); font-style: italic; font-weight: 700; }
+.partido__detalle { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 12px; color: var(--texto-3); }
+.partido__detalle span { display: inline-flex; align-items: center; gap: 4px; }
+.partido__detalle .icono { width: 14px; height: 14px; }
+a.partido { color: #fff; text-decoration: none; transition: border-color 0.2s; }
+a.partido:hover { border-color: var(--violeta-borde); }
+.partido.ganador-local .partido__lado--local, .partido.ganador-visitante .partido__lado--visitante { color: var(--lila); font-weight: 700; }
+.partido.pase-libre { opacity: 0.75; }
+.partido--propio { border-color: var(--violeta-borde); box-shadow: inset 3px 0 0 var(--violeta); }
+.partido__detalle .chip { padding: 0 8px; font-size: 11px; }
+.lista-partidos { display: flex; flex-direction: column; gap: 8px; }
+
+/* ── Calendario con el estilo original: caja azul oscura y filas negras ──
+   Cada .cita es un partido; a la izquierda, la hoja de almanaque (fecha)
+   o solo la hora cuando la lista ya está agrupada por día. */
+.calendario {
+    display: flex; flex-direction: column; gap: 8px; padding: 10px;
+    background: var(--calendario); border: 2px solid var(--calendario-borde); border-radius: var(--radio);
+}
+.calendario .vacio, .calendario .cargando { padding-block: 24px; }
+
+.cita {
+    display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 12px;
+    padding: 10px 12px; background: #000; border: 1px solid transparent; border-radius: 6px;
+    color: #fff; text-decoration: none; transition: border-color 0.2s;
+}
+.cita:hover { border-color: var(--violeta-borde); }
+.cita__fecha {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    min-width: 54px; padding: 4px 6px; background: var(--fila-violeta); border-radius: 6px; line-height: 1.15;
+}
+.cita__fecha small { font-size: 11px; color: var(--texto-2); text-transform: uppercase; }
+.cita__fecha strong { font-size: 18px; }
+.cita__fecha--sin { gap: 2px; color: var(--texto-2); }
+.cita__fecha--hora strong { font-size: 15px; }
+.cita__equipos { display: block; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cita__equipos .partido__vs { margin-inline: 6px; }
+.cita__detalle { display: flex; flex-wrap: wrap; gap: 2px 12px; margin-top: 2px; font-size: 12px; color: var(--texto-3); }
+.cita__detalle span { display: inline-flex; align-items: center; gap: 4px; }
+.cita__detalle .icono { width: 14px; height: 14px; }
+
+/* ── Paginación ── */
+.paginacion { display: flex; justify-content: center; align-items: center; gap: 8px; margin-top: 24px; flex-wrap: wrap; }
+.paginacion span { color: var(--texto-3); font-size: 14px; padding-inline: 8px; }

@@ -1,0 +1,2 @@
+# Los tests se ejecutan por consola; no se sirven por web.
+Require all denied

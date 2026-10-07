@@ -1,0 +1,30 @@
+/* =====================================================================
+   NEXTLEAGUE - CALENDARIO Y RESULTADOS
+   Solo lo propio de esta página; lo común está en shared/base.css.
+   Igual que en la portada: en PC, próximos partidos y resultados van
+   lado a lado; en celular se elige uno con las pestañas.
+   ===================================================================== */
+
+.titulo-pagina.encabezado-seccion { margin-bottom: 8px; }
+.titulo-pagina select { min-width: 220px; }
+
+.columnas-partidos { display: grid; gap: 32px; }
+.columna-titulo { display: none; margin-bottom: 14px; }
+
+/* La pestaña que no está elegida se oculta solo en celular */
+@media (max-width: 959px) {
+    .pestana-oculta { display: none; }
+}
+
+@media (min-width: 960px) {
+    .pestanas--solo-celular { display: none; }
+    .columnas-partidos { grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 16px; }
+    .columna-titulo { display: block; }
+}
+
+/* Un bloque por día */
+.dia + .dia { margin-top: 24px; }
+.dia__titulo {
+    display: flex; align-items: center; gap: 8px; margin-bottom: 10px;
+    font-size: 0.95rem; font-weight: 600; color: var(--lila);
+}

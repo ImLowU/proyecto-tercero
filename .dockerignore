@@ -1,0 +1,37 @@
+# =====================================================================
+# Lo que NO se copia dentro de la imagen de la aplicación (Dockerfile)
+# =====================================================================
+
+# Claves y configuración de cada máquina: nunca dentro de una imagen
+.env
+.env.*
+config.php
+docker/ssl/
+
+# Lo usa el contenedor de la base (docker-compose.yml lo monta aparte)
+database/
+
+# Datos que genera la aplicación: en Docker van en volúmenes
+storage/*
+public/uploads/*
+!public/uploads/.htaccess
+
+# Desarrollo y pruebas
+.git/
+.gitignore
+.gitattributes
+.phpunit.cache/
+node_modules/
+tests/
+tools/
+phpunit.xml
+package.json
+package-lock.json
+cypress.config.js
+*.md
+
+# Scripts del servidor y archivos de Docker
+scripts/
+Dockerfile
+docker-compose.yml
+.dockerignore

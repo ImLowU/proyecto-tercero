@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Configuración de PHPUnit. Para correr todos los tests (con MySQL de XAMPP encendido):
+    C:\xampp\php\php.exe tools\phpunit.phar
+  Solo una carpeta:  C:\xampp\php\php.exe tools\phpunit.phar tests\unit
+-->
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/11.5/phpunit.xsd"
+         bootstrap="tests/bootstrap.php"
+         colors="true"
+         cacheDirectory=".phpunit.cache"
+         failOnWarning="true"
+         failOnRisky="true"
+         displayDetailsOnTestsThatTriggerWarnings="true">
+    <testsuites>
+        <testsuite name="unit">
+            <directory>tests/unit</directory>
+        </testsuite>
+        <testsuite name="integracion">
+            <directory>tests/integracion</directory>
+        </testsuite>
+    </testsuites>
+    <php>
+        <!-- Base exclusiva para tests: se borra y se vuelve a crear en cada corrida. -->
+        <env name="NL_TEST_BD" value="nextleague_test"/>
+        <env name="NL_TEST_HOST" value="localhost"/>
+        <env name="NL_TEST_PUERTO" value="3306"/>
+        <env name="NL_TEST_ADMIN_USUARIO" value="root"/>
+        <env name="NL_TEST_ADMIN_CLAVE" value=""/>
+        <env name="NL_TEST_APP_CLAVE" value="NlApp_Desarrollo_2026"/>
+        <env name="NL_TEST_LECTURA_CLAVE" value="NlLectura_Desarrollo_2026"/>
+    </php>
+</phpunit>

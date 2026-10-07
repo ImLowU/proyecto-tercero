@@ -1,0 +1,137 @@
+/* =====================================================================
+   NEXTLEAGUE - PANEL DE ADMINISTRACIÓN
+   Solo lo propio de esta página; lo común está en shared/base.css.
+   En PC, menú lateral fijo; en celular, una fila de secciones arriba
+   que se desliza de costado.
+   ===================================================================== */
+
+.admin { display: grid; gap: 16px; padding-top: 20px; }
+.admin__contenido { min-width: 0; }
+.admin__seccion h1 { font-size: clamp(1.5rem, 1.2rem + 1.2vw, 2rem); margin-bottom: 8px; }
+.admin__seccion > .texto-secundario { margin-bottom: 18px; max-width: 75ch; }
+.admin__seccion > .encabezado-seccion { margin-bottom: 8px; align-items: center; }
+#alertaAdmin { margin-bottom: 16px; }
+
+/* ── Menú de secciones ── */
+.admin__menu {
+    display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none;
+    margin-inline: -16px; padding: 0 16px 10px; border-bottom: 1px solid var(--borde);
+}
+.admin__menu::-webkit-scrollbar { display: none; }
+.admin__titulo { display: none; }
+.admin__menu a {
+    display: inline-flex; align-items: center; gap: 8px; flex-shrink: 0;
+    padding: 8px 12px; border-radius: var(--radio); font-size: 14px;
+    color: var(--texto-2); text-decoration: none; white-space: nowrap;
+}
+.admin__menu a:hover { background: var(--superficie-2); color: #fff; }
+.admin__menu a[aria-current="page"] { background: var(--violeta-suave); color: #fff; box-shadow: inset 0 0 0 1px var(--violeta-borde); }
+
+@media (min-width: 960px) {
+    .admin { grid-template-columns: 220px minmax(0, 1fr); gap: 32px; align-items: start; padding-top: 32px; }
+    .admin__menu {
+        position: sticky; top: calc(var(--altura-nav) + 20px);
+        flex-direction: column; overflow: visible; margin: 0; padding: 0 16px 0 0;
+        border-bottom: none; border-right: 1px solid var(--borde);
+    }
+    .admin__titulo { display: block; padding: 0 12px 10px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--texto-3); }
+    .admin__menu a { padding: 10px 12px; }
+}
+
+/* ── Resumen ── */
+.tarjetas-resumen { list-style: none; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin: 16px 0 20px; }
+@media (min-width: 640px) { .tarjetas-resumen { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; } }
+.tarjeta-resumen { display: flex; flex-direction: column; gap: 2px; padding: 14px; background: var(--tarjeta); border-radius: 10px; }
+.tarjeta-resumen__icono {
+    display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; margin-bottom: 6px;
+    border-radius: 8px; background: var(--violeta-suave); color: var(--lila);
+}
+.tarjeta-resumen strong { font-size: 1.6rem; line-height: 1.2; color: var(--lila-numero); }
+.tarjeta-resumen > span:last-child { font-size: 13px; color: var(--texto-2); }
+
+.resumen-columnas { display: grid; gap: 16px; margin-bottom: 16px; }
+.resumen-columnas .panel + .panel { margin-top: 0; }
+@media (min-width: 640px) { .resumen-columnas { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+.barras { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+.barra { display: grid; grid-template-columns: 140px minmax(0, 1fr) 36px; align-items: center; gap: 10px; font-size: 14px; }
+.barra__nombre { color: var(--texto-2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.barra .progreso { height: 10px; }
+.barra__valor { text-align: right; }
+
+/* ── Filtros ── */
+.filtros-admin { display: grid; gap: 10px; margin: 14px 0 6px; }
+.filtros-admin .control { min-height: 42px; }
+@media (min-width: 640px) { .filtros-admin { grid-template-columns: minmax(0, 2fr) repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 960px) {
+    .filtros-admin--auditoria { grid-template-columns: minmax(0, 2fr) repeat(3, minmax(0, 1fr)); }
+}
+.rango-fechas { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 8px 10px; font-size: 14px; color: var(--texto-2); }
+@media (min-width: 640px) {
+    .filtros-admin--auditoria .rango-fechas { grid-column: 1 / -1; grid-template-columns: auto 180px auto 180px; justify-content: start; }
+}
+.cantidad-admin { margin-bottom: 10px; min-height: 1.2em; }
+
+/* ── Tablas ── */
+.panel--tabla { padding: 0; }
+.tabla-admin td { vertical-align: middle; }
+.tabla-admin td .chip { margin-left: 4px; }
+/* El nombre y sus chips ("Vos", "Clave temporal") en una fila alineada al
+   centro; antes los chips quedaban más abajo y pegados a la columna del correo. */
+.fila-usuario { display: flex; align-items: center; gap: 8px; }
+.celda-usuario, .celda-torneo { display: inline-flex; align-items: center; gap: 8px; color: #fff; text-decoration: none; font-weight: 600; }
+.celda-usuario:hover, .celda-torneo:hover { color: var(--lila); }
+/* max-width: none: con el max-width: 100% general, el navegador no cuenta el
+   ancho del avatar al calcular el mínimo de la celda y el chip tapaba el nombre. */
+.celda-usuario img { max-width: none; flex-shrink: 0; border-radius: 50%; object-fit: cover; background: var(--tarjeta); }
+.celda-sub { display: block; font-size: 12px; color: var(--texto-3); font-weight: 400; }
+.tabla-admin a:not(.btn):not(.celda-usuario):not(.celda-torneo) { color: var(--lila); }
+.acciones-tabla { text-align: right; }
+.acciones-tabla .btn { margin-left: 4px; }
+.boton-borrar { color: var(--error); }
+.boton-borrar:hover { color: #fff; }
+.control--chico { min-height: 34px !important; padding: 4px 8px !important; font-size: 13px !important; width: auto !important; }
+
+/* Auditoría: el cambio puede ocupar varias líneas */
+.tabla-auditoria .celda-cambio { white-space: normal; min-width: 260px; max-width: 420px; font-size: 13px; }
+.detalle-auditoria { margin-top: 6px; }
+.detalle-auditoria summary { cursor: pointer; color: var(--lila); font-size: 12px; }
+.tabla-detalle { margin-top: 6px; font-size: 12px; background: var(--superficie); border-radius: 6px; }
+.tabla-detalle th, .tabla-detalle td { padding: 5px 8px; white-space: normal; word-break: break-word; }
+
+/* ── Módulos ── */
+.modulos { display: grid; gap: 14px; }
+.modulos .panel + .panel { margin-top: 0; }
+.modulo { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 12px 16px; align-items: start; }
+.modulo--apagado { opacity: 0.7; }
+.modulo__icono {
+    display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px;
+    border-radius: 10px; background: var(--tarjeta); color: var(--lila);
+}
+.modulo__datos h2 { font-size: 1.1rem; margin-bottom: 4px; }
+.modulo__datos .texto-tenue { margin-top: 6px; }
+.modulo .interruptor { grid-column: 2; }
+@media (min-width: 640px) {
+    .modulo { grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; }
+    .modulo .interruptor { grid-column: auto; }
+}
+
+/* ── Configuración ── */
+.grupo-config { display: grid; gap: 16px; min-width: 0; }
+.grupo-config__titulo { float: left; width: 100%; padding: 0; margin-bottom: 4px; font-size: 1.1rem; font-weight: 700; }
+.grupo-config__titulo + * { clear: both; }
+@media (min-width: 640px) {
+    .grupo-config { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 24px; }
+    .grupo-config__titulo { grid-column: 1 / -1; }
+}
+.acciones-admin { display: flex; justify-content: flex-end; margin-top: 16px; }
+
+/* ── Reportes ── */
+.reportes { display: grid; gap: 14px; margin-bottom: 14px; }
+.reportes .panel + .panel { margin-top: 0; }
+@media (min-width: 640px) { .reportes { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.reporte { display: flex; flex-direction: column; gap: 6px; color: #fff; text-decoration: none; transition: border-color 0.2s, transform 0.2s; }
+.reporte:hover { border-color: var(--violeta-borde); transform: translateY(-2px); }
+.reporte .icono { color: var(--lila); margin-bottom: 4px; }
+.reporte span { font-size: 14px; color: var(--texto-2); }
+.reporte::after { content: "Descargar CSV"; margin-top: auto; padding-top: 8px; font-size: 13px; font-weight: 600; color: var(--lila); }

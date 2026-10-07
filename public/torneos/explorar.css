@@ -1,0 +1,38 @@
+/* =====================================================================
+   NEXTLEAGUE - EXPLORAR TORNEOS
+   Solo lo propio de esta página; lo común está en shared/base.css.
+   ===================================================================== */
+
+.titulo-pagina.encabezado-seccion { margin-bottom: 8px; }
+
+/* ── Filtros ── */
+.filtros {
+    display: flex; flex-direction: column; gap: 14px; margin-bottom: 20px; padding: 14px;
+    background: var(--superficie); border: 1px solid var(--borde); border-radius: var(--radio-tarjeta);
+}
+.filtros__fila { display: flex; flex-direction: column; gap: 12px; }
+
+.buscador { position: relative; flex: 1; }
+.buscador .icono { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--texto-3); pointer-events: none; }
+.buscador .control { padding-left: 40px; }
+
+/* Los filtros avanzados se abren con el botón "Filtros" en celular y tablet */
+.filtros__abrir { align-self: flex-start; }
+.filtros__abrir .chip { padding: 0 7px; }
+.filtros__avanzados { display: none; grid-template-columns: minmax(0, 1fr); gap: 12px; }
+.filtros__avanzados.abierto { display: grid; }
+
+@media (min-width: 640px) {
+    .filtros { padding: 18px; }
+    .filtros__avanzados { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (min-width: 960px) {
+    .filtros__fila { flex-direction: row; align-items: center; gap: 16px; }
+    .filtros__abrir { display: none; }
+    .filtros__avanzados, .filtros__avanzados.abierto { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+
+/* ── Cantidad de resultados ── */
+.resumen-busqueda { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 34px; margin-bottom: 12px; }
+.resumen-busqueda p { color: var(--texto-2); font-size: 14px; }

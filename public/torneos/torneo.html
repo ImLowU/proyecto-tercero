@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Torneo · NextLeague</title>
+    <link rel="icon" href="../logo/favicon.png">
+    <link rel="stylesheet" href="../shared/base.css">
+    <link rel="stylesheet" href="torneo.css">
+</head>
+<body data-pagina="torneos">
+    <header id="encabezado"></header>
+
+    <main id="contenido" class="contenedor">
+        <div id="estadoCarga">
+            <div class="cargando" role="status"><span class="girando" aria-hidden="true"></span>Cargando torneo…</div>
+        </div>
+
+        <div id="contenidoTorneo" class="oculto">
+            <!-- ENCABEZADO -->
+            <section class="torneo-cabecera" aria-labelledby="torneoNombre">
+                <div class="torneo-cabecera__portada" id="torneoPortada"></div>
+                <div class="torneo-cabecera__info">
+                    <div class="grupo-chips" id="torneoChips"></div>
+                    <h1 id="torneoNombre"></h1>
+                    <p class="torneo-cabecera__meta" id="torneoMeta"></p>
+                </div>
+                <div class="torneo-cabecera__acciones" id="torneoAcciones"></div>
+            </section>
+
+            <div id="avisosTorneo"></div>
+            <div id="alertaTorneo" class="oculto"></div>
+
+            <!-- PESTAÑAS -->
+            <div class="pestanas" role="tablist" aria-label="Secciones del torneo" id="pestanasTorneo">
+                <button type="button" class="pestana" role="tab" id="pestanaResumen" data-pestana="resumen" aria-controls="panelResumen" aria-selected="true">Resumen</button>
+                <button type="button" class="pestana" role="tab" id="pestanaCalendario" data-pestana="calendario" aria-controls="panelCalendario" aria-selected="false" tabindex="-1">Calendario</button>
+                <button type="button" class="pestana" role="tab" id="pestanaLlaves" data-pestana="llaves" aria-controls="panelLlaves" aria-selected="false" tabindex="-1">Llaves</button>
+                <button type="button" class="pestana" role="tab" id="pestanaPosiciones" data-pestana="posiciones" aria-controls="panelPosiciones" aria-selected="false" tabindex="-1">Posiciones</button>
+                <button type="button" class="pestana" role="tab" id="pestanaParticipantes" data-pestana="participantes" aria-controls="panelParticipantes" aria-selected="false" tabindex="-1">Participantes</button>
+            </div>
+
+            <!-- RESUMEN -->
+            <section id="panelResumen" role="tabpanel" aria-labelledby="pestanaResumen" class="resumen">
+                <div class="resumen__principal">
+                    <div class="panel">
+                        <h2 class="panel__titulo">Sobre el torneo</h2>
+                        <p id="torneoDescripcion" class="texto-largo"></p>
+                    </div>
+                    <div class="panel">
+                        <h2 class="panel__titulo">Cómo se juega</h2>
+                        <p id="torneoFormato" class="texto-secundario"></p>
+                        <dl class="datos" id="torneoConfiguracion"></dl>
+                    </div>
+                </div>
+                <aside class="resumen__lateral">
+                    <div class="panel" id="panelInscripcion">
+                        <h2 class="panel__titulo" id="tituloInscripcion">Inscripción</h2>
+                        <div class="cupo">
+                            <p><strong id="cupoTexto"></strong> <span id="cupoUnidad" class="texto-tenue"></span></p>
+                            <progress class="progreso" id="cupoProgreso" max="100" value="0" aria-label="Lugares ocupados"></progress>
+                        </div>
+                        <div id="inscripcionContenido"></div>
+                    </div>
+                    <div class="panel">
+                        <div class="panel__titulo">
+                            <h2>Próximos partidos</h2>
+                            <button type="button" class="btn btn-texto btn-chico" data-ir-a="calendario">Ver todos</button>
+                        </div>
+                        <div id="proximosDelTorneo" class="lista-partidos"></div>
+                    </div>
+                </aside>
+            </section>
+
+            <!-- CALENDARIO -->
+            <section id="panelCalendario" role="tabpanel" aria-labelledby="pestanaCalendario" class="oculto">
+                <div id="listaRondas"></div>
+            </section>
+
+            <!-- LLAVES (eliminación directa) -->
+            <section id="panelLlaves" role="tabpanel" aria-labelledby="pestanaLlaves" class="oculto">
+                <div id="llaves"></div>
+            </section>
+
+            <!-- POSICIONES (liga y suizo) -->
+            <section id="panelPosiciones" role="tabpanel" aria-labelledby="pestanaPosiciones" class="oculto">
+                <div id="tablaPosiciones"></div>
+            </section>
+
+            <!-- PARTICIPANTES -->
+            <section id="panelParticipantes" role="tabpanel" aria-labelledby="pestanaParticipantes" class="oculto">
+                <div id="listaParticipantes"></div>
+            </section>
+        </div>
+    </main>
+
+    <footer id="pie"></footer>
+
+    <!-- Crear equipo (torneos por equipos) -->
+    <dialog class="modal" id="modalEquipo" aria-labelledby="tituloModalEquipo">
+        <h2 id="tituloModalEquipo">Crear tu equipo</h2>
+        <form id="formEquipo" class="formulario" novalidate>
+            <div class="campo">
+                <label for="nombreEquipo">Nombre del equipo</label>
+                <input type="text" id="nombreEquipo" maxlength="100" required autocomplete="off">
+                <span class="error-campo" id="nombreEquipoError"></span>
+                <span class="ayuda">Vas a ser el capitán: los demás jugadores te piden unirse y vos los aceptás.</span>
+            </div>
+            <div class="modal__acciones">
+                <button type="button" class="btn btn-secundario" id="cancelarEquipo">Volver</button>
+                <button type="submit" class="btn btn-primario">Crear equipo</button>
+            </div>
+        </form>
+    </dialog>
+
+    <script src="../shared/api.js"></script>
+    <script src="../shared/formato.js"></script>
+    <script src="../shared/ui.js"></script>
+    <script src="../shared/layout.js"></script>
+    <script src="comun.js"></script>
+    <script src="torneo.js"></script>
+</body>
+</html>

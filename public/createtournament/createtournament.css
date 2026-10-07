@@ -1,0 +1,88 @@
+/* =====================================================================
+   NEXTLEAGUE - CREAR Y EDITAR TORNEO
+   Solo lo propio de esta página; lo común está en shared/base.css.
+   ===================================================================== */
+
+#alertaFormulario, #avisoBloqueo { margin-bottom: 16px; }
+.accion-alerta { margin-top: 10px; }
+
+/* Formulario a la izquierda y vista previa fija a la derecha (en PC) */
+.formulario-torneo { display: grid; gap: 24px; }
+.formulario-torneo__vista { display: none; }
+@media (min-width: 960px) {
+    .formulario-torneo { grid-template-columns: minmax(0, 1fr) 300px; align-items: start; }
+    .formulario-torneo__vista { display: block; position: sticky; top: calc(var(--altura-nav) + 20px); }
+    .formulario-torneo__vista .etiqueta { display: block; margin-bottom: 10px; }
+}
+.vista-previa .tarjeta-torneo:hover { transform: none; border-color: transparent; }
+
+/* ── Secciones numeradas ── */
+.seccion-form { min-width: 0; }
+.seccion-form__titulo {
+    float: left; width: 100%; padding: 0; margin-bottom: 18px;
+    display: flex; align-items: center; gap: 10px; font-size: 1.1rem; font-weight: 700;
+}
+.seccion-form__titulo + * { clear: both; }
+.seccion-form__titulo span {
+    display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; flex-shrink: 0;
+    border-radius: 50%; background: var(--violeta-suave); border: 1px solid var(--violeta-borde); color: var(--lila); font-size: 14px;
+}
+.seccion-form > :not(legend) + :not(legend) { margin-top: 16px; }
+.seccion-form .interruptor { display: flex; }
+.seccion-form .interruptor small { font-size: 13px; }
+
+/* ── Opciones con tarjetas (formato y modalidad) ── */
+.opciones-formato, .opciones-modalidad { display: grid; gap: 10px; border-radius: var(--radio); }
+.opciones-formato.input-error, .opciones-modalidad.input-error { outline: 1px solid rgba(255, 68, 68, 0.75); outline-offset: 4px; }
+@media (min-width: 480px) { .opciones-modalidad { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 640px) { .opciones-formato { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+
+.opcion {
+    display: flex; align-items: flex-start; gap: 12px; padding: 14px; cursor: pointer;
+    background: var(--superficie-2); border: 1.5px solid var(--borde-fuerte); border-radius: 10px;
+    transition: border-color 0.2s, background-color 0.2s;
+}
+.opcion:hover { border-color: var(--violeta-borde); }
+.opcion:has(input:checked) { border-color: var(--violeta); background: var(--violeta-suave); }
+.opcion:has(input:focus-visible) { outline: 2px solid var(--lila); outline-offset: 2px; }
+.opcion:has(input:disabled) { opacity: 0.55; cursor: not-allowed; }
+/* Formato: ícono al costado en celular, arriba cuando van en 3 columnas */
+@media (min-width: 640px) { .opcion--formato { flex-direction: column; } }
+.opcion__icono {
+    display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; flex-shrink: 0;
+    border-radius: 10px; background: var(--tarjeta); color: var(--lila);
+}
+.opcion__texto strong { display: block; font-size: 15px; }
+.opcion__texto small { display: block; margin-top: 2px; font-size: 13px; color: var(--texto-3); line-height: 1.4; }
+.opciones-modalidad input[type="radio"] { width: 18px; height: 18px; margin-top: 2px; accent-color: var(--violeta); flex-shrink: 0; }
+
+/* ── Premio con moneda ── */
+.premio { display: grid; grid-template-columns: minmax(0, 1fr) 130px; gap: 8px; }
+
+/* ── Archivos ── */
+.subida {
+    display: flex; align-items: center; gap: 12px; padding: 14px; cursor: pointer;
+    border: 1.5px dashed var(--borde-fuerte); border-radius: 10px; background: var(--superficie);
+    transition: border-color 0.2s, background-color 0.2s;
+}
+.subida:hover { border-color: var(--violeta); background: var(--violeta-suave); }
+.campo:has(input[type="file"]:focus-visible) .subida { outline: 2px solid var(--lila); outline-offset: 2px; }
+.campo:has(input[type="file"]:disabled) .subida { opacity: 0.55; cursor: not-allowed; }
+.subida img { width: 40px; height: 40px; }
+.subida strong { display: block; font-size: 15px; color: var(--texto); }
+.subida small { display: block; font-size: 13px; color: var(--texto-3); }
+
+.archivo-elegido {
+    display: flex; align-items: center; gap: 10px; padding: 10px;
+    background: var(--superficie-2); border: 1px solid var(--borde); border-radius: var(--radio);
+}
+.archivo-elegido img { width: 48px; height: 48px; border-radius: 6px; object-fit: cover; flex-shrink: 0; }
+.archivo-elegido > .icono { color: var(--lila); }
+.archivo-elegido__nombre { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 14px; }
+.archivo-elegido__nombre small { display: block; font-size: 12px; color: var(--texto-3); }
+
+/* ── Botones finales ── */
+.acciones-formulario { display: flex; flex-direction: column-reverse; gap: 10px; margin-top: 20px; }
+@media (min-width: 480px) {
+    .acciones-formulario { flex-direction: row; justify-content: flex-end; }
+}

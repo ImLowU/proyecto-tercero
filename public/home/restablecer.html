@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elegir contraseña nueva · NextLeague</title>
+    <link rel="icon" href="../logo/favicon.png">
+    <link rel="stylesheet" href="../shared/base.css">
+    <link rel="stylesheet" href="acceso.css">
+</head>
+<body data-pagina="recuperar">
+    <header id="encabezado"></header>
+
+    <main id="contenido" class="acceso acceso--angosto">
+        <div class="contenedor acceso__contenido">
+            <section class="panel acceso__tarjeta" aria-labelledby="tituloRestablecer">
+                <h1 id="tituloRestablecer">Elegí tu contraseña nueva</h1>
+                <p class="acceso__subtitulo">El enlace sirve una sola vez. Al cambiarla se cierran las sesiones con "Recordarme" en tus dispositivos.</p>
+
+                <div id="alertaAcceso" class="oculto"></div>
+
+                <form id="formRestablecer" class="formulario" novalidate>
+                    <div class="campo">
+                        <label for="contrasena">Contraseña nueva</label>
+                        <div class="campo-clave campo-icono">
+                            <svg class="icono" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+                            <input type="password" id="contrasena" autocomplete="new-password" maxlength="72" required aria-describedby="requisitosClave">
+                            <button type="button" class="campo-clave__ver" id="verContrasena"></button>
+                        </div>
+                        <ul class="requisitos" id="requisitosClave" aria-label="Requisitos de la contraseña"></ul>
+                        <span class="error-campo" id="contrasenaError"></span>
+                    </div>
+                    <div class="campo">
+                        <label for="contrasena_repetida">Repetí la contraseña</label>
+                        <input type="password" id="contrasena_repetida" autocomplete="new-password" maxlength="72" required>
+                        <span class="error-campo" id="contrasena_repetidaError"></span>
+                    </div>
+                    <button type="submit" class="btn btn-primario">Cambiar contraseña</button>
+                </form>
+
+                <p class="acceso__pie"><a href="recuperar" class="tocable">Pedir un enlace nuevo</a></p>
+            </section>
+        </div>
+    </main>
+
+    <footer id="pie"></footer>
+
+    <script src="../shared/api.js"></script>
+    <script src="../shared/formato.js"></script>
+    <script src="../shared/ui.js"></script>
+    <script src="../shared/layout.js"></script>
+    <script src="acceso.js"></script>
+    <script src="restablecer.js"></script>
+</body>
+</html>

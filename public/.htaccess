@@ -1,0 +1,51 @@
+# =====================================================================
+# Cabeceras de seguridad para las páginas (Apache con mod_headers).
+# - nosniff: el navegador no "adivina" el tipo de archivo.
+# - DENY: nadie puede meter NextLeague dentro de un iframe (clickjacking).
+# - CSP: solo se cargan scripts, estilos e imágenes del propio sitio.
+#   Sin 'unsafe-inline': ninguna página tiene scripts ni estilos escritos
+#   dentro del HTML (todo está en archivos .js y .css), así que si alguien
+#   lograra colar un <script> o un onerror="..." en un nombre, el
+#   navegador no lo ejecuta. Las imágenes "blob:" son la vista previa del
+#   logo antes de subirlo.
+# - Permissions-Policy: el sitio no usa cámara, micrófono ni ubicación.
+# El servidor de desarrollo (tools/servidor_dev.php) lee estas mismas
+# líneas, así que alcanza con cambiarlas acá.
+# =====================================================================
+Options -Indexes
+
+<IfModule mod_headers.c>
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set X-Frame-Options "DENY"
+    Header always set Referrer-Policy "same-origin"
+    Header always set Permissions-Policy "camera=(), microphone=(), geolocation=()"
+    Header always set Content-Security-Policy "default-src 'self'; img-src 'self' data: blob:; style-src 'self'; script-src 'self'; object-src 'none'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'"
+</IfModule>
+
+# =====================================================================
+# Direcciones sin ".html": la barra muestra .../torneos/torneo?id=3 y no
+# .../torneos/torneo.html?id=3. Usa mod_rewrite, igual que la API (XAMPP
+# lo trae encendido). tools/servidor_dev.php hace lo mismo.
+# =====================================================================
+RewriteEngine On
+
+# 1. Una dirección vieja con ".html" (un enlace guardado, un correo) lleva a
+#    la nueva, con sus parámetros, y home/index.html lleva a home/.
+#    THE_REQUEST es lo que pidió el navegador: como el paso 2 cambia la
+#    dirección solo por dentro, no vuelve a disparar esta regla (no hay bucle).
+#    Es 302 y no 301 para que el navegador no la guarde para siempre.
+RewriteCond %{THE_REQUEST} ^\S+\s[^?\s]*\.html[?\s]
+RewriteCond %{REQUEST_FILENAME} -f
+RewriteCond %{REQUEST_URI} ^(.*/)index\.html$
+RewriteRule ^ %1 [R=302,L]
+
+RewriteCond %{THE_REQUEST} ^\S+\s[^?\s]*\.html[?\s]
+RewriteCond %{REQUEST_FILENAME} -f
+RewriteCond %{REQUEST_URI} ^(.+)\.html$
+RewriteRule ^ %1 [R=302,L]
+
+# 2. La dirección nueva entrega su archivo: torneos/torneo → torneos/torneo.html
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}.html -f
+RewriteRule ^ %{REQUEST_URI}.html [L]

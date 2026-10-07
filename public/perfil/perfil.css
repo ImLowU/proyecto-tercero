@@ -1,0 +1,116 @@
+/* =====================================================================
+   NEXTLEAGUE - PERFILES (mi perfil, perfil de jugador y de equipo)
+   Solo lo propio de estas páginas; lo común está en shared/base.css.
+   ===================================================================== */
+
+/* ── Encabezado: foto, nombre, datos y acciones ── */
+.perfil-cabecera {
+    display: grid; grid-template-columns: 88px minmax(0, 1fr); gap: 14px 18px; align-items: center;
+    padding-block: 28px 4px;
+}
+.perfil-cabecera__foto { position: relative; width: 88px; height: 88px; }
+.perfil-cabecera__foto > img {
+    width: 100%; height: 100%; border-radius: 50%; object-fit: cover;
+    background: var(--tarjeta); border: 3px solid var(--violeta-borde);
+}
+.perfil-cabecera__foto--equipo > img { border-radius: 22px; padding: 12px; }
+/* Botón de la cámara sobre la foto (solo en mi perfil) */
+.perfil-cabecera__camara {
+    position: absolute; right: -4px; bottom: -4px; width: 36px; height: 36px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 50%; background: var(--violeta); color: #fff; border: 3px solid var(--fondo);
+    transition: background-color 0.2s;
+}
+.perfil-cabecera__camara:hover { background: var(--violeta-hover); }
+.perfil-cabecera__foto:has(input:focus-visible) .perfil-cabecera__camara { outline: 2px solid var(--lila); outline-offset: 2px; }
+
+.perfil-cabecera__info { min-width: 0; }
+.perfil-cabecera__info .grupo-chips { margin-bottom: 6px; }
+.perfil-cabecera__info h1 { font-size: clamp(1.5rem, 1.2rem + 1.4vw, 2.1rem); overflow-wrap: anywhere; }
+.perfil-cabecera__meta { display: flex; flex-wrap: wrap; gap: 4px 16px; margin-top: 6px; color: var(--texto-3); font-size: 14px; }
+.perfil-cabecera__meta span { display: inline-flex; align-items: center; gap: 6px; }
+.perfil-cabecera__meta .icono { width: 16px; height: 16px; }
+.perfil-cabecera__meta a { color: var(--lila); }
+.perfil-cabecera__bio { grid-column: 1 / -1; max-width: 65ch; color: var(--texto-2); white-space: pre-line; }
+.perfil-cabecera__bio:empty { display: none; }
+.perfil-cabecera__acciones { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 8px; }
+.perfil-cabecera__acciones:empty { display: none; }
+
+@media (min-width: 640px) {
+    .perfil-cabecera { grid-template-columns: 112px minmax(0, 1fr); gap: 16px 24px; padding-block: 40px 4px; }
+    .perfil-cabecera__foto { width: 112px; height: 112px; }
+    .perfil-cabecera__bio { grid-column: 2; }
+}
+@media (min-width: 960px) {
+    .perfil-cabecera { grid-template-columns: 120px minmax(0, 1fr) auto; }
+    .perfil-cabecera__foto { width: 120px; height: 120px; }
+    .perfil-cabecera__acciones { grid-column: 3; grid-row: 1; align-self: start; justify-content: flex-end; }
+}
+
+/* ── Números (torneos, partidos, victorias…) ── */
+.numeros { list-style: none; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin: 22px 0 6px; }
+/* En dos columnas, si la cantidad es impar el último ocupa toda la fila
+   (antes quedaba solo, a la mitad, por ejemplo "Victorias" en el perfil). */
+.numeros > :last-child:nth-child(odd) { grid-column: 1 / -1; }
+.numero-perfil { padding: 14px 10px; background: var(--tarjeta); border-radius: 10px; text-align: center; }
+.numero-perfil strong { display: block; font-size: 1.6rem; line-height: 1.2; color: var(--lila-numero); }
+.numero-perfil span { font-size: 13px; color: var(--texto-2); }
+@media (min-width: 640px) {
+    .numeros { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 14px; }
+    .numeros > :last-child:nth-child(odd) { grid-column: auto; }
+}
+
+#alertaPerfil { margin-top: 16px; }
+.titulo-columna { margin-bottom: 14px; font-size: 1.2rem; }
+.cargando-foto { opacity: 0.5; }
+.pestanas { margin-top: 24px; }
+
+/* ── Bloques y columnas ── */
+.bloque + .bloque, .numeros + .bloque { margin-top: 32px; }
+.bloque > .encabezado-seccion { margin-bottom: 14px; align-items: center; }
+.bloque > h2 { margin-bottom: 14px; }
+.dos-columnas { display: grid; gap: 32px; }
+.dos-columnas > * { min-width: 0; }
+@media (min-width: 960px) {
+    .dos-columnas { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+/* ── Torneos que organizo: filas con acciones ── */
+.filas-torneo { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+.fila-torneo {
+    display: grid; grid-template-columns: 56px minmax(0, 1fr); align-items: center; gap: 10px 14px; padding: 12px;
+    background: var(--superficie-2); border: 1px solid var(--borde); border-radius: 10px;
+}
+.fila-torneo__portada { position: relative; width: 56px; height: 56px; overflow: hidden; border-radius: 10px; background: var(--tarjeta); }
+.fila-torneo__portada > img { width: 100%; height: 100%; object-fit: cover; }
+.fila-torneo__portada .portada-generica img { width: 28px; height: 28px; }
+.fila-torneo__portada .portada-generica span { display: none; }
+.fila-torneo__datos { min-width: 0; }
+.fila-torneo__datos strong { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.fila-torneo__meta { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; margin-top: 4px; font-size: 13px; color: var(--texto-3); }
+.fila-torneo__acciones { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 6px; }
+@media (min-width: 640px) {
+    .fila-torneo { grid-template-columns: 56px minmax(0, 1fr) auto; }
+    .fila-torneo__acciones { grid-column: auto; }
+}
+
+/* ── Integrantes de un equipo ── */
+.miembros { list-style: none; display: grid; gap: 10px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 230px), 1fr)); }
+.miembro a {
+    display: flex; align-items: center; gap: 10px; padding: 10px 12px; min-width: 0;
+    background: var(--superficie-2); border: 1px solid var(--borde); border-radius: 10px;
+    color: #fff; text-decoration: none; transition: border-color 0.2s;
+}
+.miembro a:hover { border-color: var(--violeta-borde); }
+.miembro img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; flex-shrink: 0; background: var(--tarjeta); }
+.miembro span { display: flex; flex-direction: column; min-width: 0; }
+.miembro strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.miembro small { font-size: 12px; color: var(--texto-3); }
+
+/* ── Cuenta: datos y contraseña ── */
+.cuenta { display: grid; gap: 16px; }
+.cuenta .panel + .panel { margin-top: 0; }
+@media (min-width: 960px) {
+    .cuenta { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; gap: 20px; }
+}
+.cuenta .formulario .btn-primario { align-self: flex-start; }

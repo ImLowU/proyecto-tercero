@@ -1,0 +1,12 @@
+{
+  "name": "nextleague",
+  "private": true,
+  "description": "Pruebas de punta a punta (Cypress) de NextLeague. La aplicación no usa Node: esto es solo para desarrollo.",
+  "scripts": {
+    "e2e": "cypress run --browser chrome",
+    "e2e:abrir": "cypress open --e2e --browser chrome"
+  },
+  "devDependencies": {
+    "cypress": "16.1.1"
+  }
+}

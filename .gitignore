@@ -1,0 +1,34 @@
+# =====================================================================
+# Archivos que NO se suben a GitHub
+# =====================================================================
+
+# Configuración local con credenciales reales (cada máquina tiene la suya)
+/config.php
+# Docker: claves (.env) y certificado HTTPS de cada instalación
+/.env
+/docker/ssl/*
+!/docker/ssl/.gitkeep
+
+# Archivos que suben los usuarios (fotos, logos, reglas en PDF)
+/public/uploads/*
+!/public/uploads/.htaccess
+
+# Registros y archivos temporales que genera la aplicación
+/storage/*
+!/storage/.gitkeep
+!/storage/.htaccess
+*.log
+
+# Herramientas de desarrollo y testing (se instalan en cada PC)
+/tools/*.phar
+/node_modules/
+/tests/e2e/screenshots/
+/tests/e2e/videos/
+/tests/e2e/registro/
+/.phpunit.cache/
+
+# Sistema operativo y editores
+Thumbs.db
+.DS_Store
+.vscode/
+.idea/

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendario y resultados · NextLeague</title>
+    <meta name="description" content="Próximos partidos y últimos resultados de todos los torneos publicados en NextLeague.">
+    <link rel="icon" href="../logo/favicon.png">
+    <link rel="stylesheet" href="../shared/base.css">
+    <link rel="stylesheet" href="partidos.css">
+</head>
+<body data-pagina="calendario">
+    <header id="encabezado"></header>
+
+    <main id="contenido" class="contenedor">
+        <div class="titulo-pagina encabezado-seccion">
+            <div>
+                <h1>Calendario y resultados</h1>
+                <p>Los partidos de las rondas publicadas de todos los torneos.</p>
+            </div>
+            <div class="campo campo--en-linea">
+                <label for="filtroJuego">Juego</label>
+                <select id="filtroJuego">
+                    <option value="">Todos los juegos</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- En celular se ve una lista por vez (pestañas); desde 960px, las dos lado a lado -->
+        <div class="pestanas pestanas--solo-celular" role="tablist" aria-label="Partidos" id="pestanasPartidos">
+            <button type="button" class="pestana" role="tab" id="pestanaProximos" data-pestana="proximos" aria-controls="panelProximos" aria-selected="true">Próximos partidos</button>
+            <button type="button" class="pestana" role="tab" id="pestanaResultados" data-pestana="resultados" aria-controls="panelResultados" aria-selected="false" tabindex="-1">Resultados</button>
+        </div>
+
+        <div class="columnas-partidos">
+            <section id="panelProximos" role="tabpanel" aria-labelledby="tituloProximos">
+                <h2 class="columna-titulo" id="tituloProximos">Próximos partidos</h2>
+                <div id="listaProximos" aria-live="polite"></div>
+                <nav class="paginacion" id="paginacionProximos" aria-label="Páginas de próximos partidos"></nav>
+            </section>
+
+            <section id="panelResultados" role="tabpanel" aria-labelledby="tituloResultados">
+                <h2 class="columna-titulo" id="tituloResultados">Resultados</h2>
+                <div id="listaResultados" aria-live="polite"></div>
+                <nav class="paginacion" id="paginacionResultados" aria-label="Páginas de resultados"></nav>
+            </section>
+        </div>
+    </main>
+
+    <footer id="pie"></footer>
+
+    <script src="../shared/api.js"></script>
+    <script src="../shared/formato.js"></script>
+    <script src="../shared/ui.js"></script>
+    <script src="../shared/layout.js"></script>
+    <script src="partidos.js"></script>
+</body>
+</html>

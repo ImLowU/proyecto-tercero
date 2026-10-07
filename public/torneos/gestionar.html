@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestionar torneo · NextLeague</title>
+    <link rel="icon" href="../logo/favicon.png">
+    <link rel="stylesheet" href="../shared/base.css">
+    <link rel="stylesheet" href="gestionar.css">
+</head>
+<body data-pagina="torneos">
+    <header id="encabezado"></header>
+
+    <main id="contenido" class="contenedor">
+        <div id="estadoCarga">
+            <div class="cargando" role="status"><span class="girando" aria-hidden="true"></span>Cargando torneo…</div>
+        </div>
+
+        <div id="contenidoGestion" class="oculto">
+            <div class="titulo-pagina encabezado-seccion">
+                <div>
+                    <a class="volver" id="enlaceVolver" href="#">
+                        <svg class="icono" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>Ver página del torneo
+                    </a>
+                    <h1>Gestionar torneo</h1>
+                    <p><strong id="nombreTorneo"></strong> <span id="chipsTorneo" class="grupo-chips grupo-chips--en-linea"></span></p>
+                </div>
+                <div class="grupo-botones">
+                    <a class="btn btn-secundario" id="enlaceEditar" href="#">
+                        <svg class="icono" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4L18.5 9.5a2.83 2.83 0 0 0-4-4L4 16v4"/><path d="M13.5 6.5l4 4"/></svg>Editar datos
+                    </a>
+                    <a class="btn btn-secundario" id="enlaceReporte" href="#" download>
+                        <svg class="icono" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2M7 11l5 5 5-5M12 4v12"/></svg>Reporte CSV
+                    </a>
+                </div>
+            </div>
+
+            <!-- Pasos del torneo -->
+            <ol class="pasos" id="pasos" aria-label="Avance del torneo"></ol>
+
+            <div id="alertaGestion" class="oculto" tabindex="-1"></div>
+
+            <div class="gestion">
+                <div class="gestion__principal">
+                    <!-- Lo que conviene hacer ahora -->
+                    <section class="panel panel--destacado" id="panelProximoPaso" aria-labelledby="tituloProximoPaso">
+                        <h2 class="panel__titulo" id="tituloProximoPaso">Próximo paso</h2>
+                        <p id="textoProximoPaso" class="texto-secundario"></p>
+                        <div class="grupo-botones" id="accionesProximoPaso"></div>
+                    </section>
+
+                    <!-- Rondas: resultados y programación -->
+                    <section class="panel" aria-labelledby="tituloRondas">
+                        <div class="panel__titulo">
+                            <h2 id="tituloRondas">Rondas y resultados</h2>
+                            <span class="texto-tenue" id="avanceRondas"></span>
+                        </div>
+                        <div id="selectorRondas" class="selector-rondas" role="tablist" aria-label="Rondas"></div>
+                        <div id="editorRonda"></div>
+                    </section>
+                </div>
+
+                <aside class="gestion__lateral">
+                    <!-- Inscripciones -->
+                    <section class="panel" aria-labelledby="tituloInscriptos">
+                        <div class="panel__titulo">
+                            <h2 id="tituloInscriptos">Inscripciones</h2>
+                            <span class="chip" id="cupoChip"></span>
+                        </div>
+                        <form id="formInscribir" class="formulario formulario--compacto oculto" novalidate>
+                            <div class="campo" id="campoUsuario">
+                                <label for="inscribirUsuario">Nombre de usuario</label>
+                                <input type="text" id="inscribirUsuario" maxlength="50" autocomplete="off">
+                                <span class="error-campo" id="inscribirUsuarioError"></span>
+                            </div>
+                            <div class="campo" id="campoEquipo">
+                                <label for="inscribirEquipo">Nombre del equipo</label>
+                                <input type="text" id="inscribirEquipo" maxlength="100" autocomplete="off">
+                                <span class="error-campo" id="inscribirEquipoError"></span>
+                            </div>
+                            <div class="campo" id="campoCapitan">
+                                <label for="inscribirCapitan">Capitán <span class="texto-tenue">(usuario, opcional)</span></label>
+                                <input type="text" id="inscribirCapitan" maxlength="50" autocomplete="off">
+                                <span class="error-campo" id="inscribirCapitanError"></span>
+                            </div>
+                            <button type="submit" class="btn btn-secundario btn-bloque">
+                                <svg class="icono" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="4"/><path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2M19 8v6M16 11h6"/></svg>Inscribir
+                            </button>
+                        </form>
+                        <ul class="inscriptos" id="listaInscriptos"></ul>
+                    </section>
+
+                    <!-- Visibilidad -->
+                    <section class="panel" aria-labelledby="tituloVisibilidad">
+                        <h2 class="panel__titulo" id="tituloVisibilidad">Visibilidad</h2>
+                        <label class="interruptor">
+                            <input type="checkbox" id="interruptorPublicado">
+                            <span id="textoPublicado"></span>
+                        </label>
+                    </section>
+
+                    <!-- Configuración -->
+                    <section class="panel" aria-labelledby="tituloConfiguracion">
+                        <div class="panel__titulo">
+                            <h2 id="tituloConfiguracion">Configuración</h2>
+                            <a class="btn btn-texto btn-chico" id="enlaceEditarConfiguracion" href="#">Editar</a>
+                        </div>
+                        <dl class="datos" id="datosConfiguracion"></dl>
+                    </section>
+
+                    <!-- Zona de peligro -->
+                    <section class="panel panel--peligro" id="panelPeligro" aria-labelledby="tituloPeligro">
+                        <h2 class="panel__titulo" id="tituloPeligro">Zona de peligro</h2>
+                        <p class="texto-tenue" id="textoPeligro"></p>
+                        <div class="grupo-botones" id="accionesPeligro"></div>
+                    </section>
+                </aside>
+            </div>
+        </div>
+    </main>
+
+    <footer id="pie"></footer>
+
+    <!-- Historial de resultados de un partido -->
+    <dialog class="modal" id="modalHistorial" aria-labelledby="tituloHistorial">
+        <h2 id="tituloHistorial">Historial del resultado</h2>
+        <div id="contenidoHistorial"></div>
+        <div class="modal__acciones">
+            <button type="button" class="btn btn-secundario" id="cerrarHistorial">Cerrar</button>
+        </div>
+    </dialog>
+
+    <script src="../shared/api.js"></script>
+    <script src="../shared/formato.js"></script>
+    <script src="../shared/ui.js"></script>
+    <script src="../shared/layout.js"></script>
+    <script src="comun.js"></script>
+    <script src="gestionar.js"></script>
+</body>
+</html>
