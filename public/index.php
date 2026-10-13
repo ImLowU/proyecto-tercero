@@ -48,10 +48,7 @@ require BASE_PATH . '/config/app.php';
 ManejadorErrores::registrar(APP_ENV === 'development');
 
 // --- Política de seguridad de contenido (con un nonce por pedido; ver core/Csp.php) ---
-// TODAVÍA NO: las vistas de SportTime aún llevan estilos y scripts en línea, y la política de Apache
-// (public/.htaccess) los permite. Mandar las dos haría que el navegador aplique la más estricta y rompería
-// la interfaz. Se activa (y se quita la de Apache) en la etapa del frontend, cuando las vistas ya no los usen.
-// Csp::enviar();
+Csp::enviar();
 
 // --- Iniciar sesión segura ---
 // La API pública (/api/…) es de solo lectura y no usa sesión: no se abre una por cada cliente que
