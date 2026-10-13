@@ -19,7 +19,7 @@
     <?php foreach ($torneos as $t): ?>
     <article class="card">
       <div class="between">
-        <h3 class="mb-0"><?= View::e($t['nombre']) ?></h3>
+        <h2 class="como-h3 mb-0 rompe-texto"><?= View::e($t["nombre"]) ?></h2>
         <?= View::estadoChip($t['estado']) ?>
       </div>
       <p class="muted"><?= View::e($t['tipo_nombre']) ?> · <?= View::e(ucfirst($t['modalidad'])) ?></p>

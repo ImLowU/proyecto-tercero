@@ -3,7 +3,7 @@
     <span class="logo-mark">
       <img src="/assets/img/sporttime-logo.svg" alt="<?= APP_NAME ?>">
     </span>
-    <span class="brand-name"><?= APP_NAME ?></span>
+    <span class="brand-name"><?= View::e($_sitio['nombre']) ?></span>
   </a>
   <button class="btn ghost nav-toggle" data-nav-toggle aria-label="Menú">Menú</button>
   <nav class="nav-links">

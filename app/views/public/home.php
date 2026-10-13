@@ -12,11 +12,11 @@
   <?php if ($destacado): ?>
   <div class="hero-card card">
     <div class="eyebrow">Torneo destacado</div>
-    <h3><?= View::e($destacado['nombre']) ?></h3>
+    <h2 class="como-h3"><?= View::e($destacado['nombre']) ?></h2>
     <p><?= View::e($destacado['tipo_nombre']) ?> · <?= View::estadoChip($destacado['estado']) ?></p>
-    <div class="grid cols-2" style="margin-top:.75rem">
+    <div class="grid cols-2 mt-075">
       <div class="stat-card">
-        <strong><?= (new TorneoModel())->contarInscritos((int)$destacado['id']) ?></strong>
+        <strong><?= (int)$destacado['inscritos'] ?></strong>
         <span>Inscritos</span>
       </div>
       <?php if ($destacado['tipo_slug'] === 'suizo' && $destacado['rondas_suizo']): ?>
@@ -26,7 +26,7 @@
       </div>
       <?php endif; ?>
     </div>
-    <a class="btn primary" href="/torneo/<?= (int)$destacado['id'] ?>" style="margin-top:.75rem;display:inline-flex">Ver detalle</a>
+    <a class="btn primary mt-075 d-inline-flex" href="/torneo/<?= (int)$destacado['id'] ?>">Ver detalle</a>
   </div>
   <?php endif; ?>
 </section>
@@ -58,11 +58,11 @@
 </section>
 
 <section class="section">
-  <div class="card text-center" style="padding:2.6rem 1.5rem">
+  <div class="card text-center cta-tarjeta">
     <div class="eyebrow">Empezá ahora</div>
-    <h2 class="mb-2">Organizá tu próximo torneo con <?= APP_NAME ?></h2>
-    <p class="mb-4" style="max-width:54ch;margin-inline:auto">Creá torneos de liga, eliminación directa o sistema suizo y seguí posiciones, brackets y resultados en un solo lugar.</p>
-    <div class="actions" style="justify-content:center">
+    <h2 class="mb-2">Organizá tu próximo torneo con <?= View::e($_sitio["nombre"]) ?></h2>
+    <p class="mb-4 cta-texto">Creá torneos de liga, eliminación directa o sistema suizo y seguí posiciones, brackets y resultados en un solo lugar.</p>
+    <div class="actions justify-center">
       <a class="btn primary" href="/torneos">Explorar torneos</a>
       <a class="btn" href="/login">Ingresar al panel</a>
     </div>

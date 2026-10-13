@@ -1,3 +1,17 @@
+<?php
+/**
+ * Lista de equipos del panel.
+ * Variables: $equipos (la página actual), $filtros, $pag (Paginador), $estados [valor => texto].
+ */
+$barra = [
+    'accion' => '/admin/equipos',
+    'campos' => [
+        ['nombre' => 'q',      'tipo' => 'buscar', 'etiqueta' => 'Buscar', 'placeholder' => 'Nombre, categoría o disciplina'],
+        ['nombre' => 'estado', 'tipo' => 'opcion', 'etiqueta' => 'Estado', 'opciones' => $estados],
+    ],
+];
+$hayFiltros = array_filter($filtros, fn($v) => $v !== '' && $v !== null) !== [];
+?>
 <section class="page-header">
   <div class="page-title">
     <div class="eyebrow">Gestión</div>
@@ -7,25 +21,26 @@
 </section>
 
 <div class="table-wrap">
+  <div class="table-header"><?php include APP_PATH . '/views/partials/filtros.php'; ?></div>
   <div class="table-scroll">
-    <table>
+    <table aria-label="Equipos">
       <thead>
-        <tr><th>Nombre</th><th>Categoría</th><th>Integrantes</th><th>Estado</th><th>Acciones</th></tr>
+        <tr><th scope="col">Nombre</th><th scope="col">Categoría</th><th scope="col">Integrantes</th><th scope="col">Estado</th><th scope="col">Acciones</th></tr>
       </thead>
       <tbody>
         <?php if (empty($equipos)): ?>
           <tr><td colspan="5">
             <div class="empty-state">
-              <div class="empty-icon">🛡️</div>
-              <h3>Sin equipos registrados</h3>
-              <p>Creá el primero con el botón “+ Nuevo equipo”.</p>
+              <div class="empty-icon" aria-hidden="true"><?= $hayFiltros ? '🔎' : '🛡️' ?></div>
+              <h3><?= $hayFiltros ? 'Sin resultados' : 'Sin equipos registrados' ?></h3>
+              <p><?= $hayFiltros ? 'Ningún equipo coincide con la búsqueda.' : 'Creá el primero con el botón “+ Nuevo equipo”.' ?></p>
             </div>
           </td></tr>
         <?php else: ?>
           <?php foreach ($equipos as $e): ?>
           <tr>
             <td>
-              <div style="display:flex;align-items:center;gap:.6rem">
+              <div class="flex items-center gap-06">
                 <?= View::avatar($e['nombre'], Upload::url('logos', $e['logo'] ?? null), 32) ?>
                 <strong><?= View::e($e['nombre']) ?></strong>
               </div>
@@ -36,8 +51,8 @@
             <td>
               <a class="btn small" href="/admin/equipos/editar/<?= (int)$e['id'] ?>">Gestionar</a>
               <?php $activo = $e['estado'] === 'activo'; ?>
-              <form method="POST" action="/admin/equipos/eliminar/<?= (int)$e['id'] ?>" style="display:inline"
-                    onsubmit="return confirm('<?= $activo ? '¿Desactivar' : '¿Reactivar' ?> este equipo?')">
+              <form class="d-inline" method="POST" action="/admin/equipos/eliminar/<?= (int)$e['id'] ?>"
+                    data-confirmar="<?= $activo ? '¿Desactivar' : '¿Reactivar' ?> este equipo?">
                 <?= Csrf::field() ?>
                 <button class="btn small <?= $activo ? 'danger' : 'primary' ?>"><?= $activo ? 'Desactivar' : 'Activar' ?></button>
               </form>
@@ -48,4 +63,5 @@
       </tbody>
     </table>
   </div>
+  <?php $base = '/admin/equipos'; $unidad = 'equipos'; include APP_PATH . '/views/partials/paginacion.php'; ?>
 </div>

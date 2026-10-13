@@ -3,10 +3,13 @@
 ?>
 <?php foreach ($rondasConPartidos as $bloque): ?>
   <?php $ronda = $bloque['ronda']; $partidos = $bloque['partidos']; ?>
-  <div class="panel" style="margin-bottom:1rem">
-    <div style="display:flex;align-items:center;justify-content:space-between;gap:1rem;margin-bottom:.75rem;">
+  <div class="panel u-mb-1">
+    <div class="flex items-center justify-between gap-1 mb-075">
       <strong><?= View::e($ronda['nombre']) ?></strong>
-      <?= View::estadoChip($ronda['estado']) ?>
+      <div class="flex items-center gap-05">
+        <?= View::estadoChip($ronda['estado']) ?>
+        <?php include __DIR__ . '/ronda_acciones.php'; ?>
+      </div>
     </div>
     <?php if (empty($partidos)): ?>
       <p class="muted">Sin partidos en esta ronda.</p>

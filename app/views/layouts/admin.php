@@ -1,22 +1,23 @@
 <!DOCTYPE html>
 <html lang="es">
-<?php require APP_PATH . '/views/partials/head.php'; ?>
+<?php $conTokenCsrf = true; require APP_PATH . '/views/partials/head.php'; ?>
 <body data-page="<?= isset($bodyPage) ? View::e($bodyPage) : '' ?>">
+<a class="saltar" href="#contenido">Saltar al contenido</a>
 
 <div class="app-shell">
   <?php require APP_PATH . '/views/partials/sidebar.php'; ?>
   <main class="app-main">
     <?php require APP_PATH . '/views/partials/topbar.php'; ?>
-    <section class="page">
+    <section class="page" id="contenido" tabindex="-1">
       <?php require APP_PATH . '/views/partials/flash_messages.php'; ?>
       <?= $content ?>
     </section>
   </main>
 </div>
 
-<script src="/assets/js/app.js"></script>
+<script src="<?= View::e(View::asset('/assets/js/app.js')) ?>"></script>
 <?php if (isset($extraJs)): foreach ($extraJs as $js): ?>
-  <script src="/assets/js/<?= View::e($js) ?>"></script>
+  <script src="<?= View::e(View::asset('/assets/js/' . $js)) ?>"></script>
 <?php endforeach; endif; ?>
 </body>
 </html>

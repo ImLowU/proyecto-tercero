@@ -2,7 +2,7 @@
   <div class="page-title">
     <div class="eyebrow">Administración</div>
     <h1>Panel general</h1>
-    <p>Resumen operativo del sistema <?= APP_NAME ?>.</p>
+    <p>Resumen operativo del sistema <?= View::e($_sitio['nombre']) ?>.</p>
   </div>
   <a class="btn primary" href="/admin/torneos/crear">+ Nuevo torneo</a>
 </section>

@@ -1,7 +1,7 @@
 <?php $user = Auth::user(); ?>
 <header class="topbar">
   <div>
-    <div class="eyebrow"><?= APP_NAME ?></div>
+    <div class="eyebrow"><?= View::e($_sitio['nombre']) ?></div>
     <strong>
       <?php if (Auth::isAdmin()): ?>Panel de administración
       <?php elseif (Auth::isOrganizador()): ?>Panel del organizador

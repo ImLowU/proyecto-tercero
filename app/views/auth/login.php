@@ -3,18 +3,24 @@
 <html lang="es">
 <?php require APP_PATH . '/views/partials/head.php'; ?>
 <body>
-<div class="auth-layout">
+<main class="auth-layout" id="contenido">
   <div class="auth-card">
     <a class="brand" href="/">
       <span class="logo-mark"><img src="/assets/img/sporttime-logo.svg" alt="<?= APP_NAME ?>"></span>
       <span class="brand-name"><?= APP_NAME ?></span>
     </a>
 
-    <h2 class="mb-1">Iniciar sesión</h2>
+    <h1 class="como-h2 mb-1">Iniciar sesión</h1>
     <p class="muted mb-4">Accedé al panel de gestión de torneos.</p>
 
     <?php if (($_GET['msg'] ?? '') === 'datos_eliminados'): ?>
       <div class="alert success mb-4"><span class="alert-ico">✓</span><span>Tus datos personales fueron eliminados correctamente (ley 18331 — Habeas Data). Tu sesión fue cerrada.</span></div>
+    <?php endif; ?>
+    <?php if ($msg = ($_flash['warning'] ?? null)): ?>
+      <?php /* El motivo por el que se cerró la sesión (inactividad, cuenta bloqueada…) */ ?>
+      <div class="chip warning aviso-auth">
+        <?= View::e($msg) ?>
+      </div>
     <?php endif; ?>
     <?php if ($msg = ($_flash['error'] ?? null)): ?>
       <div class="alert danger mb-4"><span class="alert-ico">⚠️</span><span><?= View::e($msg) ?></span></div>
@@ -48,7 +54,7 @@
       ¿No tenés cuenta? <a href="/registro" class="text-primary fw-700">Registrate como participante</a>
     </p>
   </div>
-</div>
-<script src="/assets/js/app.js"></script>
+</main>
+<script src="<?= View::e(View::asset('/assets/js/app.js')) ?>"></script>
 </body>
 </html>

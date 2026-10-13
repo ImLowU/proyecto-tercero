@@ -3,14 +3,14 @@
 <html lang="es">
 <?php require APP_PATH . '/views/partials/head.php'; ?>
 <body>
-<div class="auth-layout">
-  <div class="auth-card" style="width:min(100%,540px)">
+<main class="auth-layout" id="contenido">
+  <div class="auth-card auth-540">
     <a class="brand" href="/">
       <span class="logo-mark"><img src="/assets/img/sporttime-logo.svg" alt="<?= APP_NAME ?>"></span>
       <span class="brand-name"><?= APP_NAME ?></span>
     </a>
 
-    <h2 class="mb-1">Crear cuenta de participante</h2>
+    <h1 class="como-h2 mb-1">Crear cuenta de participante</h1>
     <p class="muted mb-4">Tu cuenta quedará <strong>pendiente de aprobación</strong> hasta que un administrador la habilite.</p>
 
     <?php if ($msg = ($_flash['error'] ?? null)): ?>
@@ -46,7 +46,7 @@
         </div>
       </div>
 
-      <ul id="pwHints" class="text-sm" style="list-style:none;padding:0;margin:.7rem 0 0;display:grid;gap:.25rem">
+      <ul id="pwHints" class="text-sm pw-lista">
         <li data-rule="len">• Al menos 8 caracteres</li>
         <li data-rule="upper">• Una letra mayúscula</li>
         <li data-rule="lower">• Una letra minúscula</li>
@@ -61,39 +61,8 @@
       </div>
     </form>
   </div>
-</div>
+</main>
 
-<script>
-(function () {
-  const pw = document.getElementById('password');
-  const pc = document.getElementById('password_confirm');
-  const hints = document.getElementById('pwHints');
-  const btn = document.getElementById('submitBtn');
-  const ok = (li, good) => { li.style.color = good ? 'var(--success)' : 'var(--muted)'; li.dataset.ok = good ? '1' : '0'; };
-
-  function check() {
-    const v = pw.value;
-    const rules = {
-      len:   v.length >= 8,
-      upper: /[A-ZÁÉÍÓÚÑ]/.test(v),
-      lower: /[a-záéíóúñ]/.test(v),
-      num:   /[0-9]/.test(v),
-      sym:   /[^A-Za-z0-9]/.test(v),
-      match: v.length > 0 && v === pc.value,
-    };
-    let allOk = true;
-    hints.querySelectorAll('li').forEach(li => {
-      const good = rules[li.dataset.rule];
-      ok(li, good);
-      if (!good) allOk = false;
-    });
-    btn.disabled = !allOk;
-    btn.style.opacity = allOk ? '1' : '.6';
-  }
-  pw.addEventListener('input', check);
-  pc.addEventListener('input', check);
-  check();
-})();
-</script>
+<script src="<?= View::e(View::asset('/assets/js/registro.js')) ?>"></script>
 </body>
 </html>

@@ -1,3 +1,17 @@
+<?php
+/**
+ * Los torneos en los que está inscrito el participante.
+ * Variables: $torneos (la página actual), $filtros, $pag (Paginador), $estados [valor => texto].
+ */
+$barra = [
+    'accion' => '/participante/torneos',
+    'campos' => [
+        ['nombre' => 'q',      'tipo' => 'buscar', 'etiqueta' => 'Buscar', 'placeholder' => 'Nombre del torneo'],
+        ['nombre' => 'estado', 'tipo' => 'opcion', 'etiqueta' => 'Estado del torneo', 'opciones' => $estados],
+    ],
+];
+$hayFiltros = array_filter($filtros, fn($v) => $v !== '' && $v !== null) !== [];
+?>
 <section class="page-header">
   <div class="page-title">
     <div class="eyebrow">Participante</div>
@@ -6,18 +20,19 @@
 </section>
 
 <div class="table-wrap">
+  <div class="table-header"><?php include APP_PATH . '/views/partials/filtros.php'; ?></div>
   <div class="table-scroll">
-    <table>
+    <table aria-label="Mis torneos">
       <thead>
-        <tr><th>Torneo</th><th>Formato</th><th>Estado</th><th>Inscripción</th><th>Ver</th></tr>
+        <tr><th scope="col">Torneo</th><th scope="col">Formato</th><th scope="col">Estado</th><th scope="col">Inscripción</th><th scope="col">Ver</th></tr>
       </thead>
       <tbody>
         <?php if (empty($torneos)): ?>
           <tr><td colspan="5">
             <div class="empty-state">
-              <div class="empty-icon">🎮</div>
-              <h3>Todavía no competís</h3>
-              <p>No estás inscrito en ningún torneo. Explorá los torneos abiertos.</p>
+              <div class="empty-icon" aria-hidden="true"><?= $hayFiltros ? '🔎' : '🎮' ?></div>
+              <h3><?= $hayFiltros ? 'Sin resultados' : 'Todavía no competís' ?></h3>
+              <p><?= $hayFiltros ? 'Ningún torneo coincide con la búsqueda.' : 'No estás inscrito en ningún torneo. Explorá los torneos abiertos.' ?></p>
             </div>
           </td></tr>
         <?php else: ?>
@@ -34,4 +49,5 @@
       </tbody>
     </table>
   </div>
+  <?php $base = '/participante/torneos'; $unidad = 'torneos'; include APP_PATH . '/views/partials/paginacion.php'; ?>
 </div>

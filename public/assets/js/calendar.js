@@ -1,190 +1,131 @@
-(function () {
-  const target = document.getElementById('calendar');
-  if (!target) return;
+/* SportTime — calendar.js
+ *
+ * El calendario público de torneos (/torneos/calendario): un mes por vez, con cada torneo en el día en que empieza.
+ * Los torneos viajan en un bloque JSON (`#torneos-cal`, que el navegador no ejecuta) y se dibujan en `#calendar`.
+ *
+ * Las fechas se escriben con formato.js (FlexFormato), que va antes que este script en la lista `extraJs` del controlador.
+ *
+ * Responsive (Mobile First; el CSS decide qué se ve, ver paginas.css y responsive.css):
+ *   - En pantalla chica los días son cuadritos con un punto por torneo que empieza ese día, y debajo del calendario va la
+ *     lista del mes (nombre, fechas y enlace): en un cuadrito de 45 px no entra un título.
+ *   - Desde 721 px cada día muestra sus torneos como tarjetas con enlace, y la lista se oculta.
+ */
+'use strict';
 
-  const torneos = Array.isArray(window.TORNEOS_CAL) ? window.TORNEOS_CAL : [];
+(() => {
+  const destino = document.getElementById('calendar');
+  if (!destino) return;
 
-  function normalizeDateValue(value) {
-    if (value === null || value === undefined) return '';
-    const text = String(value).trim();
-    if (!text) return '';
-    return text.split('T')[0].split(' ')[0];
+  const datos = document.getElementById('torneos-cal');
+  let torneos = [];
+  try { torneos = datos ? JSON.parse(datos.textContent || '[]') : []; } catch (e) { torneos = []; }
+  torneos = torneos.filter((t) => t && typeof t.inicio === 'string');
+
+  const DIAS = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
+  const { dos, diaMes, rango } = FlexFormato;                           // formato.js: va antes que este script
+
+  function el(etiqueta, clase, texto) {
+    const e = document.createElement(etiqueta);
+    if (clase) e.className = clase;
+    if (texto !== undefined) e.textContent = texto;
+    return e;
   }
 
-  function parseYmd(value) {
-    const text = normalizeDateValue(value);
-    if (!/^\d{4}-\d{2}-\d{2}$/.test(text)) return null;
-    const [year, month, day] = text.split('-').map(Number);
-    return { year, month, day };
-  }
+  let actual = new Date();
+  actual.setDate(1);
 
-  // Formatea YYYY-MM-DD -> DD/MM sin crear Date para evitar desplazamientos por zona horaria.
-  function fmtDM(value) {
-    const parsed = parseYmd(value);
-    if (!parsed) return '';
-    const { day, month } = parsed;
-    return `${String(day).padStart(2, '0')}/${String(month).padStart(2, '0')}`;
-  }
+  function dibujar() {
+    destino.innerHTML = '';
 
-  function formatRange(inicio, fin) {
-    const start = normalizeDateValue(inicio);
-    if (!start) return '';
+    const anio = actual.getFullYear();
+    const mes = actual.getMonth();
+    const prefijoMes = `${anio}-${dos(mes + 1)}-`;
 
-    const end = normalizeDateValue(fin);
-    if (!end) return fmtDM(start);
-    if (start === end) return fmtDM(start);
-    return `${fmtDM(start)} – ${fmtDM(end)}`;
-  }
+    // ── cabecera: mes anterior · mes y año · mes siguiente ──
+    const cabecera = el('div', 'cal-cabecera');
+    const anterior = el('button', 'btn', '<');
+    anterior.type = 'button';
+    anterior.setAttribute('aria-label', 'Mes anterior');
+    anterior.onclick = () => { actual.setMonth(actual.getMonth() - 1); dibujar(); };
+    const siguiente = el('button', 'btn', '>');
+    siguiente.type = 'button';
+    siguiente.setAttribute('aria-label', 'Mes siguiente');
+    siguiente.onclick = () => { actual.setMonth(actual.getMonth() + 1); dibujar(); };
+    const titulo = el('div', 'cal-mes');
+    titulo.setAttribute('aria-live', 'polite');
+    titulo.appendChild(el('strong', '', actual.toLocaleString('es', { month: 'long', year: 'numeric' })));
+    cabecera.appendChild(anterior);
+    cabecera.appendChild(titulo);
+    cabecera.appendChild(siguiente);
+    destino.appendChild(cabecera);
 
-  let currentMonth = new Date();
-  currentMonth.setDate(1);
+    // ── la grilla: los días de la semana y, debajo, los del mes ──
+    const grilla = el('div', 'cal-grilla');
+    DIAS.forEach((d) => grilla.appendChild(el('div', 'cal-dia-semana', d)));
 
-  function render() {
-    target.innerHTML = '';
+    const primerDia = (actual.getDay() + 6) % 7;                       // el lunes es 0
+    const diasDelMes = new Date(anio, mes + 1, 0).getDate();
+    for (let i = 0; i < primerDia; i++) grilla.appendChild(document.createElement('div'));
 
-    const header = document.createElement('div');
-    header.style.display = 'flex';
-    header.style.justifyContent = 'space-between';
-    header.style.alignItems = 'center';
-    header.style.marginBottom = '.6rem';
+    const hoy = new Date();
+    const hoyTexto = `${hoy.getFullYear()}-${dos(hoy.getMonth() + 1)}-${dos(hoy.getDate())}`;
 
-    const prev = document.createElement('button');
-    prev.className = 'btn';
-    prev.textContent = '<';
-    prev.onclick = () => {
-      currentMonth.setMonth(currentMonth.getMonth() - 1);
-      render();
-    };
+    for (let d = 1; d <= diasDelMes; d++) {
+      const fecha = prefijoMes + dos(d);
+      const celda = el('div', fecha === hoyTexto ? 'cal-dia hoy' : 'cal-dia');
+      celda.appendChild(el('div', 'cal-numero', String(d)));
 
-    const next = document.createElement('button');
-    next.className = 'btn';
-    next.textContent = '>';
-    next.onclick = () => {
-      currentMonth.setMonth(currentMonth.getMonth() + 1);
-      render();
-    };
+      // Solo los torneos que EMPIEZAN ese día.
+      const delDia = torneos.filter((t) => t.inicio === fecha);
+      if (delDia.length) {
+        // Pantalla chica: un punto por torneo (hasta 3).
+        const puntos = el('div', 'cal-puntos');
+        puntos.setAttribute('aria-hidden', 'true');
+        delDia.slice(0, 3).forEach(() => puntos.appendChild(el('span', 'cal-punto')));
+        celda.appendChild(puntos);
 
-    const monthTitle = document.createElement('div');
-    monthTitle.innerHTML = '<strong>' + currentMonth.toLocaleString(undefined, { month: 'long', year: 'numeric' }) + '</strong>';
-
-    header.appendChild(prev);
-    header.appendChild(monthTitle);
-    header.appendChild(next);
-    target.appendChild(header);
-
-    const grid = document.createElement('div');
-    grid.style.display = 'grid';
-    grid.style.gridTemplateColumns = 'repeat(7, 1fr)';
-    grid.style.gap = '4px';
-
-    ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'].forEach((dayLabel) => {
-      const head = document.createElement('div');
-      head.style.fontSize = '.8rem';
-      head.style.textAlign = 'center';
-      head.style.color = 'var(--muted)';
-      head.textContent = dayLabel;
-      grid.appendChild(head);
-    });
-
-    const firstWeekday = (new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1).getDay() + 6) % 7;
-    const daysInMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0).getDate();
-
-    for (let i = 0; i < firstWeekday; i++) {
-      grid.appendChild(document.createElement('div'));
-    }
-
-    const today = new Date();
-    const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
-
-    for (let day = 1; day <= daysInMonth; day++) {
-      const cell = document.createElement('div');
-      cell.style.minHeight = '80px';
-      cell.style.padding = '8px';
-      cell.style.borderRadius = '6px';
-      cell.style.background = 'transparent';
-      cell.style.border = '1px solid rgba(0,0,0,0.04)';
-      cell.style.display = 'flex';
-      cell.style.flexDirection = 'column';
-      cell.style.gap = '6px';
-      cell.style.boxSizing = 'border-box';
-
-      const dateStr = `${currentMonth.getFullYear()}-${String(currentMonth.getMonth() + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-
-      const dayTitle = document.createElement('div');
-      dayTitle.style.fontSize = '.85rem';
-      dayTitle.style.marginBottom = '2px';
-      dayTitle.style.color = 'var(--text)';
-      dayTitle.textContent = day;
-      cell.appendChild(dayTitle);
-
-      if (dateStr === todayStr) {
-        cell.style.background = 'linear-gradient(90deg, rgba(255,245,157,0.12), rgba(255,245,157,0.06))';
-        cell.style.border = '1px solid rgba(255,213,79,0.25)';
-      }
-
-      const matches = torneos.filter((torneo) => {
-        const inicio = normalizeDateValue(torneo && torneo.inicio);
-        return inicio === dateStr;
-      });
-
-      if (matches.length) {
-        const list = document.createElement('div');
-        list.style.display = 'flex';
-        list.style.flexDirection = 'column';
-        list.style.gap = '6px';
-        list.style.width = '100%';
-
-        matches.forEach((torneo) => {
-          const href = torneo && torneo.id !== undefined && torneo.id !== null && torneo.id !== ''
-            ? `/torneo/${torneo.id}`
-            : '#';
-
-          const link = document.createElement('a');
-          link.href = href;
-          link.style.display = 'block';
-          link.style.textDecoration = 'none';
-          link.style.color = 'inherit';
-          link.style.width = '100%';
-          link.style.boxSizing = 'border-box';
-
-          const card = document.createElement('div');
-          card.style.padding = '.4rem .5rem';
-          card.style.borderRadius = '8px';
-          card.style.background = 'rgba(255,255,255,0.03)';
-          card.style.border = '1px solid rgba(255,255,255,0.03)';
-          card.style.display = 'flex';
-          card.style.flexDirection = 'column';
-          card.style.gap = '4px';
-          card.style.overflow = 'hidden';
-
-          const nombre = document.createElement('div');
-          nombre.style.fontSize = '0.9rem';
-          nombre.style.fontWeight = '700';
-          nombre.style.color = 'var(--text)';
-          nombre.style.whiteSpace = 'nowrap';
-          nombre.style.overflow = 'hidden';
-          nombre.style.textOverflow = 'ellipsis';
-          nombre.textContent = torneo && torneo.nombre ? torneo.nombre : '';
-
-          const rango = document.createElement('div');
-          rango.style.fontSize = '.8rem';
-          rango.style.color = 'var(--muted)';
-          rango.textContent = formatRange(torneo && torneo.inicio, torneo && torneo.fin);
-
-          card.appendChild(nombre);
-          card.appendChild(rango);
-          link.appendChild(card);
-          list.appendChild(link);
+        // Pantalla ancha: una tarjeta con enlace por torneo.
+        const lista = el('div', 'cal-lista');
+        delDia.forEach((t) => {
+          const enlace = el('a', 'cal-enlace');
+          enlace.href = `/torneo/${t.id}`;
+          enlace.title = t.nombre || '';            // el título se corta con puntos suspensivos: el nombre entero, al pasar el mouse
+          const tarjeta = el('div', 'cal-torneo');
+          tarjeta.appendChild(el('div', 'cal-titulo', t.nombre || ''));
+          tarjeta.appendChild(el('div', 'cal-rango', rango(t.inicio, t.fin)));
+          enlace.appendChild(tarjeta);
+          lista.appendChild(enlace);
         });
-
-        cell.appendChild(list);
+        celda.appendChild(lista);
       }
-
-      grid.appendChild(cell);
+      grilla.appendChild(celda);
     }
+    destino.appendChild(grilla);
 
-    target.appendChild(grid);
+    // ── la lista del mes (solo se ve en pantalla chica) ──
+    const delMes = torneos.filter((t) => t.inicio.startsWith(prefijoMes)).sort((a, b) => a.inicio.localeCompare(b.inicio) || String(a.nombre).localeCompare(String(b.nombre)));
+    const agenda = el('div', 'cal-agenda');
+    agenda.appendChild(el('h2', 'como-h3', 'Torneos que empiezan este mes'));
+    if (delMes.length === 0) {
+      agenda.appendChild(el('p', 'muted', 'No hay torneos que empiecen este mes.'));
+    } else {
+      const ul = el('ul', 'lista-filas');
+      delMes.forEach((t) => {
+        const li = document.createElement('li');
+        const enlace = el('a');
+        enlace.href = `/torneo/${t.id}`;
+        const detalle = el('span', 'detalle');
+        detalle.appendChild(el('strong', '', t.nombre || ''));
+        detalle.appendChild(el('small', '', rango(t.inicio, t.fin)));
+        enlace.appendChild(detalle);
+        enlace.appendChild(el('span', 'chip', diaMes(t.inicio)));
+        li.appendChild(enlace);
+        ul.appendChild(li);
+      });
+      agenda.appendChild(ul);
+    }
+    destino.appendChild(agenda);
   }
 
-  render();
+  dibujar();
 })();
