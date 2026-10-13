@@ -9,13 +9,13 @@ declare(strict_types=1);
  * corre `seed_demo.php`, que empieza borrando todo y reconstruyendo con los
  * servicios del dominio, así que tapaba cualquier incoherencia de esta base.
  *
- * Y había una: `seed.sql` inserta los enfrentamientos a mano, sin pasar por
+ * Y había una: `seed_sporttime.sql` inserta los enfrentamientos a mano, sin pasar por
  * ResultadoService, así que los partidos terminados quedaban sin
  * `fecha_inicio_real` ni `fecha_fin_real`. `match_list.php` muestra esas horas;
  * sin ellas, esa parte de la pantalla aparece vacía en una instalación recién
  * hecha, que es exactamente la que alguien mira por primera vez.
  *
- * El test se deja la base como la encuentra: borra, aplica seed.sql y comprueba.
+ * El test se deja la base como la encuentra: borra, aplica seed_sporttime.sql y comprueba.
  *
  * Ejecutar:
  *   DB_HOST=127.0.0.1 DB_USER=root DB_PASS= php tests/seed_base_test.php
@@ -23,7 +23,7 @@ declare(strict_types=1);
 
 require __DIR__ . '/bootstrap.php';
 
-final class SeedBaseTest extends TestCase
+class SeedBaseTest extends TestCase
 {
     private static bool $cargado = false;
 
@@ -33,7 +33,7 @@ final class SeedBaseTest extends TestCase
 
         Fixtures::reset($this->db);
         // reset() deja los usuarios del seed; para partir de cero hay que sacarlos
-        // todos, porque seed.sql los inserta con id explícito.
+        // todos, porque seed_sporttime.sql los inserta con id explícito.
         $this->db->exec('SET FOREIGN_KEY_CHECKS = 0');
         foreach (['usuarios', 'permisos', 'modulos', 'tipos_torneo', 'roles'] as $t) {
             $this->db->exec("DELETE FROM `{$t}`");
@@ -120,7 +120,7 @@ final class SeedBaseTest extends TestCase
 
     public function test_cada_participante_esta_vinculado_a_su_cuenta(): void
     {
-        // En seed.sql, a diferencia de seed_demo.php, todos tienen cuenta: son
+        // En seed_sporttime.sql, a diferencia de seed_demo.php, todos tienen cuenta: son
         // las personas que aparecen en la documentación y en los manuales.
         $sinCuenta = $this->db->query(
             "SELECT nombre FROM participantes WHERE usuario_id IS NULL"
@@ -167,4 +167,4 @@ final class SeedBaseTest extends TestCase
     }
 }
 
-exit(TestCase::ejecutar(SeedBaseTest::class));
+TestCase::correrSiEsScript(SeedBaseTest::class);
