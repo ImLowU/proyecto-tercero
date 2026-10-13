@@ -31,13 +31,24 @@ class OrganizadorController extends BaseController
     {
         $this->requireOrganizador();
         $this->requirePermiso('torneos', 'ver');
-        $torneos = Auth::isAdmin()
-            ? $this->torneoService->getAll()
-            : $this->torneoService->getByOrganizador((int)Auth::id());
+        // El administrador ve todos; el organizador, los suyos (la regla va dentro de la consulta).
+        $organizadorId = Auth::isAdmin() ? null : (int)Auth::id();
+
+        $tipos   = array_column((new TipoTorneoModel())->findAll(), 'nombre', 'slug');
+        $filtros = Filtros::desdeQuery($_GET, [
+            'q'      => 'texto',
+            'tipo'   => array_keys($tipos),
+            'estado' => array_keys(TorneoController::ESTADOS),
+        ]);
+        $pag = Paginador::de($this->torneoService->contar($filtros, $organizadorId), $this->get('page', 1), TorneoController::POR_PAGINA);
 
         $this->render('organizador/mis_torneos', [
             'pageTitle' => 'Mis torneos',
-            'torneos'   => $torneos,
+            'torneos'   => $this->torneoService->buscar($filtros, $pag->porPagina, $pag->desplazamiento, $organizadorId),
+            'filtros'   => $filtros,
+            'pag'       => $pag,
+            'tipos'     => $tipos,
+            'estados'   => TorneoController::ESTADOS,
         ], 'admin');
     }
 
@@ -99,7 +110,7 @@ class OrganizadorController extends BaseController
             // El panel de inscripciones dibuja el selector de participantes como
             // combobox; sin este script el <input> visible no tiene `name` y el
             // hidden viaja vacío, así que el formulario se manda en blanco.
-            'extraJs'                 => ['combobox.js'],
+            'extraJs'                 => ['combobox.js', 'api.js', 'resultados.js', 'modales.js', 'gestion-torneo.js', 'bracket.js'],
         ], 'admin');
     }
 
@@ -123,7 +134,7 @@ class OrganizadorController extends BaseController
             };
             $this->flash('success', 'Competencia generada.');
         } catch (RuntimeException $e) {
-            $this->flash('error', $e->getMessage());
+            $this->flash('error', $this->mensajeDe($e));
         }
         $this->redirect("/organizador/torneos/{$id}");
     }
@@ -138,7 +149,7 @@ class OrganizadorController extends BaseController
             (new SistemaSuizoService())->generarSiguienteRonda((int)$id);
             $this->flash('success', 'Siguiente ronda generada.');
         } catch (RuntimeException $e) {
-            $this->flash('error', $e->getMessage());
+            $this->flash('error', $this->mensajeDe($e));
         }
         $this->redirect("/organizador/torneos/{$id}");
     }
@@ -164,7 +175,7 @@ class OrganizadorController extends BaseController
                 $this->flash('error', 'Elegí a quién inscribir antes de confirmar.');
             }
         } catch (RuntimeException $e) {
-            $this->flash('error', $e->getMessage());
+            $this->flash('error', $this->mensajeDe($e));
         }
         $this->redirect("/organizador/torneos/{$id}");
     }
@@ -182,7 +193,7 @@ class OrganizadorController extends BaseController
             );
             $this->flash('success', 'Inscripción retirada.');
         } catch (RuntimeException $e) {
-            $this->flash('error', $e->getMessage());
+            $this->flash('error', $this->mensajeDe($e));
         }
         $this->redirect("/organizador/torneos/{$id}");
     }

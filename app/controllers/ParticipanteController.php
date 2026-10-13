@@ -3,20 +3,28 @@ declare(strict_types=1);
 
 class ParticipanteController extends BaseController
 {
+    /** @var array<string,string> los estados del torneo por los que se filtra «Mis torneos», con su texto */
+    private const ESTADOS_TORNEO = [
+        'inscripcion' => 'Inscripción',
+        'en_curso'    => 'En curso',
+        'finalizado'  => 'Finalizado',
+        'cancelado'   => 'Cancelado',
+    ];
+
     public function dashboard(): void
     {
         $this->requireRole(['participante', 'administrador']);
         $this->requirePermiso('consulta_publica', 'ver');
         $participante = (new ParticipanteModel())->findByUsuario((int)Auth::id());
 
-        $torneos   = [];
-        $proximo   = null;
-        $resultados = [];
-
-        $stats = null;
+        $torneos = [];
+        $stats   = null;
+        $panel   = null;
         if ($participante) {
             $torneos = (new InscripcionModel())->getByParticipante((int)$participante['id']);
             $stats   = (new StatsService())->participante((int)$participante['id']);
+            // Próximos partidos, últimos resultados y posición en cada torneo.
+            $panel   = (new PanelParticipanteService())->panel((int)$participante['id']);
         }
 
         $this->render('participante/dashboard', [
@@ -24,6 +32,7 @@ class ParticipanteController extends BaseController
             'participante' => $participante,
             'torneos'      => $torneos,
             'stats'        => $stats,
+            'panel'        => $panel,
         ], 'admin');
     }
 
@@ -40,6 +49,7 @@ class ParticipanteController extends BaseController
             'usuario'      => $usuario,
             'stats'        => $stats,
             'csrf'         => Csrf::generate(),
+            'extraJs'      => ['modales.js'],
         ], 'admin');
     }
 
@@ -73,7 +83,7 @@ class ParticipanteController extends BaseController
             if (!empty($datos['email'])) Session::set('user_email', strtolower($datos['email']));
             $this->flash('success', 'Perfil actualizado.');
         } catch (RuntimeException $e) {
-            $this->flash('error', $e->getMessage());
+            $this->flash('error', $this->mensajeDe($e));
         }
         $this->redirect('/participante/perfil');
     }
@@ -96,7 +106,7 @@ class ParticipanteController extends BaseController
             Session::destroy();
             $this->redirect('/login?msg=datos_eliminados');
         } catch (RuntimeException $e) {
-            $this->flash('error', $e->getMessage());
+            $this->flash('error', $this->mensajeDe($e));
             $this->redirect('/participante/perfil');
         }
     }
@@ -106,13 +116,20 @@ class ParticipanteController extends BaseController
         $this->requireRole(['participante', 'administrador']);
         $this->requirePermiso('resultados', 'ver');
         $participante = (new ParticipanteModel())->findByUsuario((int)Auth::id());
-        $torneos = $participante
-            ? (new InscripcionModel())->getByParticipante((int)$participante['id'])
-            : [];
+        $inscripciones = new InscripcionModel();
+        $filtros = Filtros::desdeQuery($_GET, [
+            'q'      => 'texto',
+            'estado' => array_keys(self::ESTADOS_TORNEO),
+        ]);
+        $pid = $participante ? (int)$participante['id'] : 0;     // sin perfil no hay inscripciones (id 0 no existe)
+        $pag = Paginador::de($inscripciones->contarPorParticipante($pid, $filtros), $this->get('page', 1), TorneoController::POR_PAGINA);
 
         $this->render('participante/mis_torneos', [
             'pageTitle' => 'Mis torneos',
-            'torneos'   => $torneos,
+            'torneos'   => $inscripciones->buscarPorParticipante($pid, $filtros, $pag->porPagina, $pag->desplazamiento),
+            'filtros'   => $filtros,
+            'pag'       => $pag,
+            'estados'   => self::ESTADOS_TORNEO,
         ], 'admin');
     }
 }
