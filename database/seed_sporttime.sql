@@ -19,11 +19,12 @@ INSERT INTO roles (id, nombre, descripcion) VALUES
 ON DUPLICATE KEY UPDATE descripcion = VALUES(descripcion);
 
 -- ─── TIPOS DE TORNEO (referencia) ────────────────────────────
-INSERT INTO tipos_torneo (id, nombre, slug, descripcion) VALUES
-(1, 'Liga',                'liga',                'Todos contra todos con tabla de posiciones'),
-(2, 'Eliminación Directa', 'eliminacion_directa', 'Llave de eliminación directa con bracket'),
-(3, 'Sistema Suizo',       'suizo',               'Rondas por rendimiento acumulado')
-ON DUPLICATE KEY UPDATE nombre = VALUES(nombre);
+-- modulo_slug: el módulo de competencia que implementa el formato (FK a modulos.slug).
+INSERT INTO tipos_torneo (id, nombre, slug, modulo_slug, descripcion) VALUES
+(1, 'Liga',                'liga',                'liga',                'Todos contra todos con tabla de posiciones'),
+(2, 'Eliminación Directa', 'eliminacion_directa', 'eliminacion_directa', 'Llave de eliminación directa con bracket'),
+(3, 'Sistema Suizo',       'suizo',               'suizo',               'Rondas por rendimiento acumulado')
+ON DUPLICATE KEY UPDATE nombre = VALUES(nombre), modulo_slug = VALUES(modulo_slug);
 
 -- ─── MÓDULOS (referencia) ────────────────────────────────────
 -- NOTA: se agrega el módulo 'torneos' (id 9) — faltaba en la versión anterior
@@ -43,82 +44,101 @@ INSERT INTO modulos (id, nombre, slug, estado, descripcion) VALUES
 (9,  'Torneos',             'torneos',             'activo', 'Gestión general de torneos')
 ON DUPLICATE KEY UPDATE nombre = VALUES(nombre);
 
+-- ─── CONFIGURACIÓN DEL SISTEMA ───────────────────────────────
+-- Ajustes generales de la plataforma. `clave = clave` deja intacto el valor si ya
+-- existe: volver a correr el seed no pisa lo que el administrador haya cambiado.
+INSERT INTO configuracion_sistema (clave, valor, descripcion) VALUES
+('sitio_nombre',          'SportTime', 'Nombre de la plataforma, tal como aparece en el sitio.'),
+('sitio_contacto',        '',          'Correo de contacto que se muestra en el pie de página. Vacío = no se muestra.'),
+('perfiles_publicos',     '1',         '1 = los perfiles de participantes y equipos se ven sin iniciar sesión; 0 = solo con sesión.'),
+('login_max_intentos',    '5',         'Intentos de inicio de sesión fallidos antes de bloquear la cuenta.'),
+('login_minutos_bloqueo', '15',        'Minutos que dura el bloqueo por intentos fallidos. 0 = hasta que un administrador la desbloquee.'),
+('login_max_intentos_ip', '20',        'Intentos fallidos desde una misma IP, dentro de la ventana, antes de rechazar sus pedidos.'),
+('login_ventana_minutos', '15',        'Ventana, en minutos, sobre la que se cuentan los intentos fallidos por IP.')
+ON DUPLICATE KEY UPDATE clave = clave;
+
 -- ─── USUARIOS ────────────────────────────────────────────────
--- Contraseñas FUERTES y ÚNICAS por usuario (bcrypt cost 12).
--- Las contraseñas en texto plano NO se guardan en el repositorio;
--- se entregan por separado al responsable del proyecto.
+-- Ninguna cuenta trae contraseña. password_hash vale '!sin-clave-definida', que
+-- no es un hash válido: ninguna clave lo verifica, así que nadie puede entrar con
+-- estas cuentas hasta que se les asigne una. De eso se ocupa el arranque del
+-- contenedor `app` (database/inicializar_cuentas.php):
+--   - el administrador (rol 1) recibe ADMIN_PASS del .env; si falta, se genera
+--     una al azar y se imprime UNA vez en el log del contenedor;
+--   - las demás (organizadores y participantes de demostración) reciben
+--     DEMO_PASS; si falta quedan sin clave, que es lo que corresponde en producción.
+-- Una contraseña publicada en el repositorio no es una contraseña.
 --
--- Cuentas de demostración del sistema de bloqueo / registro (nuevas):
+-- Cuentas de demostración del sistema de bloqueo / registro:
 --   id 7 (martin.ibarra@sporttime.com) -> bloqueada tras 5 intentos fallidos
---                                          (failed_attempts=5, estado='bloqueada').
+--                                          (failed_attempts=5, estado='bloqueada');
+--                                          queda sin usar hasta que el admin la desbloquee.
 --   id 8 (sofia.duarte@sporttime.com)  -> autorregistro pendiente de aprobación
 --                                          (estado='pendiente').
---   (contraseñas de estas dos cuentas entregadas por separado, igual que el resto)
 --
--- ids 9-29: cuentas nuevas para vincular al resto de los participantes de prueba
+-- ids 9-55: cuentas para vincular al resto de los participantes de prueba
 -- (para poder probar "Bloquear cuenta" sobre cualquiera desde el panel admin).
--- A diferencia de las ids 1-8, estas SÍ tienen contraseña de demo conocida y
--- documentada: admin123 (mismo criterio que FlexArena). Ver docs/CREDENCIALES.md.
 INSERT INTO usuarios (id, rol_id, nombre, email, password_hash, failed_attempts, estado) VALUES
-(1, 1, 'Dirección SportTime', 'admin@sporttime.com',        '$2y$12$JCxL3QUImjg3m4T2Bp2jAukj077TaFVHLtKe5nsWp4ZtU4pPi2phO', 0, 'activo'),
-(2, 2, 'Bruno Vega',          'bruno@sporttime.com',        '$2y$12$FB6F8W70k.tdQFiWKyFzA.2F/AqOVVhV9.AIc2SJX5rdgx/x/gZD.', 0, 'activo'),
-(3, 2, 'Carla Ríos',          'carla@sporttime.com',        '$2y$12$Fk7FkgKymN19yeSijeKUouHxQuKzkZOzbaNKrTXpS.ooJP8qoQakC', 0, 'activo'),
-(4, 3, 'Iván Morales',        'ivan@sporttime.com',         '$2y$12$jijiQHc1Calg0K1hbqTEhO1wtJN./CGOo7Jhqs1rScS3kBjp5BmT2', 0, 'activo'),
-(5, 3, 'Lucía Ferrari',       'lucia@sporttime.com',        '$2y$12$w/cs43WdXKkfquIAyuSIT.5H/TJVqZHdz0eIe46CcQDs.J95IODWa', 0, 'activo'),
-(6, 3, 'Diego Salas',         'diego@sporttime.com',        '$2y$12$BC0KleUn/Ni1/Dp522QgP.Ml4yCfDgo9nCTGZHfoRx19SS6XmVNt2', 0, 'activo'),
-(7, 2, 'Martín Ibarra',       'martin.ibarra@sporttime.com','$2y$12$g/Q813JKT8ztAjwq7//xU.o58Z62PLblcld.Yhskh31YICj7fxL9a', 5, 'bloqueada'),
-(8, 3, 'Sofía Duarte',        'sofia.duarte@sporttime.com', '$2y$12$QfM1KmC3BwaEF1efEal6Ou/6EiElzguBiGczLW5RxgDQGMJ95M7si', 0, 'pendiente'),
-(9,  3, 'Camilo Ávila',       'camilo@sporttime.com',       '$2y$12$UrwIRSDEIRFFmMl8VNXJiOwrFZ9pUoO4yiMKwN9RUQ2ITDohArHFW', 0, 'activo'),
-(10, 3, 'Renata Ponce',       'renata@sporttime.com',       '$2y$12$UrwIRSDEIRFFmMl8VNXJiOwrFZ9pUoO4yiMKwN9RUQ2ITDohArHFW', 0, 'activo'),
-(11, 3, 'Bruno Ledesma',      'brunol@sporttime.com',       '$2y$12$UrwIRSDEIRFFmMl8VNXJiOwrFZ9pUoO4yiMKwN9RUQ2ITDohArHFW', 0, 'activo'),
-(12, 3, 'Aldana Vidal',       'aldana@sporttime.com',       '$2y$12$UrwIRSDEIRFFmMl8VNXJiOwrFZ9pUoO4yiMKwN9RUQ2ITDohArHFW', 0, 'activo'),
-(13, 3, 'Joaquín Ramos',      'joaquin@sporttime.com',      '$2y$12$UrwIRSDEIRFFmMl8VNXJiOwrFZ9pUoO4yiMKwN9RUQ2ITDohArHFW', 0, 'activo'),
-(14, 3, 'Milena Costa',       'milena@sporttime.com',       '$2y$12$UrwIRSDEIRFFmMl8VNXJiOwrFZ9pUoO4yiMKwN9RUQ2ITDohArHFW', 0, 'activo'),
-(15, 3, 'Thiago Núñez',       'thiago@sporttime.com',       '$2y$12$UrwIRSDEIRFFmMl8VNXJiOwrFZ9pUoO4yiMKwN9RUQ2ITDohArHFW', 0, 'activo'),
-(16, 3, 'Paula Bravo',        'paula@sporttime.com',        '$2y$12$UrwIRSDEIRFFmMl8VNXJiOwrFZ9pUoO4yiMKwN9RUQ2ITDohArHFW', 0, 'activo'),
-(17, 3, 'Ezequiel Ríos',      'ezequiel@sporttime.com',     '$2y$12$UrwIRSDEIRFFmMl8VNXJiOwrFZ9pUoO4yiMKwN9RUQ2ITDohArHFW', 0, 'activo'),
-(18, 3, 'Brenda Acosta',      'brenda@sporttime.com',       '$2y$12$UrwIRSDEIRFFmMl8VNXJiOwrFZ9pUoO4yiMKwN9RUQ2ITDohArHFW', 0, 'activo'),
-(19, 3, 'Facundo Gil',        'facundo@sporttime.com',      '$2y$12$UrwIRSDEIRFFmMl8VNXJiOwrFZ9pUoO4yiMKwN9RUQ2ITDohArHFW', 0, 'activo'),
-(20, 3, 'Carolina Paz',       'carolina@sporttime.com',     '$2y$12$UrwIRSDEIRFFmMl8VNXJiOwrFZ9pUoO4yiMKwN9RUQ2ITDohArHFW', 0, 'activo'),
-(21, 3, 'Ramiro Luna',        'ramiro@sporttime.com',       '$2y$12$UrwIRSDEIRFFmMl8VNXJiOwrFZ9pUoO4yiMKwN9RUQ2ITDohArHFW', 0, 'activo'),
-(22, 3, 'Daniela Cruz',       'daniela@sporttime.com',      '$2y$12$UrwIRSDEIRFFmMl8VNXJiOwrFZ9pUoO4yiMKwN9RUQ2ITDohArHFW', 0, 'activo'),
-(23, 3, 'Maximiliano Ortiz',  'maxi@sporttime.com',         '$2y$12$UrwIRSDEIRFFmMl8VNXJiOwrFZ9pUoO4yiMKwN9RUQ2ITDohArHFW', 0, 'activo'),
-(24, 3, 'Victoria Rey',       'victoria@sporttime.com',     '$2y$12$UrwIRSDEIRFFmMl8VNXJiOwrFZ9pUoO4yiMKwN9RUQ2ITDohArHFW', 0, 'activo'),
-(25, 3, 'Gonzalo Medina',     'gonzalo@sporttime.com',      '$2y$12$UrwIRSDEIRFFmMl8VNXJiOwrFZ9pUoO4yiMKwN9RUQ2ITDohArHFW', 0, 'activo'),
-(26, 3, 'Abril Sandoval',     'abril@sporttime.com',        '$2y$12$UrwIRSDEIRFFmMl8VNXJiOwrFZ9pUoO4yiMKwN9RUQ2ITDohArHFW', 0, 'activo'),
-(27, 3, 'Lautaro Vega',       'lautaro@sporttime.com',      '$2y$12$UrwIRSDEIRFFmMl8VNXJiOwrFZ9pUoO4yiMKwN9RUQ2ITDohArHFW', 0, 'activo'),
-(28, 3, 'Melina Soto',        'melina@sporttime.com',       '$2y$12$UrwIRSDEIRFFmMl8VNXJiOwrFZ9pUoO4yiMKwN9RUQ2ITDohArHFW', 0, 'activo'),
-(29, 3, 'Iñaki Romero',       'inaki@sporttime.com',        '$2y$12$UrwIRSDEIRFFmMl8VNXJiOwrFZ9pUoO4yiMKwN9RUQ2ITDohArHFW', 0, 'activo'),
+(1, 1, 'Dirección SportTime', 'admin@sporttime.com',        '!sin-clave-definida', 0, 'activo'),
+(2, 2, 'Bruno Vega',          'bruno@sporttime.com',        '!sin-clave-definida', 0, 'activo'),
+(3, 2, 'Carla Ríos',          'carla@sporttime.com',        '!sin-clave-definida', 0, 'activo'),
+(4, 3, 'Iván Morales',        'ivan@sporttime.com',         '!sin-clave-definida', 0, 'activo'),
+(5, 3, 'Lucía Ferrari',       'lucia@sporttime.com',        '!sin-clave-definida', 0, 'activo'),
+(6, 3, 'Diego Salas',         'diego@sporttime.com',        '!sin-clave-definida', 0, 'activo'),
+(7, 2, 'Martín Ibarra',       'martin.ibarra@sporttime.com','!sin-clave-definida', 5, 'bloqueada'),
+(8, 3, 'Sofía Duarte',        'sofia.duarte@sporttime.com', '!sin-clave-definida', 0, 'pendiente'),
+(9,  3, 'Camilo Ávila',       'camilo@sporttime.com',       '!sin-clave-definida', 0, 'activo'),
+(10, 3, 'Renata Ponce',       'renata@sporttime.com',       '!sin-clave-definida', 0, 'activo'),
+(11, 3, 'Bruno Ledesma',      'brunol@sporttime.com',       '!sin-clave-definida', 0, 'activo'),
+(12, 3, 'Aldana Vidal',       'aldana@sporttime.com',       '!sin-clave-definida', 0, 'activo'),
+(13, 3, 'Joaquín Ramos',      'joaquin@sporttime.com',      '!sin-clave-definida', 0, 'activo'),
+(14, 3, 'Milena Costa',       'milena@sporttime.com',       '!sin-clave-definida', 0, 'activo'),
+(15, 3, 'Thiago Núñez',       'thiago@sporttime.com',       '!sin-clave-definida', 0, 'activo'),
+(16, 3, 'Paula Bravo',        'paula@sporttime.com',        '!sin-clave-definida', 0, 'activo'),
+(17, 3, 'Ezequiel Ríos',      'ezequiel@sporttime.com',     '!sin-clave-definida', 0, 'activo'),
+(18, 3, 'Brenda Acosta',      'brenda@sporttime.com',       '!sin-clave-definida', 0, 'activo'),
+(19, 3, 'Facundo Gil',        'facundo@sporttime.com',      '!sin-clave-definida', 0, 'activo'),
+(20, 3, 'Carolina Paz',       'carolina@sporttime.com',     '!sin-clave-definida', 0, 'activo'),
+(21, 3, 'Ramiro Luna',        'ramiro@sporttime.com',       '!sin-clave-definida', 0, 'activo'),
+(22, 3, 'Daniela Cruz',       'daniela@sporttime.com',      '!sin-clave-definida', 0, 'activo'),
+(23, 3, 'Maximiliano Ortiz',  'maxi@sporttime.com',         '!sin-clave-definida', 0, 'activo'),
+(24, 3, 'Victoria Rey',       'victoria@sporttime.com',     '!sin-clave-definida', 0, 'activo'),
+(25, 3, 'Gonzalo Medina',     'gonzalo@sporttime.com',      '!sin-clave-definida', 0, 'activo'),
+(26, 3, 'Abril Sandoval',     'abril@sporttime.com',        '!sin-clave-definida', 0, 'activo'),
+(27, 3, 'Lautaro Vega',       'lautaro@sporttime.com',      '!sin-clave-definida', 0, 'activo'),
+(28, 3, 'Melina Soto',        'melina@sporttime.com',       '!sin-clave-definida', 0, 'activo'),
+(29, 3, 'Iñaki Romero',       'inaki@sporttime.com',        '!sin-clave-definida', 0, 'activo'),
 -- Estas 26 personas tenian perfil en seed_demo.php pero no cuenta. Un
 -- participante sin cuenta es un estado que la aplicacion no sabe producir:
 -- el alta manual esta deshabilitada y todos se registran solos.
-(30, 3, 'Camila Torres',         'camila@example.com',            '$2y$12$jijiQHc1Calg0K1hbqTEhO1wtJN./CGOo7Jhqs1rScS3kBjp5BmT2', 0, 'activo'),
-(31, 3, 'Lucas Romero',          'lucas@example.com',             '$2y$12$jijiQHc1Calg0K1hbqTEhO1wtJN./CGOo7Jhqs1rScS3kBjp5BmT2', 0, 'activo'),
-(32, 3, 'Sofía Méndez',          'sofia@example.com',             '$2y$12$jijiQHc1Calg0K1hbqTEhO1wtJN./CGOo7Jhqs1rScS3kBjp5BmT2', 0, 'activo'),
-(33, 3, 'Diego Álvarez',         'diego2@example.com',            '$2y$12$jijiQHc1Calg0K1hbqTEhO1wtJN./CGOo7Jhqs1rScS3kBjp5BmT2', 0, 'activo'),
-(34, 3, 'Ana Fernández',         'ana@example.com',               '$2y$12$jijiQHc1Calg0K1hbqTEhO1wtJN./CGOo7Jhqs1rScS3kBjp5BmT2', 0, 'activo'),
-(35, 3, 'Martín Suárez',         'martin@example.com',            '$2y$12$jijiQHc1Calg0K1hbqTEhO1wtJN./CGOo7Jhqs1rScS3kBjp5BmT2', 0, 'activo'),
-(36, 3, 'Julia Herrera',         'julia@example.com',             '$2y$12$jijiQHc1Calg0K1hbqTEhO1wtJN./CGOo7Jhqs1rScS3kBjp5BmT2', 0, 'activo'),
-(37, 3, 'Pablo Castro',          'pablo@example.com',             '$2y$12$jijiQHc1Calg0K1hbqTEhO1wtJN./CGOo7Jhqs1rScS3kBjp5BmT2', 0, 'activo'),
-(38, 3, 'Florencia Reyes',       'florencia@example.com',         '$2y$12$jijiQHc1Calg0K1hbqTEhO1wtJN./CGOo7Jhqs1rScS3kBjp5BmT2', 0, 'activo'),
-(39, 3, 'Sebastián Mora',        'sebastian@example.com',         '$2y$12$jijiQHc1Calg0K1hbqTEhO1wtJN./CGOo7Jhqs1rScS3kBjp5BmT2', 0, 'activo'),
-(40, 3, 'Gabriela Silva',        'gabriela@example.com',          '$2y$12$jijiQHc1Calg0K1hbqTEhO1wtJN./CGOo7Jhqs1rScS3kBjp5BmT2', 0, 'activo'),
-(41, 3, 'Rodrigo Jiménez',       'rodrigo@example.com',           '$2y$12$jijiQHc1Calg0K1hbqTEhO1wtJN./CGOo7Jhqs1rScS3kBjp5BmT2', 0, 'activo'),
-(42, 3, 'Natalia Ruiz',          'natalia@example.com',           '$2y$12$jijiQHc1Calg0K1hbqTEhO1wtJN./CGOo7Jhqs1rScS3kBjp5BmT2', 0, 'activo'),
-(43, 3, 'Franco Núñez',          'franco@example.com',            '$2y$12$jijiQHc1Calg0K1hbqTEhO1wtJN./CGOo7Jhqs1rScS3kBjp5BmT2', 0, 'activo'),
-(44, 3, 'Cecilia Blanco',        'cecilia@example.com',           '$2y$12$jijiQHc1Calg0K1hbqTEhO1wtJN./CGOo7Jhqs1rScS3kBjp5BmT2', 0, 'activo'),
-(45, 3, 'Tomás González',        'tomas@example.com',             '$2y$12$jijiQHc1Calg0K1hbqTEhO1wtJN./CGOo7Jhqs1rScS3kBjp5BmT2', 0, 'activo'),
-(46, 3, 'Silvana Martínez',      'silvana@example.com',           '$2y$12$jijiQHc1Calg0K1hbqTEhO1wtJN./CGOo7Jhqs1rScS3kBjp5BmT2', 0, 'activo'),
-(47, 3, 'Agustín Vargas',        'agustin@example.com',           '$2y$12$jijiQHc1Calg0K1hbqTEhO1wtJN./CGOo7Jhqs1rScS3kBjp5BmT2', 0, 'activo'),
-(48, 3, 'Mariana Sosa',          'mariana@example.com',           '$2y$12$jijiQHc1Calg0K1hbqTEhO1wtJN./CGOo7Jhqs1rScS3kBjp5BmT2', 0, 'activo'),
-(49, 3, 'Eduardo Flores',        'eduardo@example.com',           '$2y$12$jijiQHc1Calg0K1hbqTEhO1wtJN./CGOo7Jhqs1rScS3kBjp5BmT2', 0, 'activo'),
-(50, 3, 'Patricia Campos',       'patricia@example.com',          '$2y$12$jijiQHc1Calg0K1hbqTEhO1wtJN./CGOo7Jhqs1rScS3kBjp5BmT2', 0, 'activo'),
-(51, 3, 'Joaquín Ramos',         'joaquin2@example.com',          '$2y$12$jijiQHc1Calg0K1hbqTEhO1wtJN./CGOo7Jhqs1rScS3kBjp5BmT2', 0, 'activo'),
-(52, 3, 'Lucía Benítez',         'lucia2@example.com',            '$2y$12$jijiQHc1Calg0K1hbqTEhO1wtJN./CGOo7Jhqs1rScS3kBjp5BmT2', 0, 'activo'),
-(53, 3, 'Hernán Ortiz',          'hernan@example.com',            '$2y$12$jijiQHc1Calg0K1hbqTEhO1wtJN./CGOo7Jhqs1rScS3kBjp5BmT2', 0, 'activo'),
-(54, 3, 'Renata Aguirre',        'renata2@example.com',           '$2y$12$jijiQHc1Calg0K1hbqTEhO1wtJN./CGOo7Jhqs1rScS3kBjp5BmT2', 0, 'activo'),
-(55, 3, 'Bruno Medina',          'bruno2@example.com',            '$2y$12$jijiQHc1Calg0K1hbqTEhO1wtJN./CGOo7Jhqs1rScS3kBjp5BmT2', 0, 'activo')
-ON DUPLICATE KEY UPDATE nombre = VALUES(nombre), password_hash = VALUES(password_hash), failed_attempts = VALUES(failed_attempts), estado = VALUES(estado);
+(30, 3, 'Camila Torres',         'camila@example.com',            '!sin-clave-definida', 0, 'activo'),
+(31, 3, 'Lucas Romero',          'lucas@example.com',             '!sin-clave-definida', 0, 'activo'),
+(32, 3, 'Sofía Méndez',          'sofia@example.com',             '!sin-clave-definida', 0, 'activo'),
+(33, 3, 'Diego Álvarez',         'diego2@example.com',            '!sin-clave-definida', 0, 'activo'),
+(34, 3, 'Ana Fernández',         'ana@example.com',               '!sin-clave-definida', 0, 'activo'),
+(35, 3, 'Martín Suárez',         'martin@example.com',            '!sin-clave-definida', 0, 'activo'),
+(36, 3, 'Julia Herrera',         'julia@example.com',             '!sin-clave-definida', 0, 'activo'),
+(37, 3, 'Pablo Castro',          'pablo@example.com',             '!sin-clave-definida', 0, 'activo'),
+(38, 3, 'Florencia Reyes',       'florencia@example.com',         '!sin-clave-definida', 0, 'activo'),
+(39, 3, 'Sebastián Mora',        'sebastian@example.com',         '!sin-clave-definida', 0, 'activo'),
+(40, 3, 'Gabriela Silva',        'gabriela@example.com',          '!sin-clave-definida', 0, 'activo'),
+(41, 3, 'Rodrigo Jiménez',       'rodrigo@example.com',           '!sin-clave-definida', 0, 'activo'),
+(42, 3, 'Natalia Ruiz',          'natalia@example.com',           '!sin-clave-definida', 0, 'activo'),
+(43, 3, 'Franco Núñez',          'franco@example.com',            '!sin-clave-definida', 0, 'activo'),
+(44, 3, 'Cecilia Blanco',        'cecilia@example.com',           '!sin-clave-definida', 0, 'activo'),
+(45, 3, 'Tomás González',        'tomas@example.com',             '!sin-clave-definida', 0, 'activo'),
+(46, 3, 'Silvana Martínez',      'silvana@example.com',           '!sin-clave-definida', 0, 'activo'),
+(47, 3, 'Agustín Vargas',        'agustin@example.com',           '!sin-clave-definida', 0, 'activo'),
+(48, 3, 'Mariana Sosa',          'mariana@example.com',           '!sin-clave-definida', 0, 'activo'),
+(49, 3, 'Eduardo Flores',        'eduardo@example.com',           '!sin-clave-definida', 0, 'activo'),
+(50, 3, 'Patricia Campos',       'patricia@example.com',          '!sin-clave-definida', 0, 'activo'),
+(51, 3, 'Joaquín Ramos',         'joaquin2@example.com',          '!sin-clave-definida', 0, 'activo'),
+(52, 3, 'Lucía Benítez',         'lucia2@example.com',            '!sin-clave-definida', 0, 'activo'),
+(53, 3, 'Hernán Ortiz',          'hernan@example.com',            '!sin-clave-definida', 0, 'activo'),
+(54, 3, 'Renata Aguirre',        'renata2@example.com',           '!sin-clave-definida', 0, 'activo'),
+(55, 3, 'Bruno Medina',          'bruno2@example.com',            '!sin-clave-definida', 0, 'activo')
+-- password_hash NO está en la lista a propósito: volver a correr este archivo sobre una
+-- base viva no puede pisar las contraseñas que ya se asignaron.
+ON DUPLICATE KEY UPDATE nombre = VALUES(nombre), failed_attempts = VALUES(failed_attempts), estado = VALUES(estado);
 
 -- ─── PARTICIPANTES (24 + 1 pendiente) ─────────────────────────
 -- id 25: perfil vinculado al autorregistro pendiente (usuario 8).
