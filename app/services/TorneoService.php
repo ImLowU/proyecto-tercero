@@ -109,6 +109,9 @@ class TorneoService
                 'puntos_victoria' => (int)($d['puntos_victoria'] ?? $torneo['puntos_victoria']),
                 'puntos_empate'   => (int)($d['puntos_empate']   ?? $torneo['puntos_empate']),
                 'puntos_derrota'  => (int)($d['puntos_derrota']  ?? $torneo['puntos_derrota']),
+                'usa_puntos_favor'=> isset($d['usa_puntos_favor'])
+                                       ? (int)(bool)$d['usa_puntos_favor']
+                                       : (int)$torneo['usa_puntos_favor'],
                 'nombre_puntos'   => trim($d['nombre_puntos'] ?? $torneo['nombre_puntos']),
                 'fecha_inicio'    => $inicio ?: null,
                 'fecha_fin'       => $fin ?: null,
@@ -122,6 +125,11 @@ class TorneoService
         } else {
             // borrador / inscripción: edición completa con validación.
             $this->validar($d);
+            // El módulo solo se controla si el formato CAMBIA: un torneo que ya tenía
+            // ese formato sigue siendo editable aunque el módulo se haya apagado después.
+            if ((int)$d['tipo_torneo_id'] !== (int)$torneo['tipo_torneo_id']) {
+                $this->assertFormatoHabilitado((int)$d['tipo_torneo_id']);
+            }
             $this->model->update($id, $this->prepararDatos($d));
         }
         // El organizador puede reasignarse mientras el torneo no esté finalizado.

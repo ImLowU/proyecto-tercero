@@ -155,6 +155,10 @@ class PublicoController extends BaseController
             'extraJs'          => ['formato.js', 'proximos-partidos.js'],
             'rondasConPartidos'=> $rondasConPartidos,
             'tabla'            => $tabla,
+            // Datos del evento: sede, contacto, cierre de inscripcion y
+            // observaciones (tabla configuraciones_torneo).
+            'configuracion'    => (new ConfiguracionTorneoService())->getPorTorneo((int)$id),
+            'clavesConfig'     => ConfiguracionTorneoService::CLAVES,
         ], 'public');
     }
 }

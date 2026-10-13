@@ -4,7 +4,7 @@ declare(strict_types=1);
 class View
 {
     /** Las hojas de estilo del sitio, en el orden en que se cargan (cada una es un archivo de public/assets/css/). */
-    public const HOJAS = ['tokens', 'base', 'componentes', 'paginas', 'responsive', 'utilidades'];
+    public const HOJAS = ['styles'];   // una sola hoja por ahora; la etapa del frontend la parte en tokens/base/componentes/…
 
     /**
      * La dirección de un archivo de public/ con la fecha de su última modificación (`?v=`): cuando el
@@ -171,6 +171,7 @@ class View
             'pendiente'   => 'warning',
             'inscripcion' => 'warning',
             'corregido'   => 'warning',
+            'cerrada'     => 'success',
             'borrador'    => 'warning',
             'suspendido'  => 'danger',
             'cancelado'   => 'danger',
