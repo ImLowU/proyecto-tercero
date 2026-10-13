@@ -35,7 +35,7 @@ $hayFiltros = array_filter($filtros, fn($v) => $v !== '' && $v !== null) !== [];
           <tr><td colspan="5">
             <div class="empty-state">
               <div class="empty-icon" aria-hidden="true"><?= $hayFiltros ? '🔎' : '🧑‍💼' ?></div>
-              <h3><?= $hayFiltros ? 'Sin resultados' : 'No hay ' . View::e(strtolower($ctx['plural'])) ?></h3>
+              <h2 class="como-h3"><?= $hayFiltros ? 'Sin resultados' : 'No hay ' . View::e(strtolower($ctx['plural'])) ?></h2>
               <p><?= $hayFiltros ? 'Ninguna cuenta coincide con la búsqueda.' : 'Creá uno con el botón “+ Nuevo ' . View::e($ctx['singular']) . '”.' ?></p>
             </div>
           </td></tr>

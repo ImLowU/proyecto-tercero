@@ -10,7 +10,7 @@
   <div class="card">
     <div class="empty-state">
       <div class="empty-icon">🏆</div>
-      <h3>Sin torneos asignados</h3>
+      <h2 class="como-h3">Sin torneos asignados</h2>
       <p>Cuando un administrador te asigne torneos, aparecerán acá.</p>
     </div>
   </div>

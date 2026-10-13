@@ -33,7 +33,7 @@ $hayFiltros = array_filter($filtros, fn($v) => $v !== '' && $v !== null) !== [];
           <tr><td colspan="6">
             <div class="empty-state">
               <div class="empty-icon" aria-hidden="true"><?= $hayFiltros ? '🔎' : '👥' ?></div>
-              <h3><?= $hayFiltros ? 'Sin resultados' : 'Sin participantes registrados' ?></h3>
+              <h2 class="como-h3"><?= $hayFiltros ? 'Sin resultados' : 'Sin participantes registrados' ?></h2>
               <p><?= $hayFiltros ? 'Ningún participante coincide con la búsqueda.' : 'Los participantes se registran por cuenta propia desde la web pública.' ?></p>
             </div>
           </td></tr>

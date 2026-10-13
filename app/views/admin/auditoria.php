@@ -34,7 +34,7 @@ $hayFiltros = array_filter($filtros, fn($v) => $v !== '' && $v !== null) !== [];
           <tr><td colspan="6">
             <div class="empty-state">
               <div class="empty-icon" aria-hidden="true"><?= $hayFiltros ? '🔎' : '📋' ?></div>
-              <h3><?= $hayFiltros ? 'Sin resultados' : 'Sin actividad' ?></h3>
+              <h2 class="como-h3"><?= $hayFiltros ? 'Sin resultados' : 'Sin actividad' ?></h2>
               <p><?= $hayFiltros ? 'Ningún registro coincide con la búsqueda.' : 'Todavía no hay acciones administrativas registradas.' ?></p>
             </div>
           </td></tr>

@@ -19,7 +19,7 @@
 
   <!-- ── Sección: Datos generales ───────────────────────── -->
   <div class="form-section">
-    <h3 class="form-section-title">Datos generales</h3>
+    <h2 class="form-section-title">Datos generales</h2>
     <div class="form-grid">
       <div class="field">
         <label for="torneo-form-nombre">Nombre *</label>
@@ -108,7 +108,7 @@
 
   <!-- ── Sección: Puntuación y reglas del formato ───────── -->
   <div class="form-section">
-    <h3 class="form-section-title">Puntuación y reglas del formato</h3>
+    <h2 class="form-section-title">Puntuación y reglas del formato</h2>
     <div class="form-grid">
       <div class="field">
         <label for="torneo-form-nombre_puntos">Nombre de la unidad de puntos</label>
@@ -122,9 +122,9 @@
       <div class="field" id="campoPuntuacion">
         <label for="torneo-form-puntos_victoria">Puntuación (victoria / empate / derrota)</label>
         <div class="grilla-puntos">
-          <input id="torneo-form-puntos_victoria" type="number" name="puntos_victoria" value="<?= (int)($torneo['puntos_victoria'] ?? 3) ?>" min="0" placeholder="V">
-          <input type="number" name="puntos_empate"   value="<?= (int)($torneo['puntos_empate']   ?? 1) ?>" min="0" placeholder="E">
-          <input type="number" name="puntos_derrota"  value="<?= (int)($torneo['puntos_derrota']  ?? 0) ?>" min="0" placeholder="D">
+          <input id="torneo-form-puntos_victoria" type="number" aria-label="Puntos por victoria" name="puntos_victoria" value="<?= (int)($torneo['puntos_victoria'] ?? 3) ?>" min="0" placeholder="V">
+          <input type="number" aria-label="Puntos por empate" name="puntos_empate"   value="<?= (int)($torneo['puntos_empate']   ?? 1) ?>" min="0" placeholder="E">
+          <input type="number" aria-label="Puntos por derrota" name="puntos_derrota"  value="<?= (int)($torneo['puntos_derrota']  ?? 0) ?>" min="0" placeholder="D">
         </div>
       </div>
 
@@ -196,7 +196,7 @@
                       name="config[<?= View::e($clave) ?>]"
                       maxlength="<?= (int)$def['max'] ?>"><?= View::e($valor) ?></textarea>
           <?php else: ?>
-            <input id="config_<?= View::e($clave) ?>"
+            <input id="config_<?= View::e($clave) ?>" autocomplete="off"
                    name="config[<?= View::e($clave) ?>]"
                    type="<?= $def['tipo'] === 'fecha' ? 'date' : ($def['tipo'] === 'email' ? 'email' : 'text') ?>"
                    maxlength="<?= (int)$def['max'] ?>"

@@ -31,7 +31,7 @@ $hayFiltros = array_filter($filtros, fn($v) => $v !== '' && $v !== null) !== [];
           <tr><td colspan="5">
             <div class="empty-state">
               <div class="empty-icon" aria-hidden="true"><?= $hayFiltros ? '🔎' : '🎮' ?></div>
-              <h3><?= $hayFiltros ? 'Sin resultados' : 'Todavía no competís' ?></h3>
+              <h2 class="como-h3"><?= $hayFiltros ? 'Sin resultados' : 'Todavía no competís' ?></h2>
               <p><?= $hayFiltros ? 'Ningún torneo coincide con la búsqueda.' : 'No estás inscrito en ningún torneo. Explorá los torneos abiertos.' ?></p>
             </div>
           </td></tr>

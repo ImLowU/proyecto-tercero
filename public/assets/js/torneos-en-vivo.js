@@ -175,7 +175,7 @@
       const icono = el('div', 'empty-icon', filtrado ? '🔎' : '🏆');
       icono.setAttribute('aria-hidden', 'true');
       estado.appendChild(icono);
-      estado.appendChild(el('h3', null, filtrado ? 'Sin resultados' : 'No hay torneos disponibles'));
+      estado.appendChild(el('h2', 'como-h3', filtrado ? 'Sin resultados' : 'No hay torneos disponibles'));
       estado.appendChild(el('p', null, filtrado ? 'No encontramos torneos con esa búsqueda.' : 'Cuando se publiquen torneos, aparecerán acá.'));
       vacio.appendChild(estado);
       zona.appendChild(vacio);

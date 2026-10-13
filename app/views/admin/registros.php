@@ -31,7 +31,7 @@ $hayFiltros = array_filter($filtros, fn($v) => $v !== '' && $v !== null) !== [];
           <tr><td colspan="6">
             <div class="empty-state">
               <div class="empty-icon" aria-hidden="true"><?= $hayFiltros ? '🔎' : '✅' ?></div>
-              <h3><?= $hayFiltros ? 'Sin resultados' : 'Todo al día' ?></h3>
+              <h2 class="como-h3"><?= $hayFiltros ? 'Sin resultados' : 'Todo al día' ?></h2>
               <p><?= $hayFiltros ? 'Ningún registro coincide con la búsqueda.' : 'No hay solicitudes de registro pendientes de aprobación.' ?></p>
             </div>
           </td></tr>

@@ -409,7 +409,7 @@ textarea { resize: vertical; min-height: 110px; }
   background: var(--color-primary-soft); border: 1px solid var(--color-primary-line);
   margin-bottom: .25rem;
 }
-.empty-state h3 { margin: 0; color: var(--color-text); }
+.empty-state h3, .empty-state .como-h3 { margin: 0; color: var(--color-text); }
 .empty-state p { margin: 0; max-width: 42ch; }
 td .empty-state { padding: 1.8rem 1rem; }
 

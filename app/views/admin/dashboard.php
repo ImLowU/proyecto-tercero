@@ -16,7 +16,7 @@
 
 <!-- Accesos rápidos: acciones primarias visibles de un vistazo -->
 <div class="card mb-4">
-  <h3 class="mb-3">Accesos rápidos</h3>
+  <h2 class="como-h3 mb-3">Accesos rápidos</h2>
   <div class="cluster">
     <a class="btn primary" href="/admin/torneos/crear">+ Nuevo torneo</a>
     <a class="btn" href="/admin/equipos/crear">+ Nuevo equipo</a>
@@ -28,14 +28,14 @@
 <!-- Actividad reciente a ancho completo (más legible que media columna) -->
 <article class="card">
   <div class="between mb-3">
-    <h3 class="mb-0">Actividad reciente</h3>
+    <h2 class="como-h3 mb-0">Actividad reciente</h2>
     <a class="btn small" href="/admin/auditoria">Ver auditoría completa</a>
   </div>
   <div class="timeline">
     <?php if (empty($actividad)): ?>
       <div class="empty-state">
         <div class="empty-icon">📋</div>
-        <h3>Sin actividad</h3>
+        <h2 class="como-h3">Sin actividad</h2>
         <p>Las acciones administrativas aparecerán acá.</p>
       </div>
     <?php else: ?>
