@@ -43,7 +43,7 @@
         <div class="timeline-item">
           <strong><?= View::e($log['accion']) ?></strong>
           <?php if ($log['descripcion']): ?>
-            <div class="muted"><?= View::e($log['descripcion']) ?></div>
+            <div class="muted rompe-texto"><?= View::e($log['descripcion']) ?></div>
           <?php endif; ?>
           <div class="text-dim text-xs mt-1"><?= View::e($log['created_at']) ?></div>
         </div>
