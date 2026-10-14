@@ -20,6 +20,10 @@ Es lo único que hay que tocar para reteñir el sitio: los demás archivos las u
   --color-primary-dark:   #B71C1C;
   --color-primary-soft:   rgba(229,57,53,.12);
   --color-primary-line:   rgba(229,57,53,.38);
+  /* El rojo de un BOTÓN con texto blanco: un tono más profundo que --color-primary, para llegar a 4,5:1 (WCAG AA).
+     #E53935 daba 4,23:1 y, con el cursor encima (#FF5252), 3,19:1. */
+  --color-primary-btn:       #D32F2F;   /* blanco encima: 4,98:1 */
+  --color-primary-btn-hover: #DC3330;   /* blanco encima: 4,61:1 */
 
   /* Superficies */
   --color-bg:        #0A1018;

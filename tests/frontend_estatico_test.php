@@ -581,6 +581,43 @@ class FrontendEstaticoTest extends TestCase
         return (max($x, $y) + 0.05) / (min($x, $y) + 0.05);
     }
 
+    public function test_el_boton_primario_y_los_textos_de_color_tienen_contraste_suficiente(): void
+    {
+        $tokens      = (string) file_get_contents(BASE_PATH . '/public/assets/css/tokens.css');
+        $base        = (string) file_get_contents(BASE_PATH . '/public/assets/css/base.css');
+        $componentes = (string) file_get_contents(BASE_PATH . '/public/assets/css/componentes.css');
+        $paginas     = (string) file_get_contents(BASE_PATH . '/public/assets/css/paginas.css');
+
+        // El texto de un botón es blanco: se mide contra el color REAL del botón, en reposo y con el cursor encima.
+        $this->assertTrue((bool) preg_match('/\.btn\.primary\s*\{[^}]*\bcolor:\s*#fff\b/', $componentes), 'el texto del botón primario es blanco');
+        $this->assertTrue((bool) preg_match('/--color-primary-btn:\s*(#[0-9a-f]{6})\s*;/i', $tokens, $reposo), 'el token del botón primario existe');
+        $this->assertTrue((bool) preg_match('/--color-primary-btn-hover:\s*(#[0-9a-f]{6})\s*;/i', $tokens, $encima), 'el token del botón con el cursor encima existe');
+        $this->assertTrue((bool) preg_match('/\.btn\.primary\s*\{[^}]*--btn-bg:\s*var\(--color-primary-btn\)/s', $componentes), 'el botón primario usa el token');
+        $this->assertTrue((bool) preg_match('/\.btn\.primary:hover\s*\{[^}]*var\(--color-primary-btn-hover\)/', $componentes), 'y con el cursor encima, el suyo');
+        foreach ([$reposo[1], $encima[1]] as $color) {
+            // WCAG AA para texto normal: 4,5:1. Con el rojo anterior (#E53935) llegaba a 4,23:1 y con el cursor encima (#FF5252), a 3,19:1.
+            $razon = $this->contraste('#ffffff', $color);
+            $this->assertTrue($razon >= 4.5, sprintf('blanco sobre %s: %.2f:1 (hace falta 4,5:1)', $color, $razon));
+        }
+        $this->assertSame('#d32f2f', strtolower($reposo[1]), 'el color de reposo es el que se midió (4,98:1)');
+
+        // La página actual de la paginación y las iniciales de un avatar llevan texto blanco sobre el mismo rojo.
+        $this->assertTrue((bool) preg_match('/\.pagination \.current\s*\{[^}]*background:\s*var\(--color-primary-btn\)/', $componentes), 'la página actual usa el rojo del botón');
+        $this->assertTrue((bool) preg_match('/\.avatar-ini\s*\{[^}]*linear-gradient\(135deg,\s*var\(--color-primary-btn\)/s', $componentes), 'el avatar arranca en el rojo del botón');
+
+        // Las etiquetas superiores son texto rojo sobre la tarjeta (#1A2735) y sobre el fondo de la página (#0A1018).
+        $this->assertTrue((bool) preg_match('/\.eyebrow\s*\{[^}]*color:\s*var\(--color-primary-hover\)/s', $base), 'la etiqueta superior usa el rojo claro');
+        $this->assertTrue((bool) preg_match('/--color-primary-hover:\s*(#[0-9a-f]{6})\s*;/i', $tokens, $claro));
+        foreach (['#1a2735', '#0a1018'] as $fondo) {
+            $razon = $this->contraste($claro[1], $fondo);
+            $this->assertTrue($razon >= 4.5, sprintf('%s sobre %s: %.2f:1 (hace falta 4,5:1)', $claro[1], $fondo, $razon));
+        }
+
+        // «A definir» en la tarjeta del campeón: texto secundario (#B8C4D0) sobre el verde de la tarjeta (#1C373B).
+        $this->assertTrue((bool) preg_match('/\.bk-card\.champion \.bk-row\.placeholder\s*\{[^}]*color:\s*var\(--color-text-secondary\)/', $paginas), 'el pendiente de la tarjeta del campeón usa el texto secundario');
+        $this->assertTrue($this->contraste('#b8c4d0', '#1c373b') >= 4.5, 'el texto secundario se lee sobre el verde del campeón');
+    }
+
     public function test_los_scripts_que_piden_las_pantallas_existen(): void
     {
         $citados = [];

@@ -43,7 +43,7 @@ p  { color: var(--color-text-secondary); }
 strong { color: var(--color-text); }
 
 .eyebrow {
-  color: var(--color-primary);
+  color: var(--color-primary-hover);   /* #FF5252: 4,75:1 sobre la tarjeta y 5,98:1 sobre el fondo (con #E53935, 3,59:1 y 4,52:1) */
   text-transform: uppercase;
   letter-spacing: .18em;
   font-size: .74rem;
