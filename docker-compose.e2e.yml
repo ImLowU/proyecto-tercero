@@ -29,6 +29,8 @@ services:
       - .:/var/www/sporttime:z
       - sporttime_e2e_logs:/var/log/apache2
       - sporttime_e2e_estado:/var/lib/sporttime
+      # Conexiones persistentes más largas: el proxy de Cypress reutiliza una que Apache ya cerró (ver el archivo).
+      - ./docker/e2e-keepalive.conf:/etc/apache2/conf-enabled/zz-e2e-keepalive.conf:ro,z
     environment:
       - APP_ENV=${APP_ENV:-development}
       - DB_HOST=db
