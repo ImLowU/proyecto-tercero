@@ -1,0 +1,46 @@
+/* SportTime — responsive.css
+Va después de componentes y páginas: lo que agrega a medida que hay más ancho gana sobre lo base. */
+
+/* ─── RESPONSIVE (Mobile First) ───────────────────────────────
+   Todo lo anterior es el diseño para pantalla chica. Estos bloques solo AGREGAN lo que hace falta a medida que hay más
+   ancho; no hay ningún max-width. Los dos cortes son:
+
+     721 px — entra la navegación horizontal, los formularios a dos columnas y el tamaño de letra de escritorio.
+     981 px — entran las grillas de varias columnas y la barra lateral fija.
+   ─────────────────────────────────────────────────────────── */
+
+@media (min-width: 721px) {
+  body { font-size: 15px; }
+  .public-nav { flex-wrap: nowrap; }
+  /* Orientación a la derecha: marca a la derecha, navegación a la izquierda (escritorio) */
+  .public-nav .nav-links { order: 0; }
+  .public-nav .nav-toggle { order: 1; }
+  .public-nav .brand     { order: 2; }
+  .nav-toggle { display: none; }
+  .nav-links { display: flex; width: auto; flex-direction: row; align-items: center; padding-top: 0; }
+  .form-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .topbar { flex-wrap: nowrap; }
+  .filtros .field { flex: 0 1 auto; }
+  .filtros .actions { flex: 0 1 auto; }
+  .filtros .actions .btn { flex: 0 1 auto; }
+  .cal-dia    { min-height: 80px; padding: 8px; }
+  .cal-puntos { display: none; }
+  .cal-lista  { display: flex; }
+  .cal-agenda { display: none; }
+}
+
+@media (min-width: 981px) {
+  .hero { grid-template-columns: minmax(0,1.15fr) minmax(280px,.85fr); }
+  .grid.cols-2 { grid-template-columns: repeat(2, minmax(0,1fr)); }
+  .grid.cols-3 { grid-template-columns: repeat(3, minmax(0,1fr)); }
+  .grid.cols-4 { grid-template-columns: repeat(4, minmax(0,1fr)); }
+  .kpi-row { grid-template-columns: repeat(4,minmax(0,1fr)); }
+  .app-shell { grid-template-columns: 1fr var(--sidebar); }
+  /* La barra lateral deja de ser un cajón y pasa a ocupar su columna. */
+  .sidebar, .sidebar.open {
+    position: sticky; inset: auto; top: 0;
+    width: auto; transform: none; transition: initial; z-index: auto; box-shadow: none;
+  }
+  .mobile-menu-btn { display: none; }
+  .page-header { flex-direction: row; }
+}

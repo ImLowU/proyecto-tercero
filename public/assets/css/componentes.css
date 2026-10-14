@@ -1,0 +1,317 @@
+/* SportTime — componentes.css
+Botones, chips, tarjetas, tablas, formularios, estados vacíos, paginación, línea de tiempo, modales, búsqueda y filtros,
+diálogos, reportes, panel del participante, avatares y rendimiento. */
+
+/* ─── BOTONES ─────────────────────────────────────────────── */
+.btn {
+  --btn-bg: var(--color-card-2);
+  --btn-bd: var(--color-border);
+  display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
+  padding: .62rem .95rem;
+  min-height: 42px;
+  border: 1px solid var(--btn-bd);
+  border-radius: var(--radius);
+  background: var(--btn-bg);
+  color: var(--color-text);
+  font-weight: 600;
+  font-size: .92rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background .16s ease, border-color .16s ease, transform .12s ease, box-shadow .16s ease;
+}
+.btn:hover { background: var(--color-surface-2); border-color: var(--color-border-strong); }
+.btn:active { transform: translateY(1px); }
+.btn:disabled, .btn[disabled] { opacity: .5; cursor: not-allowed; transform: none; }
+
+.btn.primary {
+  --btn-bg: var(--color-primary);
+  --btn-bd: var(--color-primary);
+  color: #fff;
+  box-shadow: 0 6px 18px rgba(229,57,53,.28);
+}
+.btn.primary:hover { background: var(--color-primary-hover); border-color: var(--color-primary-hover); }
+
+.btn.secondary { --btn-bg: var(--color-surface); --btn-bd: var(--color-border); }
+
+.btn.ghost { --btn-bg: transparent; --btn-bd: transparent; color: var(--color-text-secondary); }
+.btn.ghost:hover { background: rgba(255,255,255,.06); color: var(--color-text); border-color: transparent; }
+
+.btn.danger {
+  --btn-bg: rgba(255,77,77,.12);
+  --btn-bd: rgba(255,77,77,.40);
+  color: #ffd9d9;
+}
+.btn.danger:hover { background: rgba(255,77,77,.20); }
+
+.btn.success { --btn-bg: rgba(46,204,113,.14); --btn-bd: rgba(46,204,113,.40); color: #d6ffe9; }
+
+.btn.small { min-height: 34px; padding: .4rem .7rem; font-size: .84rem; border-radius: var(--radius-sm); }
+.btn.block { width: 100%; }
+
+/* ─── CHIPS / BADGES ──────────────────────────────────────── */
+.chip {
+  display: inline-flex; align-items: center; gap: .35rem;
+  border-radius: var(--radius-pill);
+  padding: .32rem .66rem;
+  font-size: .8rem; font-weight: 600; white-space: nowrap;
+  color: var(--color-text-secondary);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+}
+.chip.primary { color: #ffd6d5; border-color: var(--color-primary-line); background: var(--color-primary-soft); }
+.chip.success { color: #cdfbe4; border-color: rgba(46,204,113,.34); background: rgba(46,204,113,.13); }
+.chip.warning { color: #ffe7c2; border-color: rgba(243,156,18,.34); background: rgba(243,156,18,.13); }
+.chip.danger  { color: #ffd9d9; border-color: rgba(255,77,77,.36); background: rgba(255,77,77,.13); }
+.chip .dot { width: .5rem; height: .5rem; border-radius: 50%; background: currentColor; }
+
+/* ─── TARJETAS / PANELES ──────────────────────────────────── */
+.card, .panel, .stat-card, .form-card, .auth-card, .hero-card, .table-wrap {
+  border: 1px solid var(--color-border);
+  background: var(--color-card);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+.card, .panel, .stat-card, .form-card { padding: 1.2rem; }
+.card.hover:hover { border-color: var(--color-border-strong); background: var(--color-card-2); }
+
+.stat-card { display: grid; gap: .15rem; }
+.stat-card strong { font-family: var(--font-display); font-size: 2rem; line-height: 1; letter-spacing: -.02em; }
+.stat-card span { color: var(--color-text-secondary); font-size: .9rem; }
+.stat-card.accent { border-color: var(--color-primary-line); }
+.stat-card.accent strong { color: var(--color-primary-hover); }
+
+/* Para un texto que ESCRIBE una persona (el nombre de un torneo, una descripción) dentro de una tarjeta: si no tiene espacios (una dirección
+   pegada, una palabra enorme) no se puede partir en renglones y ensanchaba la tarjeta y con ella la página entera; en el celular, una sola
+   palabra de 80 letras sacaba todo de pantalla. Con esto se parte donde haga falta. Va SOLO donde se muestra texto de una persona: puesta
+   en general (probado) parte también palabras normales de elementos angostos («Semifinale/s», «Garcí/a»). */
+.rompe-texto { min-width: 0; overflow-wrap: anywhere; }
+
+/* ─── TABLAS ──────────────────────────────────────────────── */
+.table-wrap { overflow: hidden; }
+.table-header { padding: 1rem 1.15rem; display: flex; justify-content: space-between; align-items: center; gap: 1rem; border-bottom: 1px solid var(--color-border); flex-wrap: wrap; }
+.table-scroll { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; min-width: 540px; }
+thead th {
+  position: sticky; top: 0;
+  background: var(--color-surface);
+  color: var(--color-text-secondary);
+  font-size: .76rem; font-weight: 700; text-transform: uppercase; letter-spacing: .07em;
+  text-align: left; padding: .8rem 1.15rem;
+  border-bottom: 1px solid var(--color-border);
+}
+tbody td { padding: .85rem 1.15rem; border-bottom: 1px solid rgba(255,255,255,.055); color: var(--color-text); vertical-align: middle; }
+tbody tr:last-child td { border-bottom: 0; }
+tbody tr:hover td { background: rgba(255,255,255,.03); }
+td .muted { font-size: .85rem; }
+
+/* ─── FORMULARIOS ─────────────────────────────────────────── */
+.form-grid { display: grid; grid-template-columns: 1fr; gap: 1rem; }
+.form-grid.single { grid-template-columns: 1fr; }
+.field { display: grid; gap: .4rem; min-width: 0; }
+.field.col-span-full { grid-column: 1 / -1; }
+label { color: var(--color-text); font-weight: 600; font-size: .88rem; }
+.field-hint { color: var(--color-text-muted); font-size: .8rem; }
+.field-hint.warn { color: var(--color-warning); }
+
+input, select, textarea {
+  width: 100%;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: .68rem .8rem;
+  color: var(--color-text);
+  background: var(--color-bg-soft);
+  outline: none;
+  transition: border-color .16s, box-shadow .16s;
+}
+input::placeholder, textarea::placeholder { color: var(--color-text-muted); }
+input:hover, select:hover, textarea:hover { border-color: var(--color-border-strong); }
+input:focus, select:focus, textarea:focus { border-color: var(--color-primary); box-shadow: var(--ring); }
+
+/* Checkbox / radio en línea */
+.field label input[type="checkbox"],
+.field label input[type="radio"] { width: auto; margin-right: .5rem; accent-color: var(--color-primary); vertical-align: middle; }
+input[type="checkbox"], input[type="radio"] { accent-color: var(--color-primary); }
+
+/* Select oscuro coherente */
+select { color-scheme: dark; appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%238597A8' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right .8rem center; padding-right: 2.2rem;
+}
+select option, select optgroup { background-color: var(--color-surface); color: var(--color-text); }
+select option:checked { background-color: var(--color-surface-2); }
+select option:disabled { color: var(--color-text-muted); }
+
+textarea { resize: vertical; min-height: 110px; }
+.form-actions { margin-top: 1.25rem; display: flex; gap: .65rem; justify-content: flex-end; flex-wrap: wrap; }
+
+/* Secciones dentro de un formulario largo */
+.form-section + .form-section { margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--color-border); }
+.form-section-title {
+  font-family: var(--font-display); font-size: .82rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .1em;
+  color: var(--color-text-secondary); margin: 0 0 .9rem;
+  display: flex; align-items: center; gap: .5rem;
+}
+.form-section-title::before { content: ""; width: 3px; height: 1em; border-radius: 2px; background: var(--color-primary); }
+
+/* Combobox styles (appended) */
+.combobox{position:relative}
+.combobox input[type="text"]{width:100%;padding:.6rem .75rem;border-radius:10px;border:1px solid var(--line);background:#1b1f24}
+.combobox-list{position:absolute;left:0;right:0;z-index:80;margin-top:.35rem;padding:0;list-style:none;border-radius:10px;overflow:hidden;background:#1b1f24;border:1px solid var(--line);max-height:240px;overflow-y:auto}
+.combobox-list li{list-style:none;margin:0;padding:.55rem .75rem;border-bottom:1px solid rgba(255,255,255,.03);cursor:pointer;color:var(--text)}
+.combobox-list li:hover,.combobox-list li.active{background:#252b32}
+.combobox-list li:last-child{border-bottom:none}
+
+/* ─── ESTADOS VACÍOS ──────────────────────────────────────── */
+.empty-state {
+  display: grid; justify-items: center; text-align: center; gap: .5rem;
+  padding: 2.6rem 1.4rem; color: var(--color-text-secondary);
+}
+.empty-state .empty-icon {
+  width: 52px; height: 52px; display: grid; place-items: center;
+  border-radius: 14px; font-size: 1.5rem;
+  background: var(--color-primary-soft); border: 1px solid var(--color-primary-line);
+  margin-bottom: .25rem;
+}
+.empty-state h3, .empty-state .como-h3 { margin: 0; color: var(--color-text); }
+.empty-state p { margin: 0; max-width: 42ch; }
+td .empty-state { padding: 1.8rem 1rem; }
+
+/* ─── PAGINACIÓN ──────────────────────────────────────────── */
+.pagination { display: flex; gap: .35rem; flex-wrap: wrap; align-items: center; justify-content: center; padding: 1rem; }
+.pagination a, .pagination span {
+  min-width: 38px; height: 38px; padding: 0 .6rem;
+  display: inline-flex; align-items: center; justify-content: center;
+  border: 1px solid var(--color-border); border-radius: var(--radius-sm);
+  color: var(--color-text-secondary); font-size: .9rem; font-weight: 600;
+  background: var(--color-card);
+}
+.pagination a:hover { color: var(--color-text); border-color: var(--color-border-strong); background: var(--color-card-2); }
+.pagination .current { color: #fff; background: var(--color-primary); border-color: var(--color-primary); }
+.pagination .disabled { opacity: .4; pointer-events: none; }
+
+/* ─── TIMELINE ────────────────────────────────────────────── */
+.timeline { display: grid; gap: .6rem; }
+.timeline-item { padding: .85rem 1rem; border: 1px solid var(--color-border); border-radius: var(--radius); background: var(--color-bg-soft); position: relative; }
+.timeline-item strong { display: block; margin-bottom: .15rem; }
+
+/* ─── MODALES ─────────────────────────────────────────────── */
+.modal {
+  position: fixed; inset: 0; z-index: 100;
+  padding: 1.2rem; place-items: center;
+  background: rgba(5,9,15,.72);
+  backdrop-filter: blur(4px);
+}
+.modal-card {
+  width: min(100%,460px);
+  background: var(--color-card) !important;
+  border: 1px solid var(--color-border-strong) !important;
+  border-radius: var(--radius-lg) !important;
+  box-shadow: var(--shadow-lg) !important;
+  max-height: 90vh; overflow-y: auto;
+}
+
+/* ─── BÚSQUEDA, FILTROS Y PAGINACIÓN ──────────────────────────
+   La barra de filtros es un formulario GET (la dirección queda copiable). El pie lleva el resumen
+   «Mostrando X–Y de N» y los botones de página, con la paginación de SportTime (.pagination).
+   Dentro de una .table-wrap la barra reemplaza al .table-header. */
+.filtros {
+  display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: flex-start;
+  gap: .75rem;
+}
+.filtros .field         { flex: 1 1 100%; min-width: 9.5rem; }
+.filtros .field.buscar  { flex: 1 1 15rem; }
+.filtros .actions       { flex: 1 1 100%; gap: .5rem; }
+.filtros .actions .btn  { flex: 1 1 auto; }
+.filtros .btn.small     { min-height: 46px; }   /* la altura de un campo de SportTime */
+.card.filtros           { margin-bottom: 1rem; }
+.table-header > .filtros { flex: 1 1 auto; }
+
+.listado-pie {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+  gap: .75rem; padding: .85rem 0;
+}
+.table-wrap > .listado-pie { border-top: 1px solid var(--color-border); padding: .85rem 1.15rem; }
+.resumen { margin: 0; font-size: .9rem; color: var(--color-text-secondary); }
+.listado-pie .pagination { padding: 0; justify-content: flex-end; }
+.pagination .gap { min-width: 0; padding: 0 .15rem; border-color: transparent; background: transparent; color: var(--color-text-muted); }
+
+/* El mismo estado vacío de SportTime, cuando una búsqueda no encuentra nada. */
+.sin-resultados { text-align: center; }
+
+/* Búsqueda en vivo (torneos-en-vivo.js): mientras llega la respuesta la lista se atenúa; si falla, el motivo va arriba. */
+.cargando     { opacity: .55; }
+.alerta-lista { margin-bottom: .8rem; }
+
+/* El motivo de un rechazo dentro de un diálogo (se muestra al quitarle el atributo hidden). */
+.alerta-form { display: block; margin-bottom: .75rem; white-space: normal; }
+
+/* Botón que no se puede usar todavía (el formulario de registro, hasta cumplir las reglas de la contraseña). */
+.btn.apagado { opacity: .6; }
+
+/* Reglas de la contraseña: se marcan solas mientras se escribe (registro.js). */
+.pw-reglas li        { color: var(--color-text-muted); }
+.pw-reglas li.cumple { color: var(--color-success); }
+
+/* ─── DIÁLOGOS (se abren con modales.js: clase .abierto). Mismo fondo y desenfoque que .modal. ─── */
+.modal-fondo {
+  display: none; position: fixed; inset: 0; z-index: 100;
+  padding: 1.2rem; place-items: center;
+  background: rgba(5,9,15,.72);
+  backdrop-filter: blur(4px);
+}
+.modal-fondo.abierto { display: grid; }
+.modal-fondo--flex { background: rgba(0,0,0,.7); z-index: 1000; justify-content: center; }
+.modal-fondo--flex.abierto { display: flex; }
+
+/* ─── REPORTES ──────────────────────────────────────────── */
+.dato {
+  display: flex; justify-content: space-between; gap: 1rem;
+  padding: .5rem 0; border-bottom: 1px solid var(--color-border);
+}
+.dato:last-child { border-bottom: 0; }
+.dato strong     { font-variant-numeric: tabular-nums; }
+.num             { text-align: right; font-variant-numeric: tabular-nums; }
+.barra           { height: .6rem; border-radius: 999px; background: var(--color-surface-2); overflow: hidden; }
+.barra > span    { display: block; height: 100%; background: linear-gradient(135deg, var(--color-primary), var(--color-primary-hover)); }
+.solo-impresion  { display: none; }
+
+/* ─── PANEL DEL PARTICIPANTE Y CONFIGURACIÓN ───────────────── */
+/* Lista de filas con un detalle a la izquierda y una marca a la derecha (partidos, posiciones). */
+.lista-filas              { list-style: none; margin: .6rem 0 0; padding: 0; }
+.lista-filas li           { border-bottom: 1px solid var(--color-border); }
+.lista-filas li:last-child { border-bottom: 0; }
+.lista-filas a            { display: flex; align-items: center; justify-content: space-between; gap: .75rem; padding: .65rem 0; color: inherit; text-decoration: none; }
+.lista-filas a:hover strong { color: var(--color-primary-hover); }
+.lista-filas .detalle     { min-width: 0; }
+.lista-filas .detalle strong { overflow-wrap: anywhere; }
+.lista-filas small        { display: block; margin-top: .1rem; color: var(--color-text-muted); font-size: .85rem; }
+.lista-filas .chip        { flex: none; text-align: center; }
+
+/* Secciones dentro de un formulario largo (Configuración): una línea entre una y otra. */
+.form-seccion                  { margin: 0 0 1rem; }
+.form-grid + .form-seccion     { border-top: 1px solid var(--color-border); padding-top: 1rem; margin-top: 1.5rem; }
+.form-seccion p                { margin: .25rem 0 0; font-size: .9rem; }
+.form-grid .field-ancho        { grid-column: 1 / -1; }
+/* Sin esto, el campo más corto de una fila se estira hasta igualar al más alto y su caja queda más grande. */
+.form-config .field            { align-content: start; }
+
+/* ─── AVATARES (el tamaño va en una clase dinámica: View::avatar()) ─── */
+.avatar-img { border-radius: 50%; object-fit: cover; border: 1px solid var(--color-border); box-shadow: 0 6px 18px rgba(0,0,0,.28); }
+.avatar-ini {
+  border-radius: 50%; display: inline-grid; place-items: center;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+  color: #fff; font-weight: 800; border: 1px solid var(--color-border);
+}
+
+/* ─── RENDIMIENTO DE UN COMPETIDOR (perfil) ─── */
+.forma-casilla {
+  width: 22px; height: 22px; border-radius: 6px;
+  display: inline-grid; place-items: center;
+  font-size: .7rem; font-weight: 800; color: #04121f;
+}
+.forma-g { background: var(--color-success); }
+.forma-e { background: var(--color-warning); }
+.forma-p { background: var(--color-error); }
+.forma-n { background: var(--color-text-muted); }
+.fila-campeon { background: rgba(46,204,113,.1); }

@@ -1,0 +1,192 @@
+/* SportTime — base.css
+Reinicio, tipografía, enlace «Saltar al contenido», navegación pública, marca, hero, secciones, armazón del panel,
+pie, avisos y accesibilidad (foco visible y movimiento reducido). */
+
+/* ─── BASE ────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: var(--font-sans);
+  font-size: 14.5px;
+  line-height: 1.55;
+  color: var(--color-text);
+  background:
+    radial-gradient(1100px 540px at 78% -8%, rgba(229,57,53,.10), transparent 60%),
+    radial-gradient(900px 500px at 0% 100%, rgba(56,81,107,.16), transparent 55%),
+    var(--color-bg);
+  background-attachment: fixed;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: inherit; text-decoration: none; }
+img, svg { max-width: 100%; }
+button, input, select, textarea { font: inherit; }
+hr { border: 0; border-top: 1px solid var(--color-border); margin: var(--space-4) 0; }
+
+/* ─── TIPOGRAFÍA ──────────────────────────────────────────── */
+h1, h2, h3, h4, p { margin-top: 0; }
+h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; color: var(--color-text); line-height: 1.12; }
+h1 { font-size: clamp(2rem, 5vw, 3.4rem); letter-spacing: -.03em; margin-bottom: .75rem; }
+h2 { font-size: clamp(1.5rem, 3.2vw, 2.2rem); letter-spacing: -.02em; margin-bottom: .6rem; }
+h3 { font-size: 1.15rem; letter-spacing: -.01em; margin-bottom: .4rem; }
+h4 { font-size: 1rem; margin-bottom: .35rem; }
+/* Un título con el aspecto de otro nivel: el nivel lo da la estructura de la página (sin saltear), el tamaño, el diseño. */
+.como-h2 { font-size: clamp(1.5rem, 3.2vw, 2.2rem); letter-spacing: -.02em; margin-bottom: .6rem; }
+.como-h3 { font-size: 1.15rem; letter-spacing: -.01em; margin-bottom: .4rem; }
+p  { color: var(--color-text-secondary); }
+strong { color: var(--color-text); }
+
+.eyebrow {
+  color: var(--color-primary);
+  text-transform: uppercase;
+  letter-spacing: .18em;
+  font-size: .74rem;
+  font-weight: 700;
+  font-family: var(--font-display);
+}
+.muted { color: var(--color-text-secondary); }
+.text-dim { color: var(--color-text-muted); }
+
+/* ─── Enlace «Saltar al contenido»: fuera de pantalla hasta que recibe el foco del teclado (primer Tab) ─── */
+.saltar {
+  position: absolute; left: -9999px; top: 0; z-index: 1000;
+  padding: .7rem 1rem; border-radius: var(--radius);
+  background: var(--color-surface); color: var(--color-text);
+  border: 1px solid var(--color-primary-line); font-weight: 600;
+}
+.saltar:focus { left: 1rem; top: 1rem; }
+
+/* ─── NAVEGACIÓN PÚBLICA ──────────────────────────────────── */
+.public-shell { min-height: 100vh; display: flex; flex-direction: column; }
+.public-shell > .section, .public-shell > .hero { flex: 0 0 auto; }
+.public-nav {
+  position: sticky; top: 0; z-index: 50;
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem;
+  padding: .85rem clamp(1rem, 4vw, 4rem);
+  background: rgba(10,16,24,.82);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--color-border);
+}
+
+/* ─── MARCA / LOGO ────────────────────────────────────────── */
+.brand { display: inline-flex; align-items: center; gap: .65rem; font-family: var(--font-display); font-weight: 700; letter-spacing: -.02em; font-size: 1.12rem; }
+.brand .logo-mark {
+  display: grid; place-items: center;
+  width: 40px; height: 40px; border-radius: 11px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+}
+.brand .logo-mark img { width: 26px; height: 26px; object-fit: contain; }
+.brand-name { color: var(--color-text); }
+.brand-name b { color: var(--color-primary); font-weight: 700; }
+
+/* En el celular: marca a la izquierda, botón de menú a la derecha y los enlaces, desplegables, debajo. */
+.nav-links { display: none; width: 100%; flex-direction: column; align-items: stretch; gap: .25rem; flex-wrap: wrap; padding-top: .6rem; }
+.public-nav.open .nav-links { display: flex; }
+.nav-link {
+  padding: .55rem .8rem; border-radius: var(--radius);
+  color: var(--color-text-secondary); font-size: .92rem; font-weight: 500;
+  transition: color .16s, background .16s;
+}
+.nav-link:hover { color: var(--color-text); background: rgba(255,255,255,.05); }
+.nav-link.active { color: var(--color-text); background: var(--color-primary-soft); box-shadow: inset 0 0 0 1px var(--color-primary-line); }
+.nav-toggle { display: inline-flex; }
+
+/* ─── HERO ────────────────────────────────────────────────── */
+.hero {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2.5rem; align-items: center;
+  padding: clamp(2.5rem,6vw,5.5rem) clamp(1rem,4vw,4rem);
+}
+.hero h1 { margin-bottom: 1rem; }
+.hero p { font-size: 1.05rem; max-width: 54ch; }
+.hero-actions, .actions { display: flex; flex-wrap: wrap; gap: .65rem; align-items: center; }
+
+/* ─── SECCIONES / GRID ────────────────────────────────────── */
+.section { padding: 2rem clamp(1rem,4vw,4rem); }
+.section-head { display: flex; align-items: end; justify-content: space-between; gap: 1rem; margin-bottom: 1.2rem; flex-wrap: wrap; }
+.grid { display: grid; gap: 1rem; }
+.grid.cols-2, .grid.cols-3, .grid.cols-4 { grid-template-columns: 1fr; }
+
+/* ─── APP SHELL (PANEL) ───────────────────────────────────── */
+/* Orientación a la derecha: el contenido a la izquierda, el aside a la derecha */
+.app-shell { min-height: 100vh; display: grid; grid-template-columns: 1fr; }
+
+/* En el celular la barra lateral es un cajón que entra por la derecha; desde 981 px ocupa su columna (responsive.css). */
+.sidebar {
+  position: fixed; inset: 0 0 0 auto; top: 0; height: 100vh;
+  width: min(86vw,310px);
+  transform: translateX(105%); transition: transform .22s ease; z-index: 80; box-shadow: var(--shadow-lg);
+  grid-column: 2; grid-row: 1;
+  padding: 1rem .85rem; border-left: 1px solid var(--color-border);
+  background: var(--color-bg-soft);
+  overflow-y: auto;
+  display: flex; flex-direction: column; gap: .15rem;
+}
+.sidebar.open { transform: translateX(0); }
+.sidebar .brand { padding: .35rem .4rem 1rem; }
+.side-section-title {
+  margin: 1.1rem .65rem .35rem;
+  color: var(--color-text-muted); font-size: .7rem;
+  text-transform: uppercase; letter-spacing: .13em; font-weight: 700;
+}
+.side-link {
+  display: flex; align-items: center; justify-content: space-between; gap: .8rem;
+  padding: .66rem .8rem; color: var(--color-text-secondary);
+  border-radius: var(--radius); margin-bottom: .1rem;
+  font-size: .94rem; font-weight: 500;
+  transition: color .16s, background .16s;
+}
+.side-link:hover { color: var(--color-text); background: rgba(255,255,255,.05); }
+.side-link.active {
+  color: var(--color-text); background: var(--color-primary-soft);
+  box-shadow: inset 0 0 0 1px var(--color-primary-line);
+}
+.side-link.active > span:last-child { color: var(--color-primary-hover); }
+
+.app-main { grid-column: 1; grid-row: 1; min-width: 0; display: flex; flex-direction: column; }
+.topbar {
+  position: sticky; top: 0; z-index: 45;
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem;
+  padding: .85rem clamp(1rem,3vw,2rem);
+  border-bottom: 1px solid var(--color-border);
+  background: rgba(10,16,24,.78); backdrop-filter: blur(14px);
+}
+.topbar strong { font-family: var(--font-display); }
+.mobile-menu-btn { display: inline-flex; }
+.page { padding: clamp(1.1rem,3vw,2rem); flex: 1; }
+.page-header { display: flex; flex-direction: column; align-items: start; justify-content: space-between; gap: 1rem; margin-bottom: 1.4rem; flex-wrap: wrap; }
+.page-title h1 { font-size: clamp(1.6rem,3.4vw,2.6rem); margin: .15rem 0 .4rem; }
+.page-title p { margin: 0; }
+.kpi-row { display: grid; grid-template-columns: 1fr; gap: 1rem; margin-bottom: 1.4rem; }
+
+/* ─── FOOTER ──────────────────────────────────────────────── */
+.footer { margin-top: auto; padding: 2rem clamp(1rem,4vw,4rem); color: var(--color-text-secondary); border-top: 1px solid var(--color-border); font-size: .9rem; }
+.footer strong { color: var(--color-text); }
+.footer a { color: var(--color-primary-hover); }
+
+/* ─── FLASH / ALERTAS ─────────────────────────────────────── */
+.flash-stack { display: grid; gap: .6rem; margin-bottom: 1rem; }
+.alert {
+  display: flex; align-items: flex-start; gap: .6rem;
+  padding: .8rem 1rem; border-radius: var(--radius);
+  border: 1px solid var(--color-border); background: var(--color-card);
+  color: var(--color-text); font-size: .92rem; line-height: 1.45;
+}
+.alert .alert-ico { flex: 0 0 auto; line-height: 1.2; }
+.alert.success { border-color: rgba(46,204,113,.34); background: rgba(46,204,113,.10); }
+.alert.warning { border-color: rgba(243,156,18,.34); background: rgba(243,156,18,.10); }
+.alert.danger  { border-color: rgba(255,77,77,.36);  background: rgba(255,77,77,.10); }
+.alert.info    { border-color: var(--color-primary-line); background: var(--color-primary-soft); }
+.flash-msg { transition: opacity .5s ease; }
+
+/* ─── ACCESIBILIDAD ───────────────────────────────────────── */
+:focus-visible { outline: 2px solid var(--color-primary-hover); outline-offset: 2px; }
+.btn:focus-visible, .nav-link:focus-visible, .side-link:focus-visible { outline-offset: 3px; }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; scroll-behavior: auto !important; }
+}
